@@ -27,8 +27,8 @@ using namespace std;
 #define MAIN_WINDOW_TITLE L"Super Mario Bros 3"
 
 #define BACKGROUND_COLOR D3DCOLOR_XRGB(255, 255, 200)
-#define SCREEN_WIDTH 360  
-#define SCREEN_HEIGHT 360
+#define SCREEN_WIDTH 300  
+#define SCREEN_HEIGHT 300
 
 #define MAX_FRAME_RATE 120
 

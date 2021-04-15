@@ -137,9 +137,17 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 
 		DebugOut(L"[INFO] Player object created!\n");
 		break;
-	case OBJECT_TYPE_GOOMBA: obj = new CGoomba(); break;
+	case OBJECT_TYPE_GOOMBA: {
+		float model = atof(tokens[4].c_str());
+		int direction = atof(tokens[5].c_str());
+		obj = new CGoomba(model,direction); break;
+	} 
 	case OBJECT_TYPE_BRICK: obj = new CBrick(); break;
-	case OBJECT_TYPE_KOOPAS: obj = new CKoopas(); break;
+	case OBJECT_TYPE_KOOPAS: {
+		float model = atof(tokens[4].c_str());
+		int direction = atof(tokens[5].c_str());
+		obj = new CKoopas(model, direction); break;
+	} 
 	case OBJECT_TYPE_PLATFORM: {
 		float w = atof(tokens[4].c_str());
 		float h = atof(tokens[5].c_str());
@@ -265,27 +273,21 @@ void CPlayScene::Update(DWORD dt)
 		if (player == NULL) return;
 
 		// Update camera to follow mario
-		float cx, cy, sw, sh, mw, mh, mx, my;
-		player->GetPosition(cx, cy);
+		float cx, cy, __cx,__cy, sw, sh, mw, mh, mx, my, px, py;
+		player->GetPosition(px, py);
 
 		CGame *game = CGame::GetInstance();
 		sw = game->GetScreenWidth();
 		sh = game->GetScreenHeight();
 		mw = map->GetMapWidth();
 		mh = map->GetMapHeight();
-		bool isTopSide = false;
+		cx = 0; cy = 250;
+		__cx = px-20; __cy = cy; //Cam theo Mario
+		if (__cx < cx)
+			__cx = cx;//khong cho qua ben trai dau map
 
-		if (cy < mh / 2)
-			isTopSide = true;
-
-		//if (cx > sw / 2 && cx + sw / 2 < mw)//LEFT EDGE + RIGHT EDGE
-		//	cx -= sw / 2;
-		//else if (cx < sw / 2)//XEM LAI PHAN NAY
-		//	cx = 0;
-		//else if (cx + sw / 2 > mw)
-		//	cx = mw - sw + 1;
-		CGame::GetInstance()->SetCamPos((int) cx-20,(int) cy-208);
-		map->SetCamPos((int)cx-20, (int)cy-208);
+		CGame::GetInstance()->SetCamPos((int) __cx,(int) __cy);
+		map->SetCamPos((int)__cx, (int)__cy);
 	}
 	
 

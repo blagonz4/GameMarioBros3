@@ -1,6 +1,8 @@
 #include "Goomba.h"
-CGoomba::CGoomba()
-{
+CGoomba::CGoomba(float &model, int &direction)
+{	
+	model = model;
+	direction = direction;
 	//eType = Type::GOOMBA;
 	SetState(GOOMBA_STATE_WALKING);
 }
@@ -15,6 +17,7 @@ void CGoomba::GetBoundingBox(float &left, float &top, float &right, float &botto
 		bottom = y + GOOMBA_BBOX_HEIGHT_DIE;
 	else 	
 		bottom = y + GOOMBA_BBOX_HEIGHT;
+
 }
 
 void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
@@ -46,7 +49,7 @@ void CGoomba::Render()
 
 	animation_set->at(ani)->Render(x,y);
 
-	//RenderBoundingBox();
+	RenderBoundingBox();
 }
 
 void CGoomba::SetState(int state)

@@ -1,7 +1,9 @@
 #include "Koopas.h"
 
-CKoopas::CKoopas()
+CKoopas::CKoopas(float &model, int &direction)
 {
+	model = model;
+	direction = direction;
 	//eType = Type::KOOPAS;
 	SetState(KOOPAS_STATE_WALKING);
 }
@@ -16,6 +18,7 @@ void CKoopas::GetBoundingBox(float &left, float &top, float &right, float &botto
 		bottom = y + KOOPAS_BBOX_HEIGHT_DIE;
 	else
 		bottom = y + KOOPAS_BBOX_HEIGHT;
+
 }
 
 void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
