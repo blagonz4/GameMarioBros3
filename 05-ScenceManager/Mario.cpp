@@ -12,7 +12,7 @@
 CMario::CMario(float x, float y) : CGameObject()
 {
 	//eType = Type::MARIO;
-	level = MARIO_LEVEL_BIG;
+	level = MARIO_LEVEL_SMALL;
 	untouchable = 0;
 	SetState(MARIO_STATE_IDLE);
 
@@ -135,8 +135,6 @@ void CMario::Render()
 	else
 	if (level == MARIO_LEVEL_BIG)
 	{
-		if (vx==0.5)
-			ani = MARIO_ANI_CROUCH;
 		if (vx == 0)
 		{
 			if (nx>0) ani = MARIO_ANI_BIG_IDLE_RIGHT;
@@ -165,7 +163,7 @@ void CMario::Render()
 
 	animation_set->at(ani)->Render(x, y, alpha);
 
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void CMario::SetState(int state)
@@ -192,8 +190,8 @@ void CMario::SetState(int state)
 	case MARIO_STATE_DIE:
 		vy = -MARIO_DIE_DEFLECT_SPEED;
 		break;
-	case MARIO_STATE_CROUCH:
-		vx = 0.5;
+	case MARIO_STATE_SIT:
+
 		break;
 	}
 }

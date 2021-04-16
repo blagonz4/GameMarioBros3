@@ -111,7 +111,7 @@ using namespace std;
 #define MARIO_STATE_WALKING_LEFT	200
 #define MARIO_STATE_JUMP			300
 #define MARIO_STATE_DIE				400
-#define MARIO_STATE_CROUCH			500
+#define MARIO_STATE_SIT				500
 
 #define MARIO_ANI_BIG_IDLE_RIGHT		0
 #define MARIO_ANI_BIG_IDLE_LEFT			1
@@ -124,7 +124,7 @@ using namespace std;
 #define MARIO_ANI_SMALL_WALKING_LEFT		7
 
 #define MARIO_ANI_DIE				8
-#define MARIO_ANI_CROUCH			9
+#define MARIO_ANI_SIT				9
 
 
 #define	MARIO_LEVEL_SMALL	1

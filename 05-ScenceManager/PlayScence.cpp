@@ -327,9 +327,12 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 	case DIK_A: 
 		mario->Reset();
 		break;
-	case DIK_C:
-		mario->SetState(MARIO_STATE_CROUCH);
-		DebugOut(L"[INFO] mario state: ", mario->GetState());
+	case DIK_F1:
+		mario->SetLevel(MARIO_LEVEL_BIG);
+		break;
+	case DIK_F2:
+		mario->y += 100;
+		mario->SetLevel(MARIO_LEVEL_SMALL);
 		break;
 	}
 }
@@ -346,7 +349,7 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 	else if (game->IsKeyDown(DIK_LEFT))
 		mario->SetState(MARIO_STATE_WALKING_LEFT);
 	else if (game->IsKeyDown(DIK_C))
-		mario->SetState(MARIO_STATE_CROUCH);
+		mario->SetState(MARIO_STATE_SIT);
 	else
 		mario->SetState(MARIO_STATE_IDLE);
 }
