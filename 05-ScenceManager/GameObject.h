@@ -58,7 +58,8 @@ public:
 	float vy;
 
 	int nx;	 
-
+	float width;
+	float height;
 	int state;
 
 	DWORD dt; 

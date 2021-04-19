@@ -4,7 +4,7 @@
 
 #include "Mario.h"
 #include "Game.h"
-
+#include "ColorBlock.h"
 #include "Goomba.h"
 #include "Portal.h"
 #include "Platform.h"
@@ -15,7 +15,6 @@ CMario::CMario(float x, float y) : CGameObject()
 	level = MARIO_LEVEL_SMALL;
 	untouchable = 0;
 	SetState(MARIO_STATE_IDLE);
-
 	start_x = x; 
 	start_y = y; 
 	this->x = x; 
@@ -38,7 +37,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	// turn off collision when die 
 	if (state!=MARIO_STATE_DIE)
 		CalcPotentialCollisions(coObjects, coEvents);
-
 	// reset untouchable timer if untouchable time has passed
 	if ( GetTickCount() - untouchable_start > MARIO_UNTOUCHABLE_TIME) 
 	{
@@ -115,11 +113,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				CPortal *p = dynamic_cast<CPortal *>(e->obj);
 				CGame::GetInstance()->SwitchScene(p->GetSceneId());
 			}
-			//else if (dynamic_cast<Platform *>(e-> obj)) {
-			//	Platform *platform = dynamic_cast<Platform *>(e->obj);
-			//	ny = e->ny + 10;
-			//	DebugOut(L"[INFO] Vi tri Mario: %d\n", y);
-			//}
+
 		}
 	}
 
@@ -132,7 +126,8 @@ void CMario::Render()
 	int ani = -1;
 	if (state == MARIO_STATE_DIE)
 		ani = MARIO_ANI_DIE;
-	else
+	
+	//MARIO BIG
 	if (level == MARIO_LEVEL_BIG)
 	{
 		if (vx == 0)
@@ -142,7 +137,72 @@ void CMario::Render()
 		}
 		else if (vx > 0) 
 			ani = MARIO_ANI_BIG_WALKING_RIGHT; 
+
 		else ani = MARIO_ANI_BIG_WALKING_LEFT;
+		//---------------------------------------
+		if (state == MARIO_STATE_SIT)
+		{
+			if (nx > 0)
+				ani = MARIO_ANI_SIT_RIGHT;
+			else if (nx < 0)
+				ani = MARIO_ANI_SIT_LEFT;
+		}
+		//-------------------------------------
+		if (state == MARIO_STATE_TURN)
+		{
+			if (nx > 0)
+				ani = MARIO_ANI_BIG_TURN_RIGHT;
+
+			if (nx < 0) {
+				ani = MARIO_ANI_BIG_TURN_LEFT;
+			}
+		}
+		if (state == MARIO_STATE_RUN_RIGHT)
+		{
+			ani = MARIO_ANI_BIG_RUN_RIGHT;
+			if (isHoldTurtle)
+			{
+				ani = MARIO_BIG_ANI_HOLD_WALK_RIGHT;
+			}
+		}
+		if (state == MARIO_STATE_RUN_LEFT)
+		{
+			ani = MARIO_ANI_BIG_RUN_LEFT;
+			if (isHoldTurtle)
+			{
+				ani = MARIO_BIG_ANI_HOLD_WALK_LEFT;
+			}
+		}
+		if (state == MARIO_STATE_RUN_MAXSPEED)
+		{
+			if (nx > 0)
+			{
+				ani = MARIO_ANI_BIG_RUNMAXSPEED_RIGHT;
+				if (isHoldTurtle)
+					ani = MARIO_BIG_ANI_HOLD_RUN_MAX_RIGHT;
+			}
+			else if (nx < 0)
+			{
+				ani = MARIO_ANI_BIG_RUNMAXSPEED_LEFT;
+				if (isHoldTurtle)
+					ani = MARIO_BIG_ANI_HOLD_RUN_MAX_LEFT;
+			}
+		}
+		if (state == MARIO_STATE_JUMP)
+		{
+			if (nx > 0)
+				ani = MARIO_ANI_BIG_JUMP_RIGHT;
+			else if (nx < 0)
+				ani = MARIO_ANI_BIG_JUMP_LEFT;
+		}
+
+		if (state == MARIO_STATE_FLY_UP)
+		{
+			if (nx > 0)
+				ani = MARIO_ANI_BIG_FLY_RIGHT;
+			else if (nx < 0)
+				ani = MARIO_ANI_BIG_FLY_LEFT;
+		}
 		
 	}
 	else if (level == MARIO_LEVEL_SMALL)
@@ -172,6 +232,9 @@ void CMario::SetState(int state)
 
 	switch (state)
 	{
+	case MARIO_STATE_IDLE:
+		vx = 0;
+		break;
 	case MARIO_STATE_WALKING_RIGHT:
 		vx = MARIO_WALKING_SPEED;
 		nx = 1;
@@ -181,20 +244,43 @@ void CMario::SetState(int state)
 		nx = -1;
 		break;
 	case MARIO_STATE_JUMP:
-		// TODO: need to check if Mario is *current* on a platform before allowing to jump again
-		vy = -MARIO_JUMP_SPEED_Y;
+		if (isOnGround) {
+			vy -= MARIO_JUMP_SPEED_Y;
+			isOnGround = false;
+			if (abs(vx) >= MARIO_RUNNING_MAXSPEED)
+			{
+				isFlying = true;
+				vy = -MARIO_JUMP_SPEED_RUNNING_MAXSPEED;
+			}
+		}
 		break; 
-	case MARIO_STATE_IDLE: 
-		vx = 0;
+	case MARIO_STATE_TURN:
+		break;
+	case MARIO_STATE_RUNNING_RIGHT:
+		vx += MARIO_RUNNING_SPEED * dt;
+		if (vx >= MARIO_RUNNING_MAXSPEED) {
+			this->state = MARIO_STATE_RUNNING_MAXSPEED;
+			vx = MARIO_RUNNING_MAXSPEED;
+		}
+		nx = 1;
+		break;
+	case MARIO_STATE_RUNNING_LEFT:
+		vx -= MARIO_RUNNING_SPEED * dt;
+		if (vx >= MARIO_RUNNING_MAXSPEED) {
+			this->state = MARIO_STATE_RUNNING_MAXSPEED;
+			vx = MARIO_RUNNING_MAXSPEED;
+		}
+		nx = -1;
 		break;
 	case MARIO_STATE_DIE:
 		vy = -MARIO_DIE_DEFLECT_SPEED;
 		break;
 	case MARIO_STATE_SIT:
-
+		isSitting = true;
 		break;
 	}
 }
+#pragma region set chuyen dong
 
 void CMario::GetBoundingBox(float &left, float &top, float &right, float &bottom)
 {

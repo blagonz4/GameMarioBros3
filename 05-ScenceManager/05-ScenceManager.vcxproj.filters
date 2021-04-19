@@ -70,6 +70,9 @@
     <Filter Include="Game Object\Platform">
       <UniqueIdentifier>{35372229-d938-45d5-8b33-cabb249e5edd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game Object\ColorBlock">
+      <UniqueIdentifier>{d82f863c-8a89-48e7-b3fd-a07dee34e10f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animations.cpp">
@@ -122,6 +125,9 @@
     </ClCompile>
     <ClCompile Include="Platform.cpp">
       <Filter>Game Object\Platform</Filter>
+    </ClCompile>
+    <ClCompile Include="ColorBlock.cpp">
+      <Filter>Game Object\ColorBlock</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -178,6 +184,9 @@
     </ClInclude>
     <ClInclude Include="Platform.h">
       <Filter>Game Object\Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="ColorBlock.h">
+      <Filter>Game Object\ColorBlock</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

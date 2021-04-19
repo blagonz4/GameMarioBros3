@@ -1,6 +1,6 @@
 #include <iostream>
 #include <fstream>
-
+#include "ColorBlock.h"
 #include "PlayScence.h"
 #include "Utils.h"
 #include "Textures.h"
@@ -152,6 +152,12 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		float w = atof(tokens[4].c_str());
 		float h = atof(tokens[5].c_str());
 		obj = new Platform(w, h);
+		break;
+	}
+	case OBJECT_TYPE_COLORBLOCK: {
+		float w = atof(tokens[4].c_str());
+		float h = atof(tokens[5].c_str());
+		obj = new ColorBlock(w, h);
 		break;
 	}
 	case OBJECT_TYPE_PORTAL:
@@ -322,16 +328,19 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 	switch (KeyCode)
 	{
 	case DIK_SPACE:
-		mario->SetState(MARIO_STATE_JUMP);
+		if (mario->isOnAir == false) {
+			mario->isOnAir = true;
+			mario->SetState(MARIO_STATE_JUMP);
+		}
 		break;
 	case DIK_A: 
 		mario->Reset();
 		break;
 	case DIK_F1:
+		mario->y -= 25;	//day mario len xiu de ko rot khoi map
 		mario->SetLevel(MARIO_LEVEL_BIG);
 		break;
 	case DIK_F2:
-		mario->y += 100;
 		mario->SetLevel(MARIO_LEVEL_SMALL);
 		break;
 	}
