@@ -291,7 +291,6 @@ void CPlayScene::Update(DWORD dt)
 		__cx = px-20; __cy = cy; //Cam theo Mario
 		if (__cx < cx)
 			__cx = cx;//khong cho qua ben trai dau map
-
 		CGame::GetInstance()->SetCamPos((int) __cx,(int) __cy);
 		map->SetCamPos((int)__cx, (int)__cy);
 	}
@@ -327,21 +326,20 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 	CMario *mario = ((CPlayScene*)scence)->GetPlayer();
 	switch (KeyCode)
 	{
-	case DIK_SPACE:
-		if (mario->isOnAir == false) {
-			mario->isOnAir = true;
-			mario->SetState(MARIO_STATE_JUMP);
-		}
-		break;
-	case DIK_A: 
+
+	case DIK_A:
 		mario->Reset();
 		break;
 	case DIK_F1:
-		mario->y -= 25;	//day mario len xiu de ko rot khoi map
+		mario->y -= 20;	//day mario len xiu de ko rot khoi map
 		mario->SetLevel(MARIO_LEVEL_BIG);
 		break;
 	case DIK_F2:
 		mario->SetLevel(MARIO_LEVEL_SMALL);
+		break;
+	case DIK_F3:
+		mario->y -= 20;	//day mario len xiu de ko rot khoi map
+		mario->SetLevel(MARIO_LEVEL_FIRE);
 		break;
 	}
 }
@@ -353,12 +351,72 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 
 	// disable control key when Mario die 
 	if (mario->GetState() == MARIO_STATE_DIE) return;
-	if (game->IsKeyDown(DIK_RIGHT))
-		mario->SetState(MARIO_STATE_WALKING_RIGHT);
-	else if (game->IsKeyDown(DIK_LEFT))
-		mario->SetState(MARIO_STATE_WALKING_LEFT);
-	else if (game->IsKeyDown(DIK_C))
-		mario->SetState(MARIO_STATE_SIT);
-	else
-		mario->SetState(MARIO_STATE_IDLE);
+
+	//--------------------RUN/TURN/FLY----------------------------
+	if ((game->IsKeyDown(DIK_RIGHT)) && (game->IsKeyDown(DIK_Q))) {
+		mario->nx = 1;
+		if (mario->vx < 0) {
+			mario->SetState(MARIO_STATE_TURN);
+		}
+		mario->SetState(MARIO_STATE_RUN_RIGHT);
+		if (abs(mario->vx) >= MARIO_RUNNING_MAXSPEED && (game->IsKeyDown(DIK_E))) {
+			mario->vx = MARIO_RUNNING_MAXSPEED * mario->dt;
+			mario->SetState(MARIO_STATE_FLY_RIGHT);
+		}
+			
+
+	}
+	else if ((game->IsKeyDown(DIK_LEFT)) && (game->IsKeyDown(DIK_Q))) {
+		mario->nx = -1;
+		if (mario->vx > 0) {
+			mario->SetState(MARIO_STATE_TURN);
+		}
+		mario->SetState(MARIO_STATE_RUN_LEFT);
+		if (abs(mario->vx) >= MARIO_RUNNING_MAXSPEED && (game->IsKeyDown(DIK_E))) {
+			mario->vx = -MARIO_RUNNING_MAXSPEED * mario->dt;
+			mario->SetState(MARIO_STATE_FLY_LEFT);
+		}
+	//-------------------------------------WALK---------------------------
+	}else if (game->IsKeyDown(DIK_RIGHT) && !((game->IsKeyDown(DIK_Q) || game->IsKeyDown(DIK_Q)))) {
+		mario->nx = 1;
+		if (mario->vx < 0) {
+			mario->SetState(MARIO_STATE_TURN);
+		}
+		mario->vx = MARIO_WALKING_SPEED * mario->dt;		
+		//mario->SetState(MARIO_STATE_WALK_RIGHT);
+	}	
+	else if (game->IsKeyDown(DIK_LEFT) && !((game->IsKeyDown(DIK_Q) || game->IsKeyDown(DIK_Q)))) {
+		mario->nx = -1;
+		if (mario->vx > 0) {
+			mario->SetState(MARIO_STATE_TURN);
+		}
+		mario->vx = -MARIO_WALKING_SPEED * mario->dt;
+		//mario->SetState(MARIO_STATE_WALK_LEFT);
+	} 
+	else mario->SetState(MARIO_STATE_IDLE);
+
+	//-------------------------SIT------------------------
+	if (game->IsKeyDown(DIK_DOWN)) {
+		if (mario->GetLevel() != MARIO_LEVEL_SMALL)
+			mario->SetState(MARIO_STATE_SIT);
+	}
+
+	//-------------------------JUMP------------------------
+	if (game->IsKeyDown(DIK_SPACE)) {
+		mario->SetState(MARIO_STATE_JUMP);
+	}
+	
+	
+}
+
+void CPlayScenceKeyHandler::OnKeyUp(int KeyCode) {
+	CMario *mario = ((CPlayScene*)scence)->GetPlayer();
+
+	switch (KeyCode)
+		{
+		case DIK_DOWN:
+			mario->y -= 10;
+			mario->SetState(MARIO_STATE_IDLE);
+			break;
+		}
 }
