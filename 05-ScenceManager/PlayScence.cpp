@@ -77,7 +77,7 @@ void CPlayScene::_ParseSection_ANIMATIONS(string line)
 		int frame_time = atoi(tokens[i+1].c_str());
 		ani->Add(sprite_id, frame_time);
 	}
-
+	DebugOut(L"[INFO] ani added: %d, %d \n", ani_id, ani);
 	CAnimations::GetInstance()->Add(ani_id, ani);
 }
 
@@ -331,15 +331,19 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 		mario->Reset();
 		break;
 	case DIK_F1:
-		mario->y -= 20;	//day mario len xiu de ko rot khoi map
+		mario->y -= 20;
 		mario->SetLevel(MARIO_LEVEL_BIG);
 		break;
 	case DIK_F2:
 		mario->SetLevel(MARIO_LEVEL_SMALL);
 		break;
 	case DIK_F3:
-		mario->y -= 20;	//day mario len xiu de ko rot khoi map
+		mario->y -= 20;
 		mario->SetLevel(MARIO_LEVEL_FIRE);
+		break;
+	case DIK_F4:
+		mario->y -= 20;
+		mario->SetLevel(MARIO_LEVEL_RACOON);
 		break;
 	}
 }
