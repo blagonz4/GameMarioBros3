@@ -77,7 +77,6 @@ void CPlayScene::_ParseSection_ANIMATIONS(string line)
 		int frame_time = atoi(tokens[i+1].c_str());
 		ani->Add(sprite_id, frame_time);
 	}
-	DebugOut(L"[INFO] ani added: %d, %d \n", ani_id, ani);
 	CAnimations::GetInstance()->Add(ani_id, ani);
 }
 
@@ -154,12 +153,12 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj = new Platform(w, h);
 		break;
 	}
-	case OBJECT_TYPE_COLORBLOCK: {
-		float w = atof(tokens[4].c_str());
-		float h = atof(tokens[5].c_str());
-		obj = new ColorBlock(w, h);
-		break;
-	}
+	//case OBJECT_TYPE_COLORBLOCK: {
+	//	float w = atof(tokens[4].c_str());
+	//	float h = atof(tokens[5].c_str());
+	//	obj = new ColorBlock(w, h);
+	//	break;
+	//}
 	case OBJECT_TYPE_PORTAL:
 		{	
 			float r = atof(tokens[4].c_str());
@@ -288,7 +287,7 @@ void CPlayScene::Update(DWORD dt)
 		mw = map->GetMapWidth();
 		mh = map->GetMapHeight();
 		cx = 0; cy = 250;
-		__cx = px-20; __cy = cy; //Cam theo Mario
+		__cx = px-50; __cy = cy; //Cam theo Mario
 		if (__cx < cx)
 			__cx = cx;//khong cho qua ben trai dau map
 		CGame::GetInstance()->SetCamPos((int) __cx,(int) __cy);
@@ -422,5 +421,7 @@ void CPlayScenceKeyHandler::OnKeyUp(int KeyCode) {
 			mario->y -= 10;
 			mario->SetState(MARIO_STATE_IDLE);
 			break;
+		case DIK_SPACE:
+			mario->StartDelayJump();
 		}
 }

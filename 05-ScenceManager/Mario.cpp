@@ -6,6 +6,7 @@
 #include "Game.h"
 #include "ColorBlock.h"
 #include "Goomba.h"
+#include "Koopas.h"
 #include "Portal.h"
 #include "Platform.h"
 
@@ -41,6 +42,10 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	{
 		untouchable_start = 0;
 		untouchable = 0;
+	}
+	if (GetTickCount() - delayjump_start > MARIO_DELAY_JUMP_TIME) {
+		delayjump_start = 0;
+		delayjump = 0;
 	}
 
 	// No collision occured, proceed normally
@@ -81,7 +86,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			{
 				CGoomba *goomba = dynamic_cast<CGoomba *>(e->obj);
 
-				// jump on top >> kill Goomba and deflect a bit 
 				if (e->ny < 0)
 				{
 					if (goomba->GetState()!= GOOMBA_STATE_DIE)
@@ -92,6 +96,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				}
 				else if (e->nx != 0)
 				{
+					
 					if (untouchable==0)
 					{
 						if (goomba->GetState()!=GOOMBA_STATE_DIE)
@@ -107,10 +112,40 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					}
 				}
 			} // if Goomba
-			else if (dynamic_cast<CPortal *>(e->obj))
+			else if (dynamic_cast<CKoopas *>(e->obj))
 			{
-				CPortal *p = dynamic_cast<CPortal *>(e->obj);
-				CGame::GetInstance()->SwitchScene(p->GetSceneId());
+				CKoopas *koopa = dynamic_cast<CKoopas *>(e->obj);
+				if (e->ny < 0)
+				{
+					if (koopa->GetState() != KOOPAS_STATE_DIE)
+					{
+						koopa->SetState(KOOPAS_STATE_DEFEND);
+						vy = -MARIO_JUMP_DEFLECT_SPEED;
+					}
+				}
+				else if (nx != 0)
+				{
+					if (koopa->GetState() == KOOPAS_STATE_DEFEND) 
+					{
+						SetState(MARIO_STATE_KICK);
+						if (nx > 0) koopa->nx = -1;
+						else koopa->nx = 1;
+						koopa->SetState(KOOPAS_STATE_BALL);
+					}
+					else if (untouchable == 0)
+					{
+						if (koopa->GetState() != KOOPAS_STATE_DIE)
+						{
+							if (level > MARIO_LEVEL_SMALL)
+							{
+								level = MARIO_LEVEL_SMALL;
+								StartUntouchable();
+							}
+							else
+								SetState(MARIO_STATE_DIE);
+						}
+					}
+				}
 			}
 			else if (dynamic_cast<ColorBlock *>(e->obj))
 			{
@@ -176,7 +211,10 @@ void CMario::Render()
 				if (nx > 0) ani = MARIO_ANI_BIG_SIT_RIGHT;
 				else ani = MARIO_ANI_BIG_SIT_LEFT;
 			}
-
+			if (state == MARIO_STATE_KICK) {
+				if (nx > 0) ani = MARIO_ANI_BIG_KICK_RIGHT;
+				else ani = MARIO_ANI_BIG_KICK_LEFT;
+			}
 		}
 
 		//-----------MARIO SMALL---------------------
@@ -210,10 +248,13 @@ void CMario::Render()
 			if (state == MARIO_STATE_FLY_LEFT)
 				ani = MARIO_ANI_SMALL_FLY_LEFT;
 
-
 			if (state == MARIO_STATE_JUMP) {
 				if (nx > 0) ani = MARIO_ANI_SMALL_JUMP_RIGHT;
 				else ani = MARIO_ANI_SMALL_JUMP_LEFT;
+			}
+			if (state == MARIO_STATE_KICK) {
+				if (nx > 0) ani = MARIO_ANI_SMALL_KICK_RIGHT;
+				else ani = MARIO_ANI_SMALL_KICK_LEFT;
 			}
 		}
 		else if (level == MARIO_LEVEL_FIRE) //----------------------------------------MARIO FIRE----------------------------------------
@@ -261,7 +302,10 @@ void CMario::Render()
 				if (nx > 0) ani = MARIO_ANI_FIRE_SIT_RIGHT;
 				else ani = MARIO_ANI_FIRE_SIT_LEFT;
 			}
-
+			if (state == MARIO_STATE_KICK) {
+				if (nx > 0) ani = MARIO_ANI_FIRE_KICK_RIGHT;
+				else ani = MARIO_ANI_FIRE_KICK_LEFT;
+			}
 		}
 		else if (level == MARIO_LEVEL_RACOON)//----------------------------------------MARIO RACOON----------------------------------------
 		{
@@ -308,6 +352,12 @@ void CMario::Render()
 				if (nx > 0) ani = MARIO_ANI_RACOON_SIT_RIGHT;
 				else ani = MARIO_ANI_RACOON_SIT_LEFT;
 			}
+
+			if (state == MARIO_STATE_KICK) {
+				if (nx > 0) ani = MARIO_ANI_RACOON_KICK_RIGHT;
+				else ani = MARIO_ANI_RACOON_KICK_LEFT;
+			}
+
 		}
 		int alpha = 255;
 		if (untouchable) alpha = 128;
@@ -335,7 +385,8 @@ void CMario::SetState(int state)
 		nx = -1;
 		break;
 	case MARIO_STATE_JUMP:
-		vy = -MARIO_JUMP_SPEED *dt;
+		if (delayjump ==0)
+			vy = -MARIO_JUMP_SPEED * dt;
 		break; 
 	case MARIO_STATE_DIE:
 		vy = -MARIO_DIE_DEFLECT_SPEED;
@@ -364,6 +415,8 @@ void CMario::SetState(int state)
 		vx = -MARIO_RUNNING_MAXSPEED * dt;
 		vy = -MARIO_JUMP_SPEED * dt;
 		nx = -1;
+		break;
+	case MARIO_STATE_KICK:
 		break;
 	}
 
