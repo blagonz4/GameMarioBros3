@@ -1,7 +1,7 @@
 #include <algorithm>
 #include <assert.h>
 #include "Utils.h"
-
+#include "FireBall.h"
 #include "Mario.h"
 #include "Game.h"
 #include "ColorBlock.h"
@@ -38,16 +38,36 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	if (state!=MARIO_STATE_DIE)
 		CalcPotentialCollisions(coObjects, coEvents);
 	// reset untouchable timer if untouchable time has passed
+	
+	//-----------------------------FIRE BALL-------------------------------
+	
+	if (state == MARIO_STATE_SHOOT_FIRE) {
+		if (listFire.size() < 2) {
+			FireBall *fire = new FireBall(x + 5, y + 5);
+			fire->nx = nx;
+			DebugOut(L"nx cua Fire: %d \n", fire->nx);
+			listFire.push_back(fire);
+		}
+		
+	}
+	for (int i = 0; i < listFire.size(); i++)
+	{
+		listFire[i]->Update(dt, coObjects);
+		float cX, cY;
+		//listFire[i]->GetPosition(cX, cY);
+		if (!CheckObjectInCamera(listFire.at(i)) || listFire.at(i)->isFinish == true) {
+			listFire.erase(listFire.begin() +i);
+		}
+	}
+
+
+	//------------------------------------------------------------------
+
 	if ( GetTickCount() - untouchable_start > MARIO_UNTOUCHABLE_TIME) 
 	{
 		untouchable_start = 0;
 		untouchable = 0;
 	}
-	if (GetTickCount() - delayjump_start > MARIO_DELAY_JUMP_TIME) {
-		delayjump_start = 0;
-		delayjump = 0;
-	}
-
 	// No collision occured, proceed normally
 	if (coEvents.size()==0)
 	{
@@ -111,21 +131,26 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						}
 					}
 				}
-			} // if Goomba
+			}
 			else if (dynamic_cast<CKoopas *>(e->obj))
 			{
 				CKoopas *koopa = dynamic_cast<CKoopas *>(e->obj);
 				if (e->ny < 0)
 				{
-					if (koopa->GetState() != KOOPAS_STATE_DIE)
+					if (koopa->GetState() == KOOPAS_STATE_DEFEND) {
+						vy = -MARIO_JUMP_DEFLECT_SPEED;
+						koopa->SetState(KOOPAS_STATE_BALL);
+					}
+					else if (koopa->GetState() != KOOPAS_STATE_DIE)
 					{
 						koopa->SetState(KOOPAS_STATE_DEFEND);
 						vy = -MARIO_JUMP_DEFLECT_SPEED;
 					}
+					
 				}
 				else if (nx != 0)
 				{
-					if (koopa->GetState() == KOOPAS_STATE_DEFEND) 
+					if (koopa->GetState() == KOOPAS_STATE_DEFEND)
 					{
 						SetState(MARIO_STATE_KICK);
 						if (nx > 0) koopa->nx = -1;
@@ -149,12 +174,13 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			}
 			else if (dynamic_cast<ColorBlock *>(e->obj))
 			{
-				if (e->ny > 0)
-				{
-					y -= 27.5;
+				ColorBlock *block = dynamic_cast<ColorBlock *>(e->obj);
+
+				if (e->ny > 0) {
+					//SetState(MARIO_STATE_GET_THROUGH);
+					//block->SetState(COLOR_BLOCK_GET_THROUGH);
 				}
 			}
-
 		}
 	}
 
@@ -306,6 +332,10 @@ void CMario::Render()
 				if (nx > 0) ani = MARIO_ANI_FIRE_KICK_RIGHT;
 				else ani = MARIO_ANI_FIRE_KICK_LEFT;
 			}
+			if (state == MARIO_STATE_SHOOT_FIRE) {
+				if (nx > 0) ani = MARIO_ANI_FIRE_SHOOT_FIRE_RIGHT;
+				else ani = MARIO_ANI_FIRE_SHOOT_FIRE_LEFT;
+			}
 		}
 		else if (level == MARIO_LEVEL_RACOON)//----------------------------------------MARIO RACOON----------------------------------------
 		{
@@ -363,6 +393,11 @@ void CMario::Render()
 		if (untouchable) alpha = 128;
 		animation_set->at(ani)->Render(x, y, alpha);
 
+		for (int i = 0; i < listFire.size(); i++)
+		{
+			listFire[i]->Render();
+		}
+
 		RenderBoundingBox();
 }
 
@@ -385,8 +420,7 @@ void CMario::SetState(int state)
 		nx = -1;
 		break;
 	case MARIO_STATE_JUMP:
-		if (delayjump ==0)
-			vy = -MARIO_JUMP_SPEED * dt;
+		vy = -MARIO_JUMP_SPEED * dt;
 		break; 
 	case MARIO_STATE_DIE:
 		vy = -MARIO_DIE_DEFLECT_SPEED;
@@ -395,8 +429,6 @@ void CMario::SetState(int state)
 		isSitting = true;
 		break;
 	case MARIO_STATE_TURN:
-		if (vx < 0)	nx = 1;
-		else nx = -1;
 		break;
 	case MARIO_STATE_RUN_RIGHT:
 		vx = MARIO_RUNNING_SPEED * dt;
@@ -417,6 +449,7 @@ void CMario::SetState(int state)
 		nx = -1;
 		break;
 	case MARIO_STATE_KICK:
+	case MARIO_STATE_SHOOT_FIRE:
 		break;
 	}
 

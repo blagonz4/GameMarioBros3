@@ -5,6 +5,7 @@ CKoopas::CKoopas(float &model, int &direction)
 	model = model;
 	direction = direction;
 	isDefend = 0;
+	nx = direction;
 	SetState(KOOPAS_STATE_WALKING);
 }
 
@@ -20,13 +21,20 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	// turn off collision when die 
 	if (state != KOOPAS_STATE_DIE)
 		CalcPotentialCollisions(coObjects, coEvents);
-	if (isDefend == 0) {
-		SetState(KOOPAS_STATE_WALKING);
+	//if (isDefend == 0) {
+	//	SetState(KOOPAS_STATE_WALKING);
+	//}
+	if (state == KOOPAS_STATE_WALKING){
+		if (nx > 0 && isDefend == 0)
+			vx = KOOPAS_WALKING_SPEED * dt;
+		if (nx < 0 && isDefend == 0)
+			vx = -KOOPAS_WALKING_SPEED * dt;
 	}
-	if (GetTickCount() - defend_start > KOOPAS_DEFEND_TIME)
+	if (GetTickCount() - defend_start > KOOPAS_DEFEND_TIME && isDefend == 1)
 	{
 		defend_start = 0;
 		isDefend = 0;		
+		y -= 16;
 	}
 	// No collision occured, proceed normally
 	if (coEvents.size() == 0)
@@ -58,10 +66,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		{
 			LPCOLLISIONEVENT e = coEventsResult[i];
 
-			if (dynamic_cast<CMario *>(e->obj)) // if e->obj is Goomba 
-			{
-
-			}
+			
 		}
 	}
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
@@ -69,7 +74,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 void CKoopas::Render()
 {
-	int ani = KOOPAS_ANI_WALKING_LEFT;
+	int ani = -1;
 	if (state == KOOPAS_STATE_DIE) {
 		ani = KOOPAS_ANI_DIE;
 	}
@@ -85,7 +90,6 @@ void CKoopas::Render()
 		ani = KOOPAS_ANI_BALL;
 	}
 	if (state == KOOPAS_STATE_REVIVE) {
-		ani = KOOPAS_ANI_REVIVE;
 	}
 
 	animation_set->at(ani)->Render(x, y);
@@ -99,18 +103,19 @@ void CKoopas::SetState(int state)
 	switch (state)
 	{
 	case KOOPAS_STATE_DIE:
-		y += KOOPAS_BBOX_HEIGHT - KOOPAS_BBOX_HEIGHT_DIE + 1;
-		vx = 0;
-		vy = 0;
+		//y += KOOPAS_BBOX_HEIGHT - KOOPAS_BBOX_HEIGHT_DIE + 1;
+		if (nx > 0)
+			vx = FIRE_SPEED*dt;
+		else vx = -FIRE_SPEED*dt;
+		vy = -MARIO_DIE_DEFLECT_SPEED;
 		break;
 	case KOOPAS_STATE_WALKING:
-		if (nx >0 && isDefend == 0)
+		if ( nx >0 && isDefend == 0)
 			vx = KOOPAS_WALKING_SPEED *dt ;
 		if (nx < 0 && isDefend == 0)
 			vx = -KOOPAS_WALKING_SPEED *dt;
 		break;
 	case KOOPAS_STATE_DEFEND:
-		isDefend = 1;
 		vx = 0;
 		StartDefendTime();
 		break;

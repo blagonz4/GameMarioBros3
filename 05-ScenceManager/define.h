@@ -35,9 +35,9 @@ using namespace std;
 #define MAX_FRAME_RATE 120
 
 //-------------------------------map
-#define TILE_WIDTH 16
-#define TILE_HEIGHT 16
-
+#define TILE_WIDTH 16.0f
+#define TILE_HEIGHT 16.0f
+#define COLOR_BLOCK_GET_THROUGH 100
 //----------------------------Game
 #define DIRECTINPUT_VERSION 0x0800
 #define KEYBOARD_BUFFER_SIZE 1024
@@ -64,8 +64,9 @@ using namespace std;
 #define OBJECT_TYPE_PLATFORM 1
 #define OBJECT_TYPE_GOOMBA	2
 #define OBJECT_TYPE_KOOPAS	3
-#define OBJECT_TYPE_COLORBLOCK 4
-#define OBJECT_TYPE_BRICK	5
+#define OBJECT_TYPE_COLOR_BLOCK 4
+#define OBJECT_TYPE_FIRE_BALL 5
+#define OBJECT_TYPE_BRICK	6
 #define OBJECT_TYPE_PORTAL	50
 
 
@@ -85,14 +86,14 @@ using namespace std;
 #define GOOMBA_ANI_DIE 1
 
 //-----------------------------Koopas
-#define KOOPAS_DEFEND_TIME			5000
+#define KOOPAS_DEFEND_TIME			6000
 #define KOOPAS_DEFEND_HITBOX		16
 #define KOOPAS_WALK_HITBOX_WIDTH	16
 #define KOOPAS_WALK_HITBOX_HEIGHT	27
 
 
 #define KOOPAS_WALKING_SPEED		0.003f
-#define KOOPAS_BALL_SPEED			0.01f
+#define KOOPAS_BALL_SPEED			0.02f
 #define KOOPAS_BBOX_WIDTH			16
 #define KOOPAS_BBOX_HEIGHT			26
 #define KOOPAS_BBOX_HEIGHT_DIE		16
@@ -106,9 +107,8 @@ using namespace std;
 #define KOOPAS_ANI_WALKING_LEFT		0
 #define KOOPAS_ANI_WALKING_RIGHT	1
 #define KOOPAS_ANI_DEFEND			2
-#define KOOPAS_ANI_BALL				3
-#define KOOPAS_ANI_REVIVE			4			
-#define KOOPAS_ANI_DIE				5
+#define KOOPAS_ANI_BALL				3		
+#define KOOPAS_ANI_DIE				4
 
 //--------------------Brick------------------------
 #define BRICK_BBOX_WIDTH  16
@@ -118,15 +118,13 @@ using namespace std;
 #define MARIO_WALKING_SPEED					0.01f 
 #define MARIO_RUNNING_SPEED					0.015f
 #define MARIO_RUNNING_MAXSPEED				0.03f
-#define MARIO_JUMP_SPEED					0.008f
+#define MARIO_JUMP_SPEED					0.01f
 #define MARIO_FLY_SPEED						0.02f
 #define MARIO_JUMP_SPEED_PEEK				0.005f
 #define MARIO_JUMP_DEFLECT_SPEED			0.2f
 #define MARIO_GRAVITY						0.002f
-#define MARIO_DIE_DEFLECT_SPEED				0.5f
-#define MARIO_DECELERATE_SPEED				0.05f
-
-
+#define MARIO_DIE_DEFLECT_SPEED				0.3f
+#define MARIO_SLIDING_SPEED					1.5f
 
 //----------------------Mario------------------------
 #define MARIO_STATE_IDLE					0
@@ -141,6 +139,8 @@ using namespace std;
 #define MARIO_STATE_SIT						9000
 #define MARIO_STATE_TURN					10000
 #define MARIO_STATE_KICK					11000
+#define MARIO_STATE_SHOOT_FIRE				12000
+
 ////----------------------Mario SMALL------------------------
 //#define MARIO_ANI_SMALL_IDLE_RIGHT			100
 //#define MARIO_ANI_SMALL_IDLE_LEFT			101
@@ -267,28 +267,30 @@ using namespace std;
 #define MARIO_ANI_FIRE_FLY_LEFT				47
 #define MARIO_ANI_FIRE_KICK_RIGHT			48
 #define MARIO_ANI_FIRE_KICK_LEFT			49	
+#define MARIO_ANI_FIRE_SHOOT_FIRE_RIGHT		50
+#define MARIO_ANI_FIRE_SHOOT_FIRE_LEFT		51	
 //----------------------Mario RACOON------------------------
 
-#define MARIO_ANI_RACOON_IDLE_RIGHT			50
-#define MARIO_ANI_RACOON_IDLE_LEFT			51
-#define MARIO_ANI_RACOON_WALK_RIGHT			52
-#define MARIO_ANI_RACOON_WALK_LEFT			53
-#define MARIO_ANI_RACOON_RUN_RIGHT			54
-#define MARIO_ANI_RACOON_RUN_LEFT			55
-#define MARIO_ANI_RACOON_JUMP_RIGHT			56
-#define MARIO_ANI_RACOON_JUMP_LEFT			57
-#define MARIO_ANI_RACOON_SIT_RIGHT			58
-#define MARIO_ANI_RACOON_SIT_LEFT			59
-#define MARIO_ANI_RACOON_TURN_RIGHT			60
-#define MARIO_ANI_RACOON_TURN_LEFT			61
-#define MARIO_ANI_RACOON_RUN_RIGHT_MAXSPEED	62
-#define MARIO_ANI_RACOON_RUN_LEFT_MAXSPEED	63
-#define MARIO_ANI_RACOON_FLY_RIGHT			64
-#define MARIO_ANI_RACOON_FLY_LEFT			65
-#define MARIO_ANI_RACOON_KICK_RIGHT			66
-#define MARIO_ANI_RACOON_KICK_LEFT			67
+#define MARIO_ANI_RACOON_IDLE_RIGHT			52
+#define MARIO_ANI_RACOON_IDLE_LEFT			53
+#define MARIO_ANI_RACOON_WALK_RIGHT			54
+#define MARIO_ANI_RACOON_WALK_LEFT			55
+#define MARIO_ANI_RACOON_RUN_RIGHT			56
+#define MARIO_ANI_RACOON_RUN_LEFT			57
+#define MARIO_ANI_RACOON_JUMP_RIGHT			58
+#define MARIO_ANI_RACOON_JUMP_LEFT			59
+#define MARIO_ANI_RACOON_SIT_RIGHT			60
+#define MARIO_ANI_RACOON_SIT_LEFT			61
+#define MARIO_ANI_RACOON_TURN_RIGHT			62
+#define MARIO_ANI_RACOON_TURN_LEFT			63
+#define MARIO_ANI_RACOON_RUN_RIGHT_MAXSPEED	64
+#define MARIO_ANI_RACOON_RUN_LEFT_MAXSPEED	65
+#define MARIO_ANI_RACOON_FLY_RIGHT			66
+#define MARIO_ANI_RACOON_FLY_LEFT			67
+#define MARIO_ANI_RACOON_KICK_RIGHT			68
+#define MARIO_ANI_RACOON_KICK_LEFT			69
 
-#define MARIO_ANI_DIE						68
+#define MARIO_ANI_DIE						70
 
 
 
@@ -306,3 +308,14 @@ using namespace std;
 #define MARIO_BIG_BBOX_SIT_HEIGHT			18
 #define MARIO_UNTOUCHABLE_TIME				5000
 #define MARIO_DELAY_JUMP_TIME				600
+
+
+//----------------------FIRE BALL-------------------
+#define FIRE_SPEED 0.008f
+#define FIRE_GRAVITY 0.0006f
+#define FIRE_BOUNCE_SPEED_Y  0.15f
+#define FIRE_BBOX_WIDTH 8
+#define FIRE_BBOX_HEIGHT 8
+#define SHOOT_FIRE_RIGHT 0
+#define SHOOT_FIRE_LEFT 1
+#define LOAD_FIRE_FROM_FILE 5

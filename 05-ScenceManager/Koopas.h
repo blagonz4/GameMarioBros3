@@ -7,7 +7,6 @@ class CKoopas : public CGameObject
 {
 	DWORD defend_start;
 	int isDefend;
-
 	void StartDefendTime() { isDefend = 1; defend_start = GetTickCount(); }
 	virtual void GetBoundingBox(float &left, float &top,float &right, float &bottom);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects);

@@ -8,6 +8,7 @@
 #include "Portal.h"
 #include "Map.h"
 #include "Platform.h"
+#include "FireBall.h"
 
 using namespace std;
 
@@ -153,12 +154,12 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj = new Platform(w, h);
 		break;
 	}
-	//case OBJECT_TYPE_COLORBLOCK: {
-	//	float w = atof(tokens[4].c_str());
-	//	float h = atof(tokens[5].c_str());
-	//	obj = new ColorBlock(w, h);
-	//	break;
-	//}
+	case OBJECT_TYPE_COLOR_BLOCK: {
+		float w = atof(tokens[4].c_str());
+		float h = atof(tokens[5].c_str());
+		obj = new ColorBlock(w, h);
+		break;
+	}
 	case OBJECT_TYPE_PORTAL:
 		{	
 			float r = atof(tokens[4].c_str());
@@ -325,7 +326,6 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 	CMario *mario = ((CPlayScene*)scence)->GetPlayer();
 	switch (KeyCode)
 	{
-
 	case DIK_A:
 		mario->Reset();
 		break;
@@ -344,6 +344,11 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 		mario->y -= 20;
 		mario->SetLevel(MARIO_LEVEL_RACOON);
 		break;
+	case DIK_Q:
+		if (mario->level == MARIO_LEVEL_FIRE) {
+			mario->SetState(MARIO_STATE_SHOOT_FIRE);
+		}
+			
 	}
 }
 
@@ -357,49 +362,45 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 
 	//--------------------RUN/TURN/FLY----------------------------
 	if ((game->IsKeyDown(DIK_RIGHT)) && (game->IsKeyDown(DIK_Q))) {
-		mario->nx = 1;
-		if (mario->vx < 0) {
+		if (mario->vx > 0 && mario->nx == -1) {
 			mario->SetState(MARIO_STATE_TURN);
 		}
+		mario->nx = 1;
 		mario->SetState(MARIO_STATE_RUN_RIGHT);
 		if (abs(mario->vx) >= MARIO_RUNNING_MAXSPEED && (game->IsKeyDown(DIK_E))) {
 			mario->vx = MARIO_RUNNING_MAXSPEED * mario->dt;
 			mario->SetState(MARIO_STATE_FLY_RIGHT);
 		}
-			
-
 	}
-	else if ((game->IsKeyDown(DIK_LEFT)) && (game->IsKeyDown(DIK_Q))) {
-		mario->nx = -1;
-		if (mario->vx > 0) {
+	else if ((game->IsKeyDown(DIK_LEFT)) && (game->IsKeyDown(DIK_Q))) {	
+		if (mario->vx < 0 && mario->nx == 1) {
 			mario->SetState(MARIO_STATE_TURN);
 		}
+		mario->nx = -1;
 		mario->SetState(MARIO_STATE_RUN_LEFT);
 		if (abs(mario->vx) >= MARIO_RUNNING_MAXSPEED && (game->IsKeyDown(DIK_E))) {
 			mario->vx = -MARIO_RUNNING_MAXSPEED * mario->dt;
 			mario->SetState(MARIO_STATE_FLY_LEFT);
 		}
 	//-------------------------------------WALK---------------------------
-	}else if (game->IsKeyDown(DIK_RIGHT) && !((game->IsKeyDown(DIK_Q) || game->IsKeyDown(DIK_Q)))) {
+	}else if ((game->IsKeyDown(DIK_RIGHT)) && !(game->IsKeyDown(DIK_Q))) {
 		mario->nx = 1;
-		if (mario->vx < 0) {
+		if (mario->vx < 0 && mario->nx == 1) {
 			mario->SetState(MARIO_STATE_TURN);
-		}
-		mario->vx = MARIO_WALKING_SPEED * mario->dt;		
-		//mario->SetState(MARIO_STATE_WALK_RIGHT);
+		}	
+		mario->vx = MARIO_WALKING_SPEED * mario->dt;	
 	}	
-	else if (game->IsKeyDown(DIK_LEFT) && !((game->IsKeyDown(DIK_Q) || game->IsKeyDown(DIK_Q)))) {
+	else if ((game->IsKeyDown(DIK_LEFT)) && !(game->IsKeyDown(DIK_Q))) {
 		mario->nx = -1;
-		if (mario->vx > 0) {
+		if (mario->vx > 0 && mario->nx == -1) {
 			mario->SetState(MARIO_STATE_TURN);
 		}
 		mario->vx = -MARIO_WALKING_SPEED * mario->dt;
-		//mario->SetState(MARIO_STATE_WALK_LEFT);
 	} 
 	else mario->SetState(MARIO_STATE_IDLE);
 
 	//-------------------------SIT------------------------
-	if (game->IsKeyDown(DIK_DOWN)) {
+	if (game->IsKeyDown(DIK_DOWN) && !(game->IsKeyDown(DIK_RIGHT) || game->IsKeyDown(DIK_LEFT))) {
 		if (mario->GetLevel() != MARIO_LEVEL_SMALL)
 			mario->SetState(MARIO_STATE_SIT);
 	}
@@ -408,20 +409,24 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 	if (game->IsKeyDown(DIK_SPACE)) {
 		mario->SetState(MARIO_STATE_JUMP);
 	}
-	
-	
+
 }
 
 void CPlayScenceKeyHandler::OnKeyUp(int KeyCode) {
 	CMario *mario = ((CPlayScene*)scence)->GetPlayer();
 
 	switch (KeyCode)
-		{
-		case DIK_DOWN:
-			mario->y -= 10;
-			mario->SetState(MARIO_STATE_IDLE);
-			break;
-		case DIK_SPACE:
-			mario->StartDelayJump();
-		}
+	{
+	case DIK_DOWN:
+		mario->y -= 10;
+		mario->SetState(MARIO_STATE_IDLE);
+		break;
+	case DIK_RIGHT:
+		mario->vx = MARIO_WALKING_SPEED * mario->dt;
+		break;
+	case DIK_LEFT:
+		mario->vx = -MARIO_WALKING_SPEED * mario->dt;
+		break;
+
+	}
 }
