@@ -1,8 +1,7 @@
 #pragma once
+#include "Utils.h"
 #include "GameObject.h"
 #include "define.h"
-#include "FireBall.h"
-
 
 class CMario : public CGameObject
 {
@@ -13,6 +12,7 @@ public:
 	bool isOnGround = true;
 	bool isJumping = true;
 	bool isSitting;
+	bool isHolding;
 	int untouchable;
 	int level;
 	CMario(float x = 0.0f, float y = 0.0f);

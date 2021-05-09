@@ -10,6 +10,6 @@ class CGoomba : public CGameObject
 	virtual void Render();
 
 public: 	
-	CGoomba(float &model, int &direction);
+	CGoomba(float &model, float &direction);
 	virtual void SetState(int state);
 };

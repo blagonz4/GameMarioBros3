@@ -1,19 +1,27 @@
 #pragma once
+#include <iostream>
+#include <fstream>
 #include "Game.h"
-#include "Textures.h"
 #include "Scence.h"
 #include "GameObject.h"
 #include "Brick.h"
-#include "Mario.h"
-#include "Goomba.h"
-#include "Koopas.h"
-#include "Map.h"
 #include "define.h"
 #include "Platform.h"
-
+#include "FireBall.h"
+#include "ColorBlock.h"
+#include "Utils.h"
+#include "Textures.h"
+#include "Sprites.h"
+#include "Portal.h"
+#include "Map.h"
+#include "Mario.h"
+#include "Koopas.h"
+#include "FireBall.h"
+#include "Goomba.h"
 
 class CPlayScene: public CScene
-{private:
+{
+private:
 	float CamX = 0, CamY = 0;
 protected: 
 	CMario* player;					// A play scene has to have player, right? 

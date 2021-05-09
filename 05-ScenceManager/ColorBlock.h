@@ -1,6 +1,6 @@
 #pragma once
 #include "GameObject.h"
-#include "Mario.h"
+
 class ColorBlock : public CGameObject
 {
 

@@ -1,14 +1,4 @@
-#include <iostream>
-#include <fstream>
-#include "ColorBlock.h"
 #include "PlayScence.h"
-#include "Utils.h"
-#include "Textures.h"
-#include "Sprites.h"
-#include "Portal.h"
-#include "Map.h"
-#include "Platform.h"
-#include "FireBall.h"
 
 using namespace std;
 
@@ -139,14 +129,14 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		break;
 	case OBJECT_TYPE_GOOMBA: {
 		float model = atof(tokens[4].c_str());
-		int direction = atof(tokens[5].c_str());
+		float direction = atof(tokens[5].c_str());
 		obj = new CGoomba(model,direction); break;
 	} 
 	case OBJECT_TYPE_BRICK: obj = new CBrick(); break;
 	case OBJECT_TYPE_KOOPAS: {
-		float model = atof(tokens[4].c_str());
+		int model = atof(tokens[4].c_str());
 		int direction = atof(tokens[5].c_str());
-		obj = new CKoopas(model, direction); break;
+		obj = new CKoopas(model,direction,player); break;
 	} 
 	case OBJECT_TYPE_PLATFORM: {
 		float w = atof(tokens[4].c_str());
@@ -164,7 +154,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		{	
 			float r = atof(tokens[4].c_str());
 			float b = atof(tokens[5].c_str());
-			int scene_id = atoi(tokens[6].c_str());
+			float scene_id = atoi(tokens[6].c_str());
 			obj = new CPortal(x, y, r, b, scene_id);
 		}
 		break;
@@ -279,7 +269,7 @@ void CPlayScene::Update(DWORD dt)
 		if (player == NULL) return;
 
 		// Update camera to follow mario
-		float cx, cy, __cx,__cy, sw, sh, mw, mh, mx, my, px, py;
+		float cx, cy, __cx,__cy, sw, sh, mw, mh, px, py;
 		player->GetPosition(px, py);
 
 		CGame *game = CGame::GetInstance();
@@ -344,11 +334,11 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 		mario->y -= 20;
 		mario->SetLevel(MARIO_LEVEL_RACOON);
 		break;
-	case DIK_Q:
+	case DIK_Q://-----------------------SHOOT FIRE--------------------------
 		if (mario->level == MARIO_LEVEL_FIRE) {
 			mario->SetState(MARIO_STATE_SHOOT_FIRE);
 		}
-			
+		
 	}
 }
 
@@ -410,11 +400,16 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 		mario->SetState(MARIO_STATE_JUMP);
 	}
 
+	//-----------------------SPIN-------------------------
+	if (mario->level == MARIO_LEVEL_RACOON && game->IsKeyDown(DIK_Q)) {
+		if (!(game->IsKeyDown(DIK_RIGHT) || game->IsKeyDown(DIK_LEFT) || game->IsKeyDown(DIK_SPACE)))
+			mario->SetState(MARIO_STATE_SPIN);
+	}
 }
 
 void CPlayScenceKeyHandler::OnKeyUp(int KeyCode) {
 	CMario *mario = ((CPlayScene*)scence)->GetPlayer();
-
+ 
 	switch (KeyCode)
 	{
 	case DIK_DOWN:
@@ -427,6 +422,8 @@ void CPlayScenceKeyHandler::OnKeyUp(int KeyCode) {
 	case DIK_LEFT:
 		mario->vx = -MARIO_WALKING_SPEED * mario->dt;
 		break;
-
+	case DIK_Q:
+		mario->isHolding = false;
+		mario->SetState(MARIO_STATE_KICK);
 	}
 }

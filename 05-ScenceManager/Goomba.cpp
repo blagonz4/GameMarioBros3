@@ -1,5 +1,5 @@
 #include "Goomba.h"
-CGoomba::CGoomba(float &model, int &direction)
+CGoomba::CGoomba(float &model, float &direction)
 {	
 	model = model;
 	direction = direction;

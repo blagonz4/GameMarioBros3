@@ -1,10 +1,7 @@
 #include "ColorBlock.h"
 
-
-
 ColorBlock::ColorBlock(float w, float h)
 {
-
 	this->width = w;
 	this->height = h;
 

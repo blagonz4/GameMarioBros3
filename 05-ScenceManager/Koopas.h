@@ -1,10 +1,12 @@
 #pragma once
-
 #include "GameObject.h"
 #include "define.h"
 #include "Mario.h"
+
+
 class CKoopas : public CGameObject
 {
+	CMario* player;
 	DWORD defend_start;
 	int isDefend;
 	void StartDefendTime() { isDefend = 1; defend_start = GetTickCount(); }
@@ -13,6 +15,8 @@ class CKoopas : public CGameObject
 	virtual void Render();
 
 public:
-	CKoopas(float &model, int &direction);
+	bool isBeingHeld;
+	CKoopas(int &model, int &direction,CMario* mario);
 	virtual void SetState(int state);
 };
+

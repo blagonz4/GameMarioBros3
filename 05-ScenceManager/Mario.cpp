@@ -1,15 +1,8 @@
-#include <algorithm>
-#include <assert.h>
-#include "Utils.h"
-#include "FireBall.h"
-#include "Mario.h"
+#include"Mario.h"
 #include "Game.h"
-#include "ColorBlock.h"
+#include "FireBall.h"
 #include "Goomba.h"
-#include "Koopas.h"
-#include "Portal.h"
 #include "Platform.h"
-
 CMario::CMario(float x, float y) : CGameObject()
 {
 	level = MARIO_LEVEL_BIG;
@@ -23,6 +16,8 @@ CMario::CMario(float x, float y) : CGameObject()
 
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
+
+	CGame *game = CGame::GetInstance();
 	// Calculate dx, dy 
 	CGameObject::Update(dt);
 
@@ -53,8 +48,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	for (int i = 0; i < listFire.size(); i++)
 	{
 		listFire[i]->Update(dt, coObjects);
-		float cX, cY;
-		//listFire[i]->GetPosition(cX, cY);
 		if (!CheckObjectInCamera(listFire.at(i)) || listFire.at(i)->isFinish == true) {
 			listFire.erase(listFire.begin() +i);
 		}
@@ -150,13 +143,21 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				}
 				else if (nx != 0)
 				{
-					if (koopa->GetState() == KOOPAS_STATE_DEFEND)
+					if (game->IsKeyDown(DIK_Q) && koopa->state == KOOPAS_STATE_DEFEND) {
+						this->isHolding = true;
+						koopa->isBeingHeld = true;
+					}
+					else if (koopa->GetState() == KOOPAS_STATE_DEFEND)
 					{
-						SetState(MARIO_STATE_KICK);
+						this->SetState(MARIO_STATE_KICK);
 						if (nx > 0) koopa->nx = -1;
 						else koopa->nx = 1;
 						koopa->SetState(KOOPAS_STATE_BALL);
 					}
+					else if (state == MARIO_STATE_SPIN && level == MARIO_LEVEL_RACOON) {
+						koopa->nx = this->nx;
+						koopa->SetState(KOOPAS_STATE_DIE);
+					}				
 					else if (untouchable == 0)
 					{
 						if (koopa->GetState() != KOOPAS_STATE_DIE)
@@ -172,15 +173,15 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					}
 				}
 			}
-			else if (dynamic_cast<ColorBlock *>(e->obj))
-			{
-				ColorBlock *block = dynamic_cast<ColorBlock *>(e->obj);
+			//else if (dynamic_cast<ColorBlock *>(e->obj))
+			//{
+			//	ColorBlock *block = dynamic_cast<ColorBlock *>(e->obj);
 
-				if (e->ny > 0) {
-					//SetState(MARIO_STATE_GET_THROUGH);
-					//block->SetState(COLOR_BLOCK_GET_THROUGH);
-				}
-			}
+			//	if (e->ny > 0) {
+			//		//SetState(MARIO_STATE_GET_THROUGH);
+			//		//block->SetState(COLOR_BLOCK_GET_THROUGH);
+			//	}
+			//}
 		}
 	}
 
@@ -241,6 +242,16 @@ void CMario::Render()
 				if (nx > 0) ani = MARIO_ANI_BIG_KICK_RIGHT;
 				else ani = MARIO_ANI_BIG_KICK_LEFT;
 			}
+			if (isHolding) {
+				if (vx == 0)	//MARIO_STATE_WALKING
+				{
+					if (nx > 0) ani = MARIO_ANI_BIG_HOLD_IDLE_RIGHT;
+					else ani = MARIO_ANI_BIG_HOLD_IDLE_LEFT;
+				}
+				else if (vx > 0)
+					ani = MARIO_ANI_BIG_HOLD_WALK_RIGHT;
+				else ani = MARIO_ANI_BIG_HOLD_WALK_LEFT;
+			}
 		}
 
 		//-----------MARIO SMALL---------------------
@@ -281,6 +292,16 @@ void CMario::Render()
 			if (state == MARIO_STATE_KICK) {
 				if (nx > 0) ani = MARIO_ANI_SMALL_KICK_RIGHT;
 				else ani = MARIO_ANI_SMALL_KICK_LEFT;
+			}
+			if (isHolding) {
+				if (vx == 0)	//MARIO_STATE_WALKING
+				{
+					if (nx > 0) ani = MARIO_ANI_SMALL_HOLD_IDLE_RIGHT;
+					else ani = MARIO_ANI_SMALL_HOLD_IDLE_LEFT;
+				}
+				else if (vx > 0)
+					ani = MARIO_ANI_SMALL_HOLD_WALK_RIGHT;
+				else ani = MARIO_ANI_SMALL_HOLD_WALK_LEFT;
 			}
 		}
 		else if (level == MARIO_LEVEL_FIRE) //----------------------------------------MARIO FIRE----------------------------------------
@@ -388,6 +409,11 @@ void CMario::Render()
 				else ani = MARIO_ANI_RACOON_KICK_LEFT;
 			}
 
+			if (state == MARIO_STATE_SPIN) {
+				if (nx > 0) ani = MARIO_ANI_RACOON_SPIN_RIGHT;
+				else ani = MARIO_ANI_RACOON_SPIN_LEFT;
+			}
+
 		}
 		int alpha = 255;
 		if (untouchable) alpha = 128;
@@ -450,6 +476,8 @@ void CMario::SetState(int state)
 		break;
 	case MARIO_STATE_KICK:
 	case MARIO_STATE_SHOOT_FIRE:
+	case MARIO_STATE_SPIN:
+	case MARIO_STATE_HOLD:
 		break;
 	}
 
@@ -467,7 +495,11 @@ void CMario::GetBoundingBox(float &left, float &top, float &right, float &bottom
 			right = x + MARIO_BIG_BBOX_SIT_WIDTH;
 			bottom = y + MARIO_BIG_BBOX_SIT_HEIGHT;
 		}
-		else {
+		else if (state == MARIO_STATE_SPIN){
+			right = x + MARIO_RACOON_BBOX_SPIN_WIDTH;
+			bottom = y + MARIO_BIG_BBOX_HEIGHT;
+		}
+		else{
 			right = x + MARIO_BIG_BBOX_WIDTH;
 			bottom = y + MARIO_BIG_BBOX_HEIGHT;
 		}
@@ -489,6 +521,7 @@ void CMario::Reset()
 	SetPosition(start_x, start_y);
 	SetSpeed(0, 0);
 }
+
 
 
 

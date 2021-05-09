@@ -2,9 +2,6 @@
 #include "GameObject.h"
 #include "define.h"
 #include "Koopas.h"
-#include "Mario.h"
-
-
 
 class FireBall : public CGameObject
 {
