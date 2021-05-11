@@ -147,7 +147,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_COLOR_BLOCK: {
 		float w = atof(tokens[4].c_str());
 		float h = atof(tokens[5].c_str());
-		obj = new ColorBlock(w, h);
+		obj = new ColorBlock(w, h,player);
 		break;
 	}
 	case OBJECT_TYPE_PORTAL:
@@ -373,15 +373,15 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 		}
 	//-------------------------------------WALK---------------------------
 	}else if ((game->IsKeyDown(DIK_RIGHT)) && !(game->IsKeyDown(DIK_Q) || game->IsKeyDown(DIK_DOWN))) {
-		mario->nx = 1;
-		if (mario->vx < 0 && mario->nx == 1) {
+		mario->SetState(MARIO_STATE_WALK_RIGHT);
+		if (mario->vx < 0) {
 			mario->SetState(MARIO_STATE_TURN);
 		}
 		mario->vx = MARIO_WALKING_SPEED * mario->dt;
 	}	
 	else if ((game->IsKeyDown(DIK_LEFT)) && !(game->IsKeyDown(DIK_Q) || game->IsKeyDown(DIK_DOWN))) {
-		mario->nx = -1;
-		if (mario->vx > 0 && mario->nx == -1) {
+		mario->SetState(MARIO_STATE_WALK_LEFT);
+		if (mario->vx > 0) {
 			mario->SetState(MARIO_STATE_TURN);
 		}
 		mario->vx = -MARIO_WALKING_SPEED * mario->dt;

@@ -3,6 +3,7 @@
 #include "FireBall.h"
 #include "Goomba.h"
 #include "Platform.h"
+#include "ColorBlock.h"
 CMario::CMario(float x, float y) : CGameObject()
 {
 	level = MARIO_LEVEL_BIG;
@@ -177,15 +178,14 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					}
 				}
 			}
-			//else if (dynamic_cast<ColorBlock *>(e->obj))
-			//{
-			//	ColorBlock *block = dynamic_cast<ColorBlock *>(e->obj);
+			else if (dynamic_cast<ColorBlock *>(e->obj))
+			{
+				ColorBlock *block = dynamic_cast<ColorBlock *>(e->obj);
 
-			//	if (e->ny > 0) {
-			//		//SetState(MARIO_STATE_GET_THROUGH);
-			//		//block->SetState(COLOR_BLOCK_GET_THROUGH);
-			//	}
-			//}
+				if (e->ny > 0) {
+					y += dy;
+				}
+			}
 		}
 	}
 
@@ -217,20 +217,6 @@ void CMario::Render()
 				if (nx > 0)
 					ani = MARIO_ANI_BIG_TURN_RIGHT;
 			}
-			//if (state == MARIO_STATE_TURN)
-			//{
-			//	if (nx < 0)
-			//		ani = MARIO_ANI_BIG_TURN_LEFT;
-
-			//	if (nx > 0)
-			//		ani = MARIO_ANI_BIG_TURN_RIGHT;
-			//}
-
-			//if (state == MARIO_STATE_WALK_RIGHT)
-			//	ani = MARIO_ANI_BIG_WALK_RIGHT;
-			//if (state == MARIO_STATE_WALK_LEFT)
-			//	ani = MARIO_ANI_BIG_WALK_LEFT;
-
 
 			if (state == MARIO_STATE_RUN_RIGHT)
 				ani = MARIO_ANI_BIG_RUN_RIGHT;
@@ -457,10 +443,10 @@ void CMario::SetState(int state)
 		isOnGround = true;
 		break;
 	case MARIO_STATE_WALK_RIGHT:
-		vx = MARIO_WALKING_SPEED*dt;
+		nx = 1;
 		break;
 	case MARIO_STATE_WALK_LEFT:
-		vx = -MARIO_WALKING_SPEED*dt;
+		nx = -1;
 		break;
 	case MARIO_STATE_JUMP:
 		vy = -MARIO_JUMP_SPEED * dt;

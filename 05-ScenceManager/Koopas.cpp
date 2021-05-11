@@ -1,5 +1,5 @@
 #include "Koopas.h"
-#include "Game.h"
+
 CKoopas::CKoopas(int &model, int &direction,CMario* mario)
 {
 	player = mario;
@@ -11,7 +11,6 @@ CKoopas::CKoopas(int &model, int &direction,CMario* mario)
 
 void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
-	CGame *game = CGame::GetInstance();
 	CGameObject::Update(dt);
 	if (!isBeingHeld)
 		vy += MARIO_GRAVITY * dt;

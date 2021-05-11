@@ -1,7 +1,9 @@
 #include "ColorBlock.h"
+#include "Mario.h"
 
-ColorBlock::ColorBlock(float w, float h)
+ColorBlock::ColorBlock(float w, float h,CMario* mario)
 {
+	player = mario;
 	this->width = w;
 	this->height = h;
 
@@ -13,10 +15,8 @@ void ColorBlock::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
-
+	float last_vy = player->vy;
 	coEvents.clear();
-	if (state != COLOR_BLOCK_GET_THROUGH)
-		CalcPotentialCollisions(coObjects, coEvents);
 	
 	if (coEvents.size() == 0)
 	{
@@ -42,20 +42,19 @@ void ColorBlock::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 		if (nx != 0) vx = 0;
 		if (ny != 0) vy = 0;
-
+		for (UINT i = 0; i < coEventsResult.size(); i++)
+		{
+		}
 	}
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
 }
-
-void ColorBlock::SetState(int state) {
-	CGameObject::SetState(state);
-	switch (state)
-	{
-	case COLOR_BLOCK_GET_THROUGH:
-		break;
-	}
+void ColorBlock::Render()
+{
+	RenderBoundingBox();
 }
+void ColorBlock::SetState(int state) {
 
+}
 
 
 void ColorBlock::GetBoundingBox(float& l, float& t, float& r, float& b)

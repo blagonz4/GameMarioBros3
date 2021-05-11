@@ -93,7 +93,7 @@ using namespace std;
 
 
 #define KOOPAS_WALKING_SPEED		0.003f
-#define KOOPAS_BALL_SPEED			0.02f
+#define KOOPAS_BALL_SPEED			0.03f
 #define KOOPAS_BBOX_WIDTH			16
 #define KOOPAS_BBOX_HEIGHT			26
 #define KOOPAS_BBOX_HEIGHT_DIE		16
