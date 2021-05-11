@@ -28,7 +28,6 @@ protected:
 	CGame* game = CGame::GetInstance();
 	Map* map;
 	vector<LPGAMEOBJECT> objects;
-
 	void _ParseSection_TEXTURES(string line);
 	void _ParseSection_SPRITES(string line);
 	void _ParseSection_ANIMATIONS(string line);
@@ -37,6 +36,7 @@ protected:
 	void _ParseSection_TILEMAP(string line);
 	
 public: 
+
 	int section;
 	CPlayScene(int id, LPCWSTR filePath);
 

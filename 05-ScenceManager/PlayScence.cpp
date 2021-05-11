@@ -335,10 +335,9 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 		mario->SetLevel(MARIO_LEVEL_RACOON);
 		break;
 	case DIK_Q://-----------------------SHOOT FIRE--------------------------
-		if (mario->level == MARIO_LEVEL_FIRE) {
+		if (mario->level == MARIO_LEVEL_FIRE) 
 			mario->SetState(MARIO_STATE_SHOOT_FIRE);
-		}
-		
+		break;
 	}
 }
 
@@ -373,14 +372,14 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 			mario->SetState(MARIO_STATE_FLY_LEFT);
 		}
 	//-------------------------------------WALK---------------------------
-	}else if ((game->IsKeyDown(DIK_RIGHT)) && !(game->IsKeyDown(DIK_Q))) {
+	}else if ((game->IsKeyDown(DIK_RIGHT)) && !(game->IsKeyDown(DIK_Q) || game->IsKeyDown(DIK_DOWN))) {
 		mario->nx = 1;
 		if (mario->vx < 0 && mario->nx == 1) {
 			mario->SetState(MARIO_STATE_TURN);
-		}	
-		mario->vx = MARIO_WALKING_SPEED * mario->dt;	
+		}
+		mario->vx = MARIO_WALKING_SPEED * mario->dt;
 	}	
-	else if ((game->IsKeyDown(DIK_LEFT)) && !(game->IsKeyDown(DIK_Q))) {
+	else if ((game->IsKeyDown(DIK_LEFT)) && !(game->IsKeyDown(DIK_Q) || game->IsKeyDown(DIK_DOWN))) {
 		mario->nx = -1;
 		if (mario->vx > 0 && mario->nx == -1) {
 			mario->SetState(MARIO_STATE_TURN);
@@ -394,16 +393,18 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 		if (mario->GetLevel() != MARIO_LEVEL_SMALL)
 			mario->SetState(MARIO_STATE_SIT);
 	}
-
 	//-------------------------JUMP------------------------
 	if (game->IsKeyDown(DIK_SPACE)) {
-		mario->SetState(MARIO_STATE_JUMP);
+		if (mario->vy <= 0) {
+			mario->SetState(MARIO_STATE_JUMP);
+		}
 	}
 
 	//-----------------------SPIN-------------------------
 	if (mario->level == MARIO_LEVEL_RACOON && game->IsKeyDown(DIK_Q)) {
-		if (!(game->IsKeyDown(DIK_RIGHT) || game->IsKeyDown(DIK_LEFT) || game->IsKeyDown(DIK_SPACE)))
-			mario->SetState(MARIO_STATE_SPIN);
+		if (!mario->isHolding)
+			if (!(game->IsKeyDown(DIK_RIGHT) || game->IsKeyDown(DIK_LEFT) || game->IsKeyDown(DIK_SPACE)))
+				mario->SetState(MARIO_STATE_SPIN);
 	}
 }
 

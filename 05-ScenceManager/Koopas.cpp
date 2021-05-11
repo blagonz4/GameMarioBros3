@@ -48,6 +48,12 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		}
 
 	}
+	
+	if (!player->isHolding && isBeingHeld) {
+		isBeingHeld = false;
+		this->nx = player->nx;
+		SetState(KOOPAS_STATE_BALL);
+	}
 
 	if (state == KOOPAS_STATE_WALKING){
 		if (nx > 0 && isDefend == 0)

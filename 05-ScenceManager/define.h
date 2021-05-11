@@ -86,7 +86,7 @@ using namespace std;
 #define GOOMBA_ANI_DIE 1
 
 //-----------------------------Koopas
-#define KOOPAS_DEFEND_TIME			2000
+#define KOOPAS_DEFEND_TIME			5000
 #define KOOPAS_DEFEND_HITBOX		16
 #define KOOPAS_WALK_HITBOX_WIDTH	16
 #define KOOPAS_WALK_HITBOX_HEIGHT	27
@@ -347,7 +347,7 @@ using namespace std;
 #define MARIO_BIG_BBOX_SIT_HEIGHT			18
 #define MARIO_RACOON_BBOX_SPIN_WIDTH		23
 #define MARIO_UNTOUCHABLE_TIME				5000
-#define MARIO_DELAY_JUMP_TIME				600
+#define MARIO_LMIT_JUMP_TIME				10000
 
 
 //----------------------FIRE BALL-------------------

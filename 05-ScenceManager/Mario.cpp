@@ -23,7 +23,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	// Simple fall down
 	vy += MARIO_GRAVITY*dt;
-
+	DebugOut(L"vy: %d \n", vy);
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
 
@@ -55,11 +55,15 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 
 	//------------------------------------------------------------------
-
 	if ( GetTickCount() - untouchable_start > MARIO_UNTOUCHABLE_TIME) 
 	{
 		untouchable_start = 0;
 		untouchable = 0;
+	}
+	if (GetTickCount() - limitjump_start > MARIO_LMIT_JUMP_TIME)
+	{
+		isOnAir = 0;
+		limitjump_start = 0;
 	}
 	// No collision occured, proceed normally
 	if (coEvents.size()==0)
@@ -196,22 +200,37 @@ void CMario::Render()
 			ani = MARIO_ANI_DIE;
 		else if (level == MARIO_LEVEL_BIG) //MARIO BIG
 		{
-			if (vx == 0)	//MARIO_STATE_WALKING
+			if (vx == 0)
 			{
 				if (nx > 0) ani = MARIO_ANI_BIG_IDLE_RIGHT;
-					else ani = MARIO_ANI_BIG_IDLE_LEFT;
+				else ani = MARIO_ANI_BIG_IDLE_LEFT;
 			}
-			else if (vx >0) 
-					ani = MARIO_ANI_BIG_WALK_RIGHT;
-				else ani = MARIO_ANI_BIG_WALK_LEFT;
+			else if (vx > 0)
+				ani = MARIO_ANI_BIG_WALK_RIGHT;
+			else ani = MARIO_ANI_BIG_WALK_LEFT;
 
 			if (state == MARIO_STATE_TURN)
 			{
 				if (nx < 0)
 					ani = MARIO_ANI_BIG_TURN_LEFT;
-				else
+
+				if (nx > 0)
 					ani = MARIO_ANI_BIG_TURN_RIGHT;
 			}
+			//if (state == MARIO_STATE_TURN)
+			//{
+			//	if (nx < 0)
+			//		ani = MARIO_ANI_BIG_TURN_LEFT;
+
+			//	if (nx > 0)
+			//		ani = MARIO_ANI_BIG_TURN_RIGHT;
+			//}
+
+			//if (state == MARIO_STATE_WALK_RIGHT)
+			//	ani = MARIO_ANI_BIG_WALK_RIGHT;
+			//if (state == MARIO_STATE_WALK_LEFT)
+			//	ani = MARIO_ANI_BIG_WALK_LEFT;
+
 
 			if (state == MARIO_STATE_RUN_RIGHT)
 				ani = MARIO_ANI_BIG_RUN_RIGHT;
@@ -439,11 +458,9 @@ void CMario::SetState(int state)
 		break;
 	case MARIO_STATE_WALK_RIGHT:
 		vx = MARIO_WALKING_SPEED*dt;
-		nx = 1;
 		break;
 	case MARIO_STATE_WALK_LEFT:
 		vx = -MARIO_WALKING_SPEED*dt;
-		nx = -1;
 		break;
 	case MARIO_STATE_JUMP:
 		vy = -MARIO_JUMP_SPEED * dt;
@@ -482,7 +499,6 @@ void CMario::SetState(int state)
 	}
 
 }
-#pragma region set chuyen dong
 
 void CMario::GetBoundingBox(float &left, float &top, float &right, float &bottom)
 {
