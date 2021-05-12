@@ -24,7 +24,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	// Simple fall down
 	vy += MARIO_GRAVITY*dt;
-	DebugOut(L"vy: %d \n", vy);
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
 
@@ -41,7 +40,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		if (listFire.size() < 2) {
 			FireBall *fire = new FireBall(x + 5, y + 5);
 			fire->nx = nx;
-			DebugOut(L"nx cua Fire: %d \n", fire->nx);
 			listFire.push_back(fire);
 		}
 		
@@ -114,7 +112,10 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				}
 				else if (e->nx != 0)
 				{
-					
+					if (state == MARIO_STATE_SPIN && level == MARIO_LEVEL_RACOON) {
+						goomba->nx = this->nx;
+						goomba->SetState(GOOMBA_STATE_DIE);
+					}
 					if (untouchable==0)
 					{
 						if (goomba->GetState()!=GOOMBA_STATE_DIE)

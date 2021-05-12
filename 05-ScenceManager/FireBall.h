@@ -2,7 +2,7 @@
 #include "GameObject.h"
 #include "define.h"
 #include "Koopas.h"
-
+#include "Goomba.h"
 class FireBall : public CGameObject
 {
 	

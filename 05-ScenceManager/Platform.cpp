@@ -9,7 +9,6 @@ Platform::Platform(float w, float h)
 	this->height = h;
 }
 
-
 void Platform::GetBoundingBox(float& l, float& t, float& r, float& b)
 {
 	l = x;

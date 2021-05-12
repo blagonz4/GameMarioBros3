@@ -73,7 +73,7 @@ using namespace std;
 #define MAX_SCENE_LINE 1024
 #define SCENE_TEST 1
 //-----------------------------Goomba
-#define GOOMBA_WALKING_SPEED 0.05f;
+#define GOOMBA_WALKING_SPEED 0.05
 
 #define GOOMBA_BBOX_WIDTH 16
 #define GOOMBA_BBOX_HEIGHT 15
@@ -86,7 +86,7 @@ using namespace std;
 #define GOOMBA_ANI_DIE 1
 
 //-----------------------------Koopas
-#define KOOPAS_DEFEND_TIME			5000
+#define KOOPAS_DEFEND_TIME			6000
 #define KOOPAS_DEFEND_HITBOX		16
 #define KOOPAS_WALK_HITBOX_WIDTH	16
 #define KOOPAS_WALK_HITBOX_HEIGHT	27

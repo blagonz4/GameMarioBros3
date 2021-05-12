@@ -57,6 +57,11 @@ void FireBall::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				koopas->SetState(KOOPAS_STATE_DIE);
 				isFinish = true;
 			}
+			else if (dynamic_cast<CGoomba *>(e->obj)) {
+				CGoomba *goomba = dynamic_cast<CGoomba *>(e->obj);
+				goomba->nx = this->nx;
+				goomba->SetState(GOOMBA_STATE_DIE);
+			}
 		}
 	}
 

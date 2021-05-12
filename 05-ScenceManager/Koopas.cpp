@@ -1,11 +1,11 @@
 #include "Koopas.h"
-
+#include "Platform.h"
 CKoopas::CKoopas(int &model, int &direction,CMario* mario)
 {
 	player = mario;
 	isDefend = 0;
 	nx = direction;
-	SetState(KOOPAS_STATE_DEFEND);
+	SetState(KOOPAS_STATE_WALKING);
 }
 
 
@@ -13,7 +13,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
 	CGameObject::Update(dt);
 	if (!isBeingHeld)
-		vy += MARIO_GRAVITY * dt;
+		vy = MARIO_GRAVITY * dt;
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
 
@@ -54,19 +54,13 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		SetState(KOOPAS_STATE_BALL);
 	}
 
-	if (state == KOOPAS_STATE_WALKING){
-		if (nx > 0 && isDefend == 0)
-			vx = KOOPAS_WALKING_SPEED * dt;
-		if (nx < 0 && isDefend == 0)
-			vx = -KOOPAS_WALKING_SPEED * dt;
-	}
 	if (GetTickCount() - defend_start > KOOPAS_DEFEND_TIME && isDefend == 1)
 	{
 		defend_start = 0;
 		isDefend = 0;		
 		y -= 16;
 		isBeingHeld = false;
-		state = KOOPAS_STATE_WALKING;
+		SetState(KOOPAS_STATE_WALKING);
 	}
 	// No collision occured, proceed normally
 	if (coEvents.size() == 0)
@@ -98,55 +92,20 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		{
 			LPCOLLISIONEVENT e = coEventsResult[i];
 
-			/*if (dynamic_cast<CMario *>(e->obj)) {
-				player->vy = -MARIO_JUMP_DEFLECT_SPEED;
-				CMario *player = dynamic_cast<CMario *>(e->obj);
-				if (e->ny > 0)
-				{
-					if (state == KOOPAS_STATE_DEFEND) {
-						DebugOut(L"ok");
-						player->vy = -MARIO_JUMP_DEFLECT_SPEED;
-						state = KOOPAS_STATE_BALL;
-					}
-					else if (state != KOOPAS_STATE_DIE)
-					{
-						state = KOOPAS_STATE_DEFEND;
-						player->vy = -MARIO_JUMP_DEFLECT_SPEED;
-					}
+			if (dynamic_cast<Platform *>(e->obj))
+			{
+				Platform *platform = dynamic_cast<Platform *>(e->obj);
 
+				if (e->nx < 0) {
+					this->nx = -1;
+					this->vx = -KOOPAS_BALL_SPEED * dt;
 				}
-				else if (e->nx != 0)
-				{
-					if (game->IsKeyDown(DIK_Q) && state == KOOPAS_STATE_DEFEND) {
-						player->isHolding = true;
-						isBeingHeld = true;
-					}
-					else if (state == KOOPAS_STATE_DEFEND)
-					{
-						player->SetState(MARIO_STATE_KICK);
-						if (nx > 0) nx = -1;
-						else nx = 1;
-						state = KOOPAS_STATE_BALL;
-					}
-					else if (player->state == MARIO_STATE_SPIN && player->level == MARIO_LEVEL_RACOON) {
-						nx = this->nx;
-						state = KOOPAS_STATE_DIE;
-					}
-					else if (player->untouchable == 0)
-					{
-						if (state != KOOPAS_STATE_DIE)
-						{
-							if (player->level > MARIO_LEVEL_SMALL)
-							{
-								player->level = MARIO_LEVEL_SMALL;
-								player->StartUntouchable();
-							}
-							else
-								SetState(MARIO_STATE_DIE);
-						}
-					}
+				else if (e->nx > 0) {
+					this->nx = 1;
+					this->vx = KOOPAS_BALL_SPEED * dt;
 				}
-			}*/
+				
+			}
 		}
 	}
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
@@ -190,18 +149,17 @@ void CKoopas::SetState(int state)
 		vy = -MARIO_DIE_DEFLECT_SPEED;
 		break;
 	case KOOPAS_STATE_WALKING:
-		if ( nx >0 && isDefend == 0)
-			vx = KOOPAS_WALKING_SPEED *dt ;
-		if (nx < 0 && isDefend == 0)
-			vx = -KOOPAS_WALKING_SPEED *dt;
+		if ( nx > 0 )
+			vx = KOOPAS_WALKING_SPEED * dt;
+		else
+			vx = -KOOPAS_WALKING_SPEED * dt;
 		break;
 	case KOOPAS_STATE_DEFEND:
 		vx = 0;
 		StartDefendTime();
 		break;
 	case KOOPAS_STATE_BALL:
-		if (nx>0)
-			vx = KOOPAS_BALL_SPEED * dt;
+		if (nx>0) vx = KOOPAS_BALL_SPEED * dt;
 		else vx = -KOOPAS_BALL_SPEED * dt;
 		break;
 	}
