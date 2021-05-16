@@ -1,5 +1,6 @@
 #include "Koopas.h"
 #include "Platform.h"
+#include "Pipe.h"
 CKoopas::CKoopas(int &model, int &direction,CMario* mario)
 {
 	player = mario;
@@ -96,15 +97,54 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			{
 				Platform *platform = dynamic_cast<Platform *>(e->obj);
 
-				if (e->nx < 0) {
-					this->nx = -1;
-					this->vx = -KOOPAS_BALL_SPEED * dt;
+				if (this->state == KOOPAS_STATE_BALL) {
+					if (e->nx < 0) {
+						this->nx = -1;
+						this->vx = -KOOPAS_BALL_SPEED * dt;
+					}
+					else if (e->nx > 0) {
+						this->nx = 1;
+						this->vx = KOOPAS_BALL_SPEED * dt;
+					}
 				}
-				else if (e->nx > 0) {
-					this->nx = 1;
-					this->vx = KOOPAS_BALL_SPEED * dt;
+				if (this->state == KOOPAS_STATE_WALKING) {
+					if (e->nx < 0) {
+						this->nx = -1;
+						this->vx = -KOOPAS_WALKING_SPEED * dt;
+					}
+					else if (e->nx > 0) {
+						this->nx = 1;
+						this->vx = KOOPAS_WALKING_SPEED * dt;
+					}
 				}
-				
+
+			}
+
+			if (dynamic_cast<Pipe *>(e->obj))
+			{
+				Pipe *pipe = dynamic_cast<Pipe *>(e->obj);
+
+				if (this->state == KOOPAS_STATE_BALL) {
+					if (e->nx < 0) {
+						this->nx = -1;
+						this->vx = -KOOPAS_BALL_SPEED * dt;
+					}
+					else if (e->nx > 0) {
+						this->nx = 1;
+						this->vx = KOOPAS_BALL_SPEED * dt;
+					}
+				}
+				if (this->state == KOOPAS_STATE_WALKING) {
+					if (e->nx < 0) {
+						this->nx = -1;
+						this->vx = -KOOPAS_WALKING_SPEED * dt;
+					}
+					else if (e->nx > 0) {
+						this->nx = 1;
+						this->vx = KOOPAS_WALKING_SPEED * dt;
+					}
+				}
+
 			}
 		}
 	}

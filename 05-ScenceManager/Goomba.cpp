@@ -1,5 +1,6 @@
 #include "Goomba.h"
 #include "Platform.h"
+#include "Pipe.h"
 CGoomba::CGoomba(float &model, float &direction)
 {	
 	model = model;
@@ -55,6 +56,21 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 				if (e->nx < 0) {
 					this->nx = -1; 
+					vx = -GOOMBA_WALKING_SPEED;
+				}
+				else if (e->nx > 0) {
+					this->nx = 1;
+					vx = GOOMBA_WALKING_SPEED;
+				}
+
+			}
+
+			if (dynamic_cast<Pipe *>(e->obj))
+			{
+				Pipe *pipe = dynamic_cast<Pipe *>(e->obj);
+
+				if (e->nx < 0) {
+					this->nx = -1;
 					vx = -GOOMBA_WALKING_SPEED;
 				}
 				else if (e->nx > 0) {

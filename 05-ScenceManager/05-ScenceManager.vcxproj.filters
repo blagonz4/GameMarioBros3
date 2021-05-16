@@ -76,6 +76,9 @@
     <Filter Include="Game Object\FireBall">
       <UniqueIdentifier>{a9b257cd-6953-49c4-9fdc-e9b4d853fc98}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game Object\Pipe">
+      <UniqueIdentifier>{aef8aea9-e278-40bd-a750-041b86b0aabd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animations.cpp">
@@ -134,6 +137,9 @@
     </ClCompile>
     <ClCompile Include="FireBall.cpp">
       <Filter>Game Object\FireBall</Filter>
+    </ClCompile>
+    <ClCompile Include="Pipe.cpp">
+      <Filter>Game Object\Pipe</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -196,6 +202,9 @@
     </ClInclude>
     <ClInclude Include="FireBall.h">
       <Filter>Game Object\FireBall</Filter>
+    </ClInclude>
+    <ClInclude Include="Pipe.h">
+      <Filter>Game Object\Pipe</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

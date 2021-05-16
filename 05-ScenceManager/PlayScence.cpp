@@ -157,7 +157,12 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 			float scene_id = atoi(tokens[6].c_str());
 			obj = new CPortal(x, y, r, b, scene_id);
 		}
+	case OBJECT_TYPE_PIPE: {
+		int model = atof(tokens[4].c_str());
+		obj = new Pipe(model);
 		break;
+	}
+		
 	default:
 		DebugOut(L"[ERR] Invalid object type: %d\n", object_type);
 		return;

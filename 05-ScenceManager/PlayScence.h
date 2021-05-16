@@ -18,6 +18,7 @@
 #include "Koopas.h"
 #include "FireBall.h"
 #include "Goomba.h"
+#include "Pipe.h"
 
 class CPlayScene: public CScene
 {

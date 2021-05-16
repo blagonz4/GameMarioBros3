@@ -53,21 +53,23 @@ using namespace std;
 #define ID_TEX_BBOX -100	
 
 //------------------------------PlayScene
-#define SCENE_SECTION_UNKNOWN -1
-#define SCENE_SECTION_TEXTURES 2
-#define SCENE_SECTION_SPRITES 3
-#define SCENE_SECTION_ANIMATIONS 4
+#define SCENE_SECTION_UNKNOWN			-1
+#define SCENE_SECTION_TEXTURES			2
+#define SCENE_SECTION_SPRITES			3
+#define SCENE_SECTION_ANIMATIONS		4
 #define SCENE_SECTION_ANIMATION_SETS	5
-#define SCENE_SECTION_OBJECTS	6
-#define SCENE_SECTION_DRAWMAP 7
-#define OBJECT_TYPE_MARIO	0
-#define OBJECT_TYPE_PLATFORM 1
-#define OBJECT_TYPE_GOOMBA	2
-#define OBJECT_TYPE_KOOPAS	3
-#define OBJECT_TYPE_COLOR_BLOCK 4
-#define OBJECT_TYPE_FIRE_BALL 5
-#define OBJECT_TYPE_BRICK	6
-#define OBJECT_TYPE_PORTAL	50
+#define SCENE_SECTION_OBJECTS			6
+#define SCENE_SECTION_DRAWMAP			7
+
+#define OBJECT_TYPE_MARIO				0
+#define OBJECT_TYPE_PLATFORM			1
+#define OBJECT_TYPE_GOOMBA				2
+#define OBJECT_TYPE_KOOPAS				3
+#define OBJECT_TYPE_COLOR_BLOCK			4
+#define OBJECT_TYPE_FIRE_BALL			5
+#define OBJECT_TYPE_BRICK				6
+#define OBJECT_TYPE_PIPE				7
+#define OBJECT_TYPE_PORTAL				50
 
 
 #define MAX_SCENE_LINE 1024
@@ -109,6 +111,16 @@ using namespace std;
 #define KOOPAS_ANI_DEFEND			2
 #define KOOPAS_ANI_BALL				3		
 #define KOOPAS_ANI_DIE				4
+
+
+//-------------------------Pipe-----------
+#define SHORT_PIPE 1
+#define MEDIUM_PIPE 2
+#define ANI_SHORT_PIPE 0
+#define ANI_MEDIUM_PIPE 1
+#define PIPE_BBOX_WIDTH 32
+#define PIPE_SHORT_BBOX_HEIGHT 32 
+#define PIPE_MEDIUM_BBOX_HEIGHT 48
 
 //--------------------Brick------------------------
 #define BRICK_BBOX_WIDTH  16
