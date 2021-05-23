@@ -69,6 +69,8 @@ using namespace std;
 #define OBJECT_TYPE_FIRE_BALL			5
 #define OBJECT_TYPE_BRICK				6
 #define OBJECT_TYPE_PIPE				7
+#define OBJECT_TYPE_FIRE_PLANT			8
+#define OBJECT_TYPE_BITE_PLANT			9
 #define OBJECT_TYPE_PORTAL				50
 
 
@@ -87,7 +89,7 @@ using namespace std;
 #define GOOMBA_ANI_WALKING 0
 #define GOOMBA_ANI_DIE 1
 
-//-----------------------------Koopas
+//-----------------------------Koopas----------------------------
 #define KOOPAS_DEFEND_TIME			6000
 #define KOOPAS_DEFEND_HITBOX		16
 #define KOOPAS_WALK_HITBOX_WIDTH	16
@@ -112,6 +114,44 @@ using namespace std;
 #define KOOPAS_ANI_BALL				3		
 #define KOOPAS_ANI_DIE				4
 
+//-----------------------------FIRE PLANT----------------------------
+#define DISTANCE_SAFE_ZONE 25
+#define LOAD_FIRE_PLANT_FROM_FILE		 6
+#define LEFT_TOP_SIDE_NEAR				 1
+#define LEFT_TOP_SIDE_FAR				 2
+#define LEFT_BOTTOM_SIDE_NEAR			 3
+#define LEFT_BOTTOM_SIDE_FAR			 4
+#define RIGHT_TOP_SIDE_NEAR				 5
+#define RIGHT_TOP_SIDE_FAR				 6
+#define RIGHT_BOTTOM_SIDE_NEAR			 7
+#define RIGHT_BOTTOM_SIDE_FAR			 8
+#define LEFT_SIDE						 9
+#define RIGHT_SIDE						10
+#define FIRE_ENEMY_SPEED_Y_FAR			0.03f
+#define FIRE_ENEMY_SPEED_Y_NEAR			0.025f
+#define FIRE_ENEMY_SPEED_X_NEAR			0.04f
+#define FIRE_ENEMY_SPEED_X_FAR			0.05f
+#define FIRE_PLANT_BBOX_WIDTH			16
+#define FIRE_PLANT_RED_BBOX_HEIGHT		32
+#define FIRE_PLANT_GREEN_BBOX_HEIGHT	24
+#define	FIRE_PLANT_ANI_LEFT_TOP				0
+#define FIRE_PLANT_ANI_LEFT_BOTTOM			1
+#define FIRE_PLANT_ANI_RIGHT_TOP			2
+#define FIRE_PLANT_ANI_RIGHT_BOTTOM			3
+#define FIRE_PLANT_ANI_ATTACK_LEFT_TOP		4
+#define FIRE_PLANT_ANI_ATTACK_LEFT_BOTTOM	5
+#define FIRE_PLANT_ANI_ATTACK_RIGHT_TOP		6
+#define FIRE_PLANT_ANI_ATTACK_RIGHT_BOTTOM	7
+
+#define PLANT_SPEED_GROW_UP				0.02f
+#define PLANT_SPEED_HIDDING				0.02f
+#define TIME_DELAY_GROW_UP				1500
+#define TIME_ATTACK_DELAY				1000
+#define TIME_ATTACK						1500
+#define DISTANCE_FROM_MARIO_TO_PLANT	75
+#define FIRE_PLANT_STATE_GROW_UP		1
+#define FIRE_PLANT_STATE_ATTACK			2
+#define FIRE_PLANT_STATE_HIDING			3
 
 //-------------------------Pipe-----------
 #define SHORT_PIPE 1

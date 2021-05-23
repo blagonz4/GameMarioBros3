@@ -130,6 +130,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="ColorBlock.cpp" />
     <ClCompile Include="FireBall.cpp" />
+    <ClCompile Include="FirePlant.cpp" />
     <ClCompile Include="Koopas.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="Pipe.cpp" />
@@ -153,6 +154,7 @@
     <ClInclude Include="ColorBlock.h" />
     <ClInclude Include="define.h" />
     <ClInclude Include="FireBall.h" />
+    <ClInclude Include="FirePlant.h" />
     <ClInclude Include="Koopas.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="Pipe.h" />

@@ -1,5 +1,5 @@
 #include "PlayScence.h"
-
+#include "FirePlant.h"
 using namespace std;
 
 CPlayScene::CPlayScene(int id, LPCWSTR filePath):
@@ -162,6 +162,11 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj = new Pipe(model);
 		break;
 	}
+	case OBJECT_TYPE_FIRE_PLANT: {
+		int model = atof(tokens[4].c_str());
+		obj = new FirePlant(x, y);
+		break;
+	}
 		
 	default:
 		DebugOut(L"[ERR] Invalid object type: %d\n", object_type);
@@ -264,6 +269,18 @@ void CPlayScene::Update(DWORD dt)
 	for (size_t i = 0; i < objects.size(); i++)
 	{
 		objects[i]->Update(dt, &coObjects);
+	}
+
+	for (UINT i = 0; i < listFirePlant.size(); i++)
+	{
+		listFirePlant.at[i]->Update(dt, &coObjects);
+	}
+	for (UINT i = 0; i < listFirePlant.size(); i++)
+	{
+		if (listFirePlant.at[i]->isFinish)
+		{
+			listFirePlant.erase(listFirePlant.begin() + i);
+		}
 	}
 
 	 //skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)

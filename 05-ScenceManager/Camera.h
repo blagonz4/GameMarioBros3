@@ -11,9 +11,9 @@ class Camera {
 	bool followPlayer = true;
 	int camWidth = SCREEN_WIDTH;
 	int camHeight = SCREEN_HEIGHT;
-
 	float vx;
 
+public:
 	static Camera* GetInstance();
 	void SetPos(float x, float y) { this->x = x; this->y = y; }
 	void GetPos(float& x, float& y) { x = this->x; y = this->y; }

@@ -183,10 +183,10 @@ void CKoopas::SetState(int state)
 	{
 	case KOOPAS_STATE_DIE:
 		//y += KOOPAS_BBOX_HEIGHT - KOOPAS_BBOX_HEIGHT_DIE + 1;
-		if (nx > 0)
+		/*if (nx > 0)
 			vx = FIRE_SPEED*dt;
-		else vx = -FIRE_SPEED*dt;
-		vy = -MARIO_DIE_DEFLECT_SPEED;
+		else vx = -FIRE_SPEED*dt;*/
+		vy = MARIO_DIE_DEFLECT_SPEED*dt;
 		break;
 	case KOOPAS_STATE_WALKING:
 		if ( nx > 0 )
