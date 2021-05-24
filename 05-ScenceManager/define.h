@@ -167,9 +167,9 @@ using namespace std;
 #define BRICK_BBOX_HEIGHT 16
 
 //----------------------Mario------------------------
-#define MARIO_WALKING_SPEED					0.01f 
-#define MARIO_RUNNING_SPEED					0.015f
-#define MARIO_RUNNING_MAXSPEED				0.03f
+#define MARIO_WALKING_SPEED					0.00012f 
+#define MARIO_RUNNING_SPEED					0.00015f
+#define MARIO_RUNNING_MAXSPEED				0.25f
 #define MARIO_JUMP_SPEED					0.01f
 #define MARIO_FLY_SPEED						0.02f
 #define MARIO_JUMP_SPEED_PEEK				0.005f
@@ -195,6 +195,7 @@ using namespace std;
 #define MARIO_STATE_HOLD					13000
 #define MARIO_STATE_FLOAT					14000	//racoon
 #define MARIO_STATE_SPIN					15000	//racoon
+#define MARIO_STATE_RUN_MAXSPEED			16000
 
 ////----------------------Mario SMALL------------------------
 //#define MARIO_ANI_SMALL_IDLE_RIGHT			100
@@ -382,8 +383,8 @@ using namespace std;
 //#define MARIO_ANI_RACOON_FLOAT_LEFT			79
 
 #define MARIO_ANI_DIE						104
-
-
+#define MARIO_ANI_SMALL_RUN_RIGHT_MAXSPEED	105
+#define MARIO_ANI_SMALL_RUN_LEFT_MAXSPEED	106
 
 
 //--------------------------HITBOX---------------------
@@ -399,7 +400,8 @@ using namespace std;
 #define MARIO_BIG_BBOX_SIT_HEIGHT			18
 #define MARIO_RACOON_BBOX_SPIN_WIDTH		23
 #define MARIO_UNTOUCHABLE_TIME				5000
-#define MARIO_LMIT_JUMP_TIME				10000
+#define MARIO_LIMIT_JUMP_TIME				400
+#define MARIO_LIMIT_FLY_TIME				800
 
 
 //----------------------FIRE BALL-------------------

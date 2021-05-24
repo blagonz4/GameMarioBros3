@@ -29,7 +29,7 @@ protected:
 	CMario* player;					// A play scene has to have player, right? 
 	CGame* game = CGame::GetInstance();
 	Map* map;
-	vector<FirePlant> listFirePlant;
+	vector<LPGAMEOBJECT> listFirePlant;
 	vector<LPGAMEOBJECT> objects;
 	void _ParseSection_TEXTURES(string line);
 	void _ParseSection_SPRITES(string line);
@@ -39,7 +39,7 @@ protected:
 	void _ParseSection_TILEMAP(string line);
 	
 public: 
-
+	void CreateFirePlant();
 	int section;
 	CPlayScene(int id, LPCWSTR filePath);
 
@@ -47,6 +47,7 @@ public:
 	virtual void Update(DWORD dt);
 	virtual void Render();
 	virtual void Unload();
+
 
 	CMario * GetPlayer() { return player; } 
 

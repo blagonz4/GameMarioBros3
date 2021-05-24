@@ -22,6 +22,10 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	// Calculate dx, dy 
 	CGameObject::Update(dt);
 
+	if (vx * nx < 0) {
+		SetState(MARIO_STATE_TURN);
+	}
+
 	// Simple fall down
 	vy += MARIO_GRAVITY*dt;
 	vector<LPCOLLISIONEVENT> coEvents;
@@ -51,19 +55,23 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			listFire.erase(listFire.begin() +i);
 		}
 	}
-
-
 	//------------------------------------------------------------------
 	if ( GetTickCount() - untouchable_start > MARIO_UNTOUCHABLE_TIME) 
 	{
 		untouchable_start = 0;
 		untouchable = 0;
 	}
-	if (GetTickCount() - limitjump_start > MARIO_LMIT_JUMP_TIME)
+	if (GetTickCount() - limitfly_start > MARIO_LIMIT_FLY_TIME)
 	{
-		isOnAir = 0;
+		isFlying = false;
+		limitfly_start = 0;
+	}
+	if (GetTickCount() - limitjump_start > MARIO_LIMIT_JUMP_TIME)
+	{
+		isJumping = false;
 		limitjump_start = 0;
 	}
+	
 	// No collision occured, proceed normally
 	if (coEvents.size()==0)
 	{
@@ -224,18 +232,18 @@ void CMario::Render()
 			if (state == MARIO_STATE_RUN_LEFT)
 				ani = MARIO_ANI_BIG_RUN_LEFT;
 
-			if (abs(vx) == MARIO_RUNNING_MAXSPEED)
+			if (state == MARIO_STATE_RUN_MAXSPEED) {
 				if (nx > 0)
 					ani = MARIO_ANI_BIG_RUN_RIGHT_MAXSPEED;
 				else ani = MARIO_ANI_BIG_RUN_LEFT_MAXSPEED;
+			}
 
 			if (state == MARIO_STATE_FLY_RIGHT)
 				ani = MARIO_ANI_BIG_FLY_RIGHT;
 			if (state == MARIO_STATE_FLY_LEFT)
 				ani = MARIO_ANI_BIG_FLY_LEFT;
 
-
-			if (state == MARIO_STATE_JUMP) {
+			if (state == MARIO_STATE_JUMP && isJumping) {
 				if (nx > 0) ani = MARIO_ANI_BIG_JUMP_RIGHT;
 				else ani = MARIO_ANI_BIG_JUMP_LEFT;				
 			}
@@ -286,12 +294,18 @@ void CMario::Render()
 			if (state == MARIO_STATE_RUN_LEFT)
 				ani = MARIO_ANI_SMALL_RUN_LEFT;
 
+			if (state == MARIO_STATE_RUN_MAXSPEED) {
+				if (nx > 0)
+					ani = MARIO_ANI_SMALL_RUN_RIGHT_MAXSPEED;
+				else ani = MARIO_ANI_SMALL_RUN_LEFT_MAXSPEED;
+			}
+
 			if (state == MARIO_STATE_FLY_RIGHT)
 				ani = MARIO_ANI_SMALL_FLY_RIGHT;
 			if (state == MARIO_STATE_FLY_LEFT)
 				ani = MARIO_ANI_SMALL_FLY_LEFT;
 
-			if (state == MARIO_STATE_JUMP) {
+			if (state == MARIO_STATE_JUMP && isJumping) {
 				if (nx > 0) ani = MARIO_ANI_SMALL_JUMP_RIGHT;
 				else ani = MARIO_ANI_SMALL_JUMP_LEFT;
 			}
@@ -335,7 +349,7 @@ void CMario::Render()
 			if (state == MARIO_STATE_RUN_LEFT)
 				ani = MARIO_ANI_FIRE_RUN_LEFT;
 
-			if (abs(vx) == MARIO_RUNNING_MAXSPEED)
+			if (state == MARIO_STATE_RUN_MAXSPEED)
 				if (nx > 0)
 					ani = MARIO_ANI_FIRE_RUN_RIGHT_MAXSPEED;
 				else ani = MARIO_ANI_FIRE_RUN_LEFT_MAXSPEED;
@@ -346,7 +360,7 @@ void CMario::Render()
 				ani = MARIO_ANI_FIRE_FLY_LEFT;
 
 
-			if (state == MARIO_STATE_JUMP) {
+			if (state == MARIO_STATE_JUMP && isJumping) {
 				if (nx > 0) ani = MARIO_ANI_FIRE_JUMP_RIGHT;
 				else ani = MARIO_ANI_FIRE_JUMP_LEFT;
 			}
@@ -389,7 +403,7 @@ void CMario::Render()
 			if (state == MARIO_STATE_RUN_LEFT)
 				ani = MARIO_ANI_RACOON_RUN_LEFT;
 
-			if (abs(vx) == MARIO_RUNNING_MAXSPEED)
+			if (state == MARIO_STATE_RUN_MAXSPEED)
 				if (nx > 0)
 					ani = MARIO_ANI_RACOON_RUN_RIGHT_MAXSPEED;
 				else ani = MARIO_ANI_RACOON_RUN_LEFT_MAXSPEED;
@@ -400,7 +414,7 @@ void CMario::Render()
 				ani = MARIO_ANI_RACOON_FLY_LEFT;
 
 
-			if (state == MARIO_STATE_JUMP) {
+			if (state == MARIO_STATE_JUMP && isJumping) {
 				if (nx > 0) ani = MARIO_ANI_RACOON_JUMP_RIGHT;
 				else ani = MARIO_ANI_RACOON_JUMP_LEFT;
 			}
@@ -445,12 +459,16 @@ void CMario::SetState(int state)
 		break;
 	case MARIO_STATE_WALK_RIGHT:
 		nx = 1;
+		vx += MARIO_WALKING_SPEED * dt;
 		break;
 	case MARIO_STATE_WALK_LEFT:
 		nx = -1;
+		vx -= MARIO_WALKING_SPEED * dt;
 		break;
 	case MARIO_STATE_JUMP:
-		vy = -MARIO_JUMP_SPEED * dt;
+		if (isJumping) {
+			vy = -MARIO_JUMP_SPEED * dt;
+		}
 		break; 
 	case MARIO_STATE_DIE:
 		vy = -MARIO_DIE_DEFLECT_SPEED;
@@ -461,27 +479,37 @@ void CMario::SetState(int state)
 	case MARIO_STATE_TURN:
 		break;
 	case MARIO_STATE_RUN_RIGHT:
-		vx = MARIO_RUNNING_SPEED * dt;
 		nx = 1;
+		vx += MARIO_RUNNING_SPEED * dt;
+		if (abs(vx) >= MARIO_RUNNING_MAXSPEED) {
+			SetState(MARIO_STATE_RUN_MAXSPEED);
+		}
+			
 		break;
 	case MARIO_STATE_RUN_LEFT:
-		vx = -MARIO_RUNNING_SPEED * dt;
 		nx = -1;
+		vx -= MARIO_RUNNING_SPEED * dt;
+		if (abs(vx) >= MARIO_RUNNING_MAXSPEED) {
+			SetState(MARIO_STATE_RUN_MAXSPEED);
+		}
 		break;
 	case MARIO_STATE_FLY_RIGHT:
-		vx = MARIO_RUNNING_MAXSPEED * dt;
-		vy = -MARIO_JUMP_SPEED * dt;
-		nx = 1;
+		if (isFlying) {
+			vx += MARIO_RUNNING_SPEED * dt;
+			vy = -MARIO_JUMP_SPEED * dt;
+		}
 		break;
 	case MARIO_STATE_FLY_LEFT:
-		vx = -MARIO_RUNNING_MAXSPEED * dt;
-		vy = -MARIO_JUMP_SPEED * dt;
-		nx = -1;
+		if (isFlying) {
+			vx -= MARIO_RUNNING_SPEED * dt;
+			vy = -MARIO_JUMP_SPEED * dt;
+		}
 		break;
 	case MARIO_STATE_KICK:
 	case MARIO_STATE_SHOOT_FIRE:
 	case MARIO_STATE_SPIN:
 	case MARIO_STATE_HOLD:
+	case MARIO_STATE_RUN_MAXSPEED:
 		break;
 	}
 

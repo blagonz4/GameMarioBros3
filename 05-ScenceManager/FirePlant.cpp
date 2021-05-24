@@ -2,18 +2,17 @@
 
 
 
-FirePlant::FirePlant(float X, float Y,vector<FirePlant*>* listFirePlant)
+FirePlant::FirePlant()
 {
-	this->x = X;
-	this->y = Y;
-	this->listFirePlant = listFirePlant;
+	//this->x = X;
+	//this->y = Y;
 	SetAnimationSet(CAnimationSets::GetInstance()->Get(LOAD_FIRE_PLANT_FROM_FILE));
 	isFinish = false;
 	timeHidding = 0;
 	timeAttack = 0;
 	timeAttackDelay = 0;
 	this->marioRange = marioRange;
-	maxDistanceY = Y;
+	maxDistanceY = this->y;
 	SetState(FIRE_PLANT_STATE_GROW_UP);
 }
 void FirePlant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
@@ -43,11 +42,11 @@ void FirePlant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		timeHidding = 0;
 	}
 
-	if (timeAttackDelay > TIME_ATTACK_DELAY) {
-		if (listFirePlant->size() < 1)
-			CreateFirePlant();
-		timeAttackDelay = 0;
-	}
+	//if (timeAttackDelay > TIME_ATTACK_DELAY) {
+	//	if (listFirePlant.size() < 1)
+	//		CreateFirePlant(marioRange);
+	//	timeAttackDelay = 0;
+	//}
 
 	if (timeAttack > TIME_ATTACK) {
 		SetState(FIRE_PLANT_STATE_HIDING);
@@ -258,10 +257,10 @@ int FirePlant::GetCurrentMarioRange() {
 
 
 
-void FirePlant::CreateFirePlant()
+void FirePlant::CreateFirePlant(int marioRange)
 {
 	marioRange = GetCurrentMarioRange();
-	FirePlant* fireplant = new FirePlant(this->x, this->y,listFirePlant);
+	FirePlant* fireplant = new FirePlant();
 	listFirePlant.push_back(fireplant);
 }
 

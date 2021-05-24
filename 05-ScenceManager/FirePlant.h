@@ -5,11 +5,10 @@
 #include "PlayScence.h"
 class FirePlant : public CGameObject
 {
-	vector<FirePlant*> *listFirePlant;
 
 	float maxDistanceY;
 	float minDistanceY;
-	int marioRange;
+	
 	CMario *mario;
 	DWORD timeAttackDelay;
 	DWORD timeHidding;
@@ -18,6 +17,8 @@ class FirePlant : public CGameObject
 	bool isGrowUp;
 	bool isSafe;
 public:
+	int marioRange;
+	vector<LPGAMEOBJECT> listFirePlant;
 	bool isFinish = false;
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
@@ -27,8 +28,8 @@ public:
 	void ShootFire();
 	int GetCurrentMarioRange();
 	bool GetSafeZone();
-	void CreateFirePlant();
-	FirePlant(float X, float Y, vector<FirePlant*> *listFirePlant);
+	void CreateFirePlant(int marioRange);
+	FirePlant();
 	~FirePlant();
 };
 
