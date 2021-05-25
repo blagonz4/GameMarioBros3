@@ -59,8 +59,14 @@ void FireBall::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			}
 			else if (dynamic_cast<CGoomba *>(e->obj)) {
 				CGoomba *goomba = dynamic_cast<CGoomba *>(e->obj);
+				this->isFinish = true;
 				goomba->nx = this->nx;
 				goomba->SetState(GOOMBA_STATE_DIE);
+			}
+			else if (dynamic_cast<Pipe *>(e->obj)) {
+				Pipe *pipe = dynamic_cast<Pipe *>(e->obj);
+				if (e->nx != 0) 
+					this->isFinish = true;
 			}
 		}
 	}

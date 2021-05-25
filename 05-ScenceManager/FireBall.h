@@ -3,6 +3,7 @@
 #include "define.h"
 #include "Koopas.h"
 #include "Goomba.h"
+#include "Pipe.h"
 class FireBall : public CGameObject
 {
 	

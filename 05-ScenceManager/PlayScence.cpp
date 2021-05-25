@@ -277,7 +277,7 @@ void CPlayScene::Update(DWORD dt)
 	//		CreateFirePlant(marioRange);
 	//	timeAttackDelay = 0;
 	//}
-
+	//
 	//for (UINT i = 0; i < listFirePlant.size(); i++)
 	//{
 	//	listFirePlant.at[i]->Update(dt, &coObjects);
@@ -418,6 +418,10 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 		if (mario->vy <= 0) {
 			mario->SetState(MARIO_STATE_JUMP);
 		}
+		else if (mario->level == MARIO_LEVEL_RACOON) {
+			mario->SetState(MARIO_STATE_JUMP);
+		}
+			
 	}
 
 	//-----------------------SPIN-------------------------

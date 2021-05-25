@@ -8,15 +8,6 @@
 
 using namespace std;
 
-//enum Type {
-//	MARIO = 0,
-//	BRICK = 1,
-//	GOOMBA = 2,
-//	KOOPAS = 3,
-//	PLATFORM = 21,
-//
-//};
-
 
 //-----------------------Key Control--------------------------
 
@@ -168,12 +159,13 @@ using namespace std;
 
 //----------------------Mario------------------------
 #define MARIO_WALKING_SPEED					0.00012f 
+#define MARIO_WALKING_MAXSPEED				1073000000.f
 #define MARIO_RUNNING_SPEED					0.00015f
 #define MARIO_RUNNING_MAXSPEED				0.25f
 #define MARIO_JUMP_SPEED					0.01f
 #define MARIO_FLY_SPEED						0.02f
 #define MARIO_JUMP_SPEED_PEEK				0.005f
-#define MARIO_JUMP_DEFLECT_SPEED			0.2f
+#define MARIO_JUMP_DEFLECT_SPEED			0.35f
 #define MARIO_GRAVITY						0.002f
 #define MARIO_DIE_DEFLECT_SPEED				0.3f
 #define MARIO_SLIDING_SPEED					1.5f
@@ -379,13 +371,12 @@ using namespace std;
 #define MARIO_ANI_RACOON_HOLD_JUMP_LEFT		101
 #define MARIO_ANI_RACOON_HOLD_RUN_RIGHT		102
 #define MARIO_ANI_RACOON_HOLD_RUN_LEFT		103
-//#define MARIO_ANI_RACOON_FLOAT_RIGHT		78
-//#define MARIO_ANI_RACOON_FLOAT_LEFT			79
 
 #define MARIO_ANI_DIE						104
 #define MARIO_ANI_SMALL_RUN_RIGHT_MAXSPEED	105
 #define MARIO_ANI_SMALL_RUN_LEFT_MAXSPEED	106
-
+#define MARIO_ANI_RACOON_FLOAT_RIGHT		107
+#define MARIO_ANI_RACOON_FLOAT_LEFT			108
 
 //--------------------------HITBOX---------------------
 #define	MARIO_LEVEL_SMALL					51

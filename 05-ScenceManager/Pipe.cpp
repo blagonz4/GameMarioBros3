@@ -13,6 +13,8 @@ void Pipe::Render()
 	if (model == MEDIUM_PIPE)
 		ani = ANI_MEDIUM_PIPE;
 	animation_set->at(ani)->Render(x, y);
+
+	RenderBoundingBox();
 }
 void Pipe::GetBoundingBox(float& l, float& t, float& r, float& b)
 {

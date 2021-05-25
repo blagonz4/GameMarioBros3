@@ -25,7 +25,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	if (vx * nx < 0) {
 		SetState(MARIO_STATE_TURN);
 	}
-
+	DebugOut(L"mario walking max speed: %d \n", vx);
 	// Simple fall down
 	vy += MARIO_GRAVITY*dt;
 	vector<LPCOLLISIONEVENT> coEvents;
@@ -87,7 +87,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		// TODO: This is a very ugly designed function!!!!
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
 
-		// how to push back Mario if collides with a moving objects, what if Mario is pushed this way into another object?
+		 //how to push back Mario if collides with a moving objects, what if Mario is pushed this way into another object?
 		//if (rdx != 0 && rdx!=dx)
 		//	x += nx*abs(rdx); 
 		
@@ -414,9 +414,9 @@ void CMario::Render()
 				ani = MARIO_ANI_RACOON_FLY_LEFT;
 
 
-			if (state == MARIO_STATE_JUMP && isJumping) {
-				if (nx > 0) ani = MARIO_ANI_RACOON_JUMP_RIGHT;
-				else ani = MARIO_ANI_RACOON_JUMP_LEFT;
+			if (state == MARIO_STATE_JUMP) {
+				if (nx > 0) ani = MARIO_ANI_RACOON_FLOAT_RIGHT;
+				else ani = MARIO_ANI_RACOON_FLOAT_LEFT;
 			}
 
 			if (state == MARIO_STATE_SIT) {
@@ -460,10 +460,14 @@ void CMario::SetState(int state)
 	case MARIO_STATE_WALK_RIGHT:
 		nx = 1;
 		vx += MARIO_WALKING_SPEED * dt;
+		if (abs(vx) >= MARIO_WALKING_MAXSPEED)
+			vx = MARIO_WALKING_MAXSPEED;
 		break;
 	case MARIO_STATE_WALK_LEFT:
 		nx = -1;
 		vx -= MARIO_WALKING_SPEED * dt;
+		if (abs(vx) >= MARIO_WALKING_MAXSPEED)
+			vx = -MARIO_WALKING_MAXSPEED;
 		break;
 	case MARIO_STATE_JUMP:
 		if (isJumping) {
@@ -484,7 +488,6 @@ void CMario::SetState(int state)
 		if (abs(vx) >= MARIO_RUNNING_MAXSPEED) {
 			SetState(MARIO_STATE_RUN_MAXSPEED);
 		}
-			
 		break;
 	case MARIO_STATE_RUN_LEFT:
 		nx = -1;
@@ -498,6 +501,7 @@ void CMario::SetState(int state)
 			vx += MARIO_RUNNING_SPEED * dt;
 			vy = -MARIO_JUMP_SPEED * dt;
 		}
+		else vx = 0;
 		break;
 	case MARIO_STATE_FLY_LEFT:
 		if (isFlying) {
