@@ -1,29 +1,25 @@
 #pragma once
 #include "define.h"
-#include "GameObject.h"
+#include "Game.h"
+#include "Mario.h"
+#include "Map.h"
+
+#define DISTANCE_TO_MARIO_X					120
+#define DISTANCE_TO_MARIO_Y					100
+#define DISTANCE_MARIO_FLY_THROUGH_SKY_Y	280
+#define CAMERA_COORDINATE_Y					250
+#define CAMERA_ROOT_Y						0
+
 using namespace std;
 
-class Camera {
-	
-	static Camera* __instance;
-	float x = 0.0f;
-	float y = 0.0f;
-	bool followPlayer = true;
-	int camWidth = SCREEN_WIDTH;
-	int camHeight = SCREEN_HEIGHT;
-	float vx;
-
+class Camera{
 public:
-	static Camera* GetInstance();
-	void SetPos(float x, float y) { this->x = x; this->y = y; }
-	void GetPos(float& x, float& y) { x = this->x; y = this->y; }
-	float getX() { return x; }
-	float getY() { return y; }
-	bool isFollow() { return followPlayer; }
-	void setFollowPlayer(bool f) { this->followPlayer = f; }
-	int getCamWidth() { return camWidth; }
-	int getCamHeight() { return camHeight; }
-	void Update(int mw, int mh);
-	void UpdateToSwitchScene(int mw, int mh, DWORD dt, float sx, float sy, bool &done, bool);
+	float cx,__cx, px, py;
+	float __cy = CAMERA_COORDINATE_Y;
+	CMario* mario;
+	CGame* game = CGame::GetInstance();
+	Map* map;
+	Camera(CMario* mario,CGame* game, Map* map);
+	virtual void Update(DWORD dt);
 };
 

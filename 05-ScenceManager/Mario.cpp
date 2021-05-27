@@ -6,7 +6,7 @@
 #include "ColorBlock.h"
 CMario::CMario(float x, float y) : CGameObject()
 {
-	level = MARIO_LEVEL_BIG;
+	level = MARIO_LEVEL_RACOON;
 	untouchable = 0;
 	SetState(MARIO_STATE_IDLE);
 	start_x = x; 
@@ -25,7 +25,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	if (vx * nx < 0) {
 		SetState(MARIO_STATE_TURN);
 	}
-	DebugOut(L"mario walking max speed: %d \n", vx);
 	// Simple fall down
 	vy += MARIO_GRAVITY*dt;
 	vector<LPCOLLISIONEVENT> coEvents;
@@ -501,7 +500,6 @@ void CMario::SetState(int state)
 			vx += MARIO_RUNNING_SPEED * dt;
 			vy = -MARIO_JUMP_SPEED * dt;
 		}
-		else vx = 0;
 		break;
 	case MARIO_STATE_FLY_LEFT:
 		if (isFlying) {

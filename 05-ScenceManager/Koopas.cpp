@@ -6,7 +6,7 @@ CKoopas::CKoopas(int &model, int &direction,CMario* mario)
 	player = mario;
 	isDefend = 0;
 	nx = direction;
-	SetState(KOOPAS_STATE_WALKING);
+	SetState(KOOPAS_STATE_DEFEND);
 }
 
 

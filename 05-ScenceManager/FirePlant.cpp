@@ -7,13 +7,13 @@ FirePlant::FirePlant()
 	//this->x = X;
 	//this->y = Y;
 	SetAnimationSet(CAnimationSets::GetInstance()->Get(LOAD_FIRE_PLANT_FROM_FILE));
-	isFinish = false;
+	SetState(FIRE_PLANT_STATE_HIDING);
 	timeHidding = 0;
 	timeAttack = 0;
 	timeAttackDelay = 0;
 	this->marioRange = marioRange;
 	maxDistanceY = this->y;
-	SetState(FIRE_PLANT_STATE_GROW_UP);
+	
 }
 void FirePlant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
@@ -35,6 +35,10 @@ void FirePlant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		y = maxDistanceY;
 		vy = 0;
 		timeHidding += dt;
+	}
+
+	if (CheckObjectInCamera(this)) {
+		SetState(FIRE_PLANT_STATE_GROW_UP);
 	}
 
 	if (!GetSafeZone() && timeHidding > TIME_DELAY_GROW_UP){ //neu time tron trong ong > time delay & ko phai trong vung an toan thi grow up	{
@@ -165,7 +169,7 @@ void FirePlant::SetState(int state)
 	{
 	case FIRE_PLANT_STATE_GROW_UP:
 	{
-		vy = -PLANT_SPEED_GROW_UP * dt;
+		
 		break;
 	}
 	case FIRE_PLANT_STATE_HIDING:
@@ -184,8 +188,12 @@ void FirePlant::GetBoundingBox(float& left, float& top, float& right, float& bot
 {
 	left = x;
 	top = y;
-	right = left + FIRE_BBOX_WIDTH;
-	bottom = top + FIRE_BBOX_HEIGHT;
+	if (state == FIRE_PLANT_STATE_GROW_UP || state == FIRE_PLANT_STATE_ATTACK) {
+		right = left + FIRE_PLANT_BBOX_WIDTH;
+		bottom = top - FIRE_BBOX_HEIGHT;
+	}
+	else right = bottom = 0;
+
 	if (isFinish)
 		left = top = right = bottom = 0;
 }

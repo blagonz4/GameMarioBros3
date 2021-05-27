@@ -261,7 +261,6 @@ void CPlayScene::Update(DWORD dt)
 
 	vector<LPGAMEOBJECT> coObjects;
 
-
 	for (size_t i = 1; i < objects.size(); i++)
 	{
 		coObjects.push_back(objects[i]);
@@ -290,29 +289,32 @@ void CPlayScene::Update(DWORD dt)
 	//	}
 	//}
 
+
+	Camera* camera = new Camera(player, game, map);
+	camera->Update(dt);
 	 //skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
 	if (player == NULL) return; 
 	
-	if (CGame::GetInstance()->GetScene() == SCENE_TEST) {
-		
-		if (player == NULL) return;
-
-		// Update camera to follow mario
-		float cx, cy, __cx,__cy, sw, sh, mw, mh, px, py;
-		player->GetPosition(px, py);
-
-		CGame *game = CGame::GetInstance();
-		sw = game->GetScreenWidth();
-		sh = game->GetScreenHeight();
-		mw = map->GetMapWidth();
-		mh = map->GetMapHeight();
-		cx = 0; cy = 250;
-		__cx = px-50; __cy = cy; //Cam theo Mario
-		if (__cx < cx)
-			__cx = cx;//khong cho qua ben trai dau map
-		CGame::GetInstance()->SetCamPos((int) __cx,(int) __cy);
-		map->SetCamPos((int)__cx, (int)__cy);
-	}
+	//if (CGame::GetInstance()->GetScene() == SCENE_TEST) {
+	//	
+	//	if (player == NULL) return;
+	//
+	//	// Update camera to follow mario
+	//	float cx, cy, __cx,__cy, sw, sh, mw, mh, px, py;
+	//	player->GetPosition(px, py);
+	//
+	//	CGame *game = CGame::GetInstance();
+	//	sw = game->GetScreenWidth();
+	//	sh = game->GetScreenHeight();
+	//	mw = map->GetMapWidth();
+	//	mh = map->GetMapHeight();
+	//	cx = 0; cy = 250;
+	//	__cx = px-50; __cy = cy; //Cam theo Mario
+	//	if (__cx < cx)
+	//		__cx = cx;//khong cho qua ben trai dau map
+	//	CGame::GetInstance()->SetCamPos((int) __cx,(int) __cy);
+	//	map->SetCamPos((int)__cx, (int)__cy);
+	//}
 	
 
 }
@@ -372,8 +374,9 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 			mario->SetState(MARIO_STATE_SHOOT_FIRE);
 		break;
 	case DIK_E:
-		if (game->IsKeyDown(DIK_Q))
+		if (game->IsKeyDown(DIK_Q)) {			
 			mario->StartLimitFly();
+		}
 		break;
 	}
 }
@@ -392,6 +395,7 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 		if (game->IsKeyDown(DIK_Q)) {
 			mario->SetState(MARIO_STATE_RUN_RIGHT);
 			if (game->IsKeyDown(DIK_E) && mario->state == MARIO_STATE_RUN_MAXSPEED) {
+				mario->isFlying = true;
 				mario->SetState(MARIO_STATE_FLY_RIGHT);
 			}
 		}
@@ -401,6 +405,7 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 		if (game->IsKeyDown(DIK_Q)) {
 			mario->SetState(MARIO_STATE_RUN_LEFT);
 			if (game->IsKeyDown(DIK_E) && mario->state == MARIO_STATE_RUN_MAXSPEED) {
+				mario->isFlying = true;
 				mario->SetState(MARIO_STATE_FLY_LEFT);
 			}
 		}

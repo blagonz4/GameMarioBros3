@@ -20,7 +20,7 @@
 #include "Goomba.h"
 #include "Pipe.h"
 #include "FirePlant.h"
-
+#include "Camera.h"
 class CPlayScene: public CScene
 {
 private:
@@ -39,7 +39,6 @@ protected:
 	void _ParseSection_TILEMAP(string line);
 	
 public: 
-	void CreateFirePlant();
 	int section;
 	CPlayScene(int id, LPCWSTR filePath);
 

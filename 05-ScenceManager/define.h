@@ -81,7 +81,7 @@ using namespace std;
 #define GOOMBA_ANI_DIE 1
 
 //-----------------------------Koopas----------------------------
-#define KOOPAS_DEFEND_TIME			6000
+#define KOOPAS_DEFEND_TIME			100000
 #define KOOPAS_DEFEND_HITBOX		16
 #define KOOPAS_WALK_HITBOX_WIDTH	16
 #define KOOPAS_WALK_HITBOX_HEIGHT	27
@@ -134,6 +134,8 @@ using namespace std;
 #define FIRE_PLANT_ANI_ATTACK_RIGHT_TOP		6
 #define FIRE_PLANT_ANI_ATTACK_RIGHT_BOTTOM	7
 
+#define FIRE_PLANT_BBOX_HEIGHT
+
 #define PLANT_SPEED_GROW_UP				0.02f
 #define PLANT_SPEED_HIDDING				0.02f
 #define TIME_DELAY_GROW_UP				1500
@@ -159,13 +161,13 @@ using namespace std;
 
 //----------------------Mario------------------------
 #define MARIO_WALKING_SPEED					0.00012f 
-#define MARIO_WALKING_MAXSPEED				1073000000.f
+#define MARIO_WALKING_MAXSPEED				0.1f
 #define MARIO_RUNNING_SPEED					0.00015f
 #define MARIO_RUNNING_MAXSPEED				0.25f
 #define MARIO_JUMP_SPEED					0.01f
 #define MARIO_FLY_SPEED						0.02f
 #define MARIO_JUMP_SPEED_PEEK				0.005f
-#define MARIO_JUMP_DEFLECT_SPEED			0.35f
+#define MARIO_JUMP_DEFLECT_SPEED			0.45f
 #define MARIO_GRAVITY						0.002f
 #define MARIO_DIE_DEFLECT_SPEED				0.3f
 #define MARIO_SLIDING_SPEED					1.5f
@@ -391,8 +393,8 @@ using namespace std;
 #define MARIO_BIG_BBOX_SIT_HEIGHT			18
 #define MARIO_RACOON_BBOX_SPIN_WIDTH		23
 #define MARIO_UNTOUCHABLE_TIME				5000
-#define MARIO_LIMIT_JUMP_TIME				400
-#define MARIO_LIMIT_FLY_TIME				800
+#define MARIO_LIMIT_JUMP_TIME				450
+#define MARIO_LIMIT_FLY_TIME				400
 
 
 //----------------------FIRE BALL-------------------
