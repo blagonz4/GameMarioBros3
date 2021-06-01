@@ -21,10 +21,13 @@ void Camera::Update(DWORD dt) {
 
 		if (py < DISTANCE_MARIO_FLY_THROUGH_SKY_Y)
 			__cy = py - DISTANCE_TO_MARIO_Y;
+		if (py > DISTANCE_MARIO_FLY_THROUGH_SKY_Y && py < CAMERA_COORDINATE_Y)
+			__cy = py + DISTANCE_TO_MARIO_Y;
+
+
+
 		if (__cy <= 0)
 			__cy = 0;//khong cho len cao qua chieu cao game
-
-
 		if (__cx < cx)
 			__cx = cx;//khong cho qua ben trai dau map
 		game->SetCamPos((int)__cx, (int)__cy);

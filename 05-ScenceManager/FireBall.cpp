@@ -1,32 +1,34 @@
 #include "FireBall.h"
+#include "Mario.h"
+#include "PlayScence.h"
+#include "Scence.h"
 
-FireBall::FireBall(float X, float Y)
+FireBall::FireBall(float X, float Y,float defineVx, float defineVy)
 {
 	this->x = X;
 	this->y = Y;
 	SetAnimationSet(CAnimationSets::GetInstance()->Get(LOAD_FIRE_FROM_FILE));
+	this->defineVx = defineVx;
+	this->defineVy = defineVy;
 }
 
 void FireBall::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 
-	vy += FIRE_GRAVITY * dt;
-	vx = nx * FIRE_SPEED*dt;
-
-	if (CheckObjectInCamera(this)) {
-
-	}
-
-
+	if ( defineVy == FIRE_GRAVITY )
+		vy += defineVy * dt;
+	else vy = defineVy * dt;
+	vx = nx * defineVx*dt;
 
 	CGameObject::Update(dt, coObjects);
 
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
 
-	//coEvents.clear();
 
-	CalcPotentialCollisions(coObjects, coEvents);
+	//coEvents.clear();
+	//if (defineVy == FIRE_GRAVITY) //lua tu mario
+		CalcPotentialCollisions(coObjects, coEvents);
 
 	if (coEvents.size() == 0)
 	{
@@ -41,7 +43,7 @@ void FireBall::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
 		x += min_tx * dx + nx * 0.4f;
 		y += min_ty * dy + ny * 0.1f;
-		if (ny != 0)
+		if (ny != 0 && defineVy == FIRE_GRAVITY)
 		{	
 			vy = -FIRE_BOUNCE_SPEED_Y ;
 		}

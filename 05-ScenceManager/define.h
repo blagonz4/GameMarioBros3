@@ -25,15 +25,20 @@ using namespace std;
 
 #define MAX_FRAME_RATE 120
 
-//-------------------------------map
+//-------------------------------map----------------------------
 #define TILE_WIDTH 16.0f
 #define TILE_HEIGHT 16.0f
 #define COLOR_BLOCK_GET_THROUGH 100
-//----------------------------Game
+//----------------------------Game----------------------------
 #define DIRECTINPUT_VERSION 0x0800
 #define KEYBOARD_BUFFER_SIZE 1024
-
-
+//----------------------------Camera----------------------------
+#define DISTANCE_TO_MARIO_X					120
+#define DISTANCE_TO_MARIO_Y					5
+#define DISTANCE_MARIO_FLY_THROUGH_SKY_Y	280
+#define CAMERA_COORDINATE_Y					250
+#define CAMERA_ROOT_Y						0
+//-------------------------------------------------------------
 #define MAX_GAME_LINE 1024
 
 
@@ -58,9 +63,9 @@ using namespace std;
 #define OBJECT_TYPE_KOOPAS				3
 #define OBJECT_TYPE_COLOR_BLOCK			4
 #define OBJECT_TYPE_FIRE_BALL			5
-#define OBJECT_TYPE_BRICK				6
+#define OBJECT_TYPE_FIRE_PLANT			6
 #define OBJECT_TYPE_PIPE				7
-#define OBJECT_TYPE_FIRE_PLANT			8
+#define OBJECT_TYPE_BRICK				8
 #define OBJECT_TYPE_BITE_PLANT			9
 #define OBJECT_TYPE_PORTAL				50
 
@@ -68,17 +73,26 @@ using namespace std;
 #define MAX_SCENE_LINE 1024
 #define SCENE_TEST 1
 //-----------------------------Goomba
-#define GOOMBA_WALKING_SPEED 0.05
+#define GOOMBA_WALKING_SPEED			0.005
 
-#define GOOMBA_BBOX_WIDTH 16
-#define GOOMBA_BBOX_HEIGHT 15
-#define GOOMBA_BBOX_HEIGHT_DIE 9
+#define GOOMBA_BBOX_WIDTH				16
+#define GOOMBA_BBOX_HEIGHT				15
+#define GOOMBA_BBOX_HEIGHT_DIE			9
 
-#define GOOMBA_STATE_WALKING 100
-#define GOOMBA_STATE_DIE 200
+#define GOOMBA_STATE_DIE				100
+#define GOOMBA_STATE_WALKING			200
+#define GOOMBA_STATE_WING_JUMPING		300
+#define GOOMBA_STATE_WING_FALLING		400
 
-#define GOOMBA_ANI_WALKING 0
-#define GOOMBA_ANI_DIE 1
+#define GOOMBA_ANI_DIE							0
+#define GOOMBA_ANI_WING_DIE						1
+#define GOOMBA_ANI_WALKING						2
+#define GOOMBA_ANI_WING_WALKING_WITH_OUT_WING	3
+#define GOOMBA_ANI_WING_WALKING					4
+#define GOOMBA_ANI_WING_JUMPING					5
+#define GOOMBA_ANI_WING_FALLING					6
+
+#define GOOMBA_JUMPING_SPEED		0.05f
 
 //-----------------------------Koopas----------------------------
 #define KOOPAS_DEFEND_TIME			100000
@@ -106,8 +120,10 @@ using namespace std;
 #define KOOPAS_ANI_DIE				4
 
 //-----------------------------FIRE PLANT----------------------------
-#define DISTANCE_SAFE_ZONE 25
+#define DISTANCE_SAFE_ZONE				25
+
 #define LOAD_FIRE_PLANT_FROM_FILE		 6
+
 #define LEFT_TOP_SIDE_NEAR				 1
 #define LEFT_TOP_SIDE_FAR				 2
 #define LEFT_BOTTOM_SIDE_NEAR			 3
@@ -118,13 +134,16 @@ using namespace std;
 #define RIGHT_BOTTOM_SIDE_FAR			 8
 #define LEFT_SIDE						 9
 #define RIGHT_SIDE						10
-#define FIRE_ENEMY_SPEED_Y_FAR			0.03f
-#define FIRE_ENEMY_SPEED_Y_NEAR			0.025f
-#define FIRE_ENEMY_SPEED_X_NEAR			0.04f
-#define FIRE_ENEMY_SPEED_X_FAR			0.05f
+
+#define FIRE_ENEMY_SPEED_Y_FAR			0.003f
+#define FIRE_ENEMY_SPEED_Y_NEAR			0.0025f
+#define FIRE_ENEMY_SPEED_X_NEAR			0.004f
+#define FIRE_ENEMY_SPEED_X_FAR			0.005f
+
 #define FIRE_PLANT_BBOX_WIDTH			16
 #define FIRE_PLANT_RED_BBOX_HEIGHT		32
 #define FIRE_PLANT_GREEN_BBOX_HEIGHT	24
+
 #define	FIRE_PLANT_ANI_LEFT_TOP				0
 #define FIRE_PLANT_ANI_LEFT_BOTTOM			1
 #define FIRE_PLANT_ANI_RIGHT_TOP			2
@@ -142,6 +161,7 @@ using namespace std;
 #define TIME_ATTACK_DELAY				1000
 #define TIME_ATTACK						1500
 #define DISTANCE_FROM_MARIO_TO_PLANT	75
+
 #define FIRE_PLANT_STATE_GROW_UP		1
 #define FIRE_PLANT_STATE_ATTACK			2
 #define FIRE_PLANT_STATE_HIDING			3

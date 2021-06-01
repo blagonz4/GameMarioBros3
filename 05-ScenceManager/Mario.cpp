@@ -6,7 +6,7 @@
 #include "ColorBlock.h"
 CMario::CMario(float x, float y) : CGameObject()
 {
-	level = MARIO_LEVEL_RACOON;
+	level = MARIO_LEVEL_BIG;
 	untouchable = 0;
 	SetState(MARIO_STATE_IDLE);
 	start_x = x; 
@@ -26,36 +26,36 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		SetState(MARIO_STATE_TURN);
 	}
 	// Simple fall down
-	vy += MARIO_GRAVITY*dt;
+	vy += MARIO_GRAVITY * dt;
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
 
 	coEvents.clear();
 
 	// turn off collision when die 
-	if (state!=MARIO_STATE_DIE)
+	if (state != MARIO_STATE_DIE)
 		CalcPotentialCollisions(coObjects, coEvents);
 	// reset untouchable timer if untouchable time has passed
-	
+
 	//-----------------------------FIRE BALL-------------------------------
-	
+
 	if (state == MARIO_STATE_SHOOT_FIRE) {
 		if (listFire.size() < 2) {
-			FireBall *fire = new FireBall(x + 5, y + 5);
+			FireBall *fire = new FireBall(x + 5, y + 5, FIRE_SPEED, FIRE_GRAVITY);
 			fire->nx = nx;
 			listFire.push_back(fire);
 		}
-		
+
 	}
 	for (int i = 0; i < listFire.size(); i++)
 	{
 		listFire[i]->Update(dt, coObjects);
 		if (!CheckObjectInCamera(listFire.at(i)) || listFire.at(i)->isFinish == true) {
-			listFire.erase(listFire.begin() +i);
+			listFire.erase(listFire.begin() + i);
 		}
 	}
 	//------------------------------------------------------------------
-	if ( GetTickCount() - untouchable_start > MARIO_UNTOUCHABLE_TIME) 
+	if (GetTickCount() - untouchable_start > MARIO_UNTOUCHABLE_TIME)
 	{
 		untouchable_start = 0;
 		untouchable = 0;
@@ -70,32 +70,32 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		isJumping = false;
 		limitjump_start = 0;
 	}
-	
+
 	// No collision occured, proceed normally
-	if (coEvents.size()==0)
+	if (coEvents.size() == 0)
 	{
-		x += dx; 
+		x += dx;
 		y += dy;
 	}
 	else
 	{
 		float min_tx, min_ty, nx = 0, ny;
-		float rdx = 0; 
+		float rdx = 0;
 		float rdy = 0;
 
 		// TODO: This is a very ugly designed function!!!!
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
 
-		 //how to push back Mario if collides with a moving objects, what if Mario is pushed this way into another object?
-		//if (rdx != 0 && rdx!=dx)
-		//	x += nx*abs(rdx); 
-		
-		// block every object first!
-		x += min_tx*dx + nx*0.4f;
-		y += min_ty*dy + ny*0.4f;
+		//how to push back Mario if collides with a moving objects, what if Mario is pushed this way into another object?
+	   //if (rdx != 0 && rdx!=dx)
+	   //	x += nx*abs(rdx); 
 
-		if (nx!=0) vx = 0;
-		if (ny!=0) vy = 0;
+	   // block every object first!
+		x += min_tx * dx + nx * 0.4f;
+		y += min_ty * dy + ny * 0.4f;
+
+		if (nx != 0) vx = 0;
+		if (ny != 0) vy = 0;
 
 
 		//
@@ -111,10 +111,13 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 				if (e->ny < 0)
 				{
-					if (goomba->GetState()!= GOOMBA_STATE_DIE)
+					if (goomba->GetState() != GOOMBA_STATE_DIE)
 					{
-						goomba->SetState(GOOMBA_STATE_DIE);
-						vy = -MARIO_JUMP_DEFLECT_SPEED;
+						if (goomba->Health == 2){
+							goomba->Health = 1;
+						}
+						else goomba->SetState(GOOMBA_STATE_DIE);			
+						this->vy = -MARIO_JUMP_DEFLECT_SPEED;
 					}
 				}
 				else if (e->nx != 0)
@@ -194,6 +197,22 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					y += dy;
 				}
 			}
+			//else if (dynamic_cast<FireBall *>(e->obj)) // if e->obj is fireball 
+			//{
+			//	FireBall *fireball = dynamic_cast<FireBall *>(e->obj);
+//
+			//	if (untouchable == 0)
+			//	{
+			//		
+			//		if (level > MARIO_LEVEL_SMALL)
+			//		{
+			//			level = MARIO_LEVEL_SMALL;
+			//			StartUntouchable();
+			//		}
+			//		else
+			//			SetState(MARIO_STATE_DIE);
+			//	}
+			//}
 		}
 	}
 
@@ -413,7 +432,7 @@ void CMario::Render()
 				ani = MARIO_ANI_RACOON_FLY_LEFT;
 
 
-			if (state == MARIO_STATE_JUMP) {
+			if (state == MARIO_STATE_JUMP ) {
 				if (nx > 0) ani = MARIO_ANI_RACOON_FLOAT_RIGHT;
 				else ani = MARIO_ANI_RACOON_FLOAT_LEFT;
 			}

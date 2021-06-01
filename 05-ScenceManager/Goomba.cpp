@@ -1,16 +1,18 @@
 #include "Goomba.h"
 #include "Platform.h"
 #include "Pipe.h"
-CGoomba::CGoomba(float &model, float &direction)
+CGoomba::CGoomba(int model, int direction)
 {	
-	model = model;
+	this->model = model;
 	nx = direction;
+	Health = (this->model == 1) ? 1 : 2;
 	SetState(GOOMBA_STATE_WALKING);
 }
 
 void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
 	CGameObject::Update(dt);
+	vx = nx *GOOMBA_WALKING_SPEED * dt;
 	vy += MARIO_GRAVITY * dt;
 
 	vector<LPCOLLISIONEVENT> coEvents;
@@ -31,20 +33,12 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		float min_tx, min_ty, nx = 0, ny;
 		float rdx = 0;
 		float rdy = 0;
-
-		// TODO: This is a very ugly designed function!!!!
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
-
-		// how to push back Mario if collides with a moving objects, what if Mario is pushed this way into another object?
-		//if (rdx != 0 && rdx!=dx)
-		//	x += nx*abs(rdx); 
-
-		// block every object first!
 		x += min_tx * dx + nx * 0.4f;
 		y += min_ty * dy + ny * 0.4f;
 
 		if (nx != 0) vx = 0;
-		if (ny != 0) vy = 0;
+		if (ny != 0 && Health == 2) vy = GOOMBA_JUMPING_SPEED * dt;
 
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{
@@ -56,11 +50,11 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 				if (e->nx < 0) {
 					this->nx = -1; 
-					vx = -GOOMBA_WALKING_SPEED;
+					vx = -GOOMBA_WALKING_SPEED * dt;
 				}
 				else if (e->nx > 0) {
 					this->nx = 1;
-					vx = GOOMBA_WALKING_SPEED;
+					vx = GOOMBA_WALKING_SPEED * dt;
 				}
 
 			}
@@ -71,11 +65,11 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 				if (e->nx < 0) {
 					this->nx = -1;
-					vx = -GOOMBA_WALKING_SPEED;
+					vx = -GOOMBA_WALKING_SPEED * dt;
 				}
 				else if (e->nx > 0) {
 					this->nx = 1;
-					vx = GOOMBA_WALKING_SPEED;
+					vx = GOOMBA_WALKING_SPEED * dt;
 				}
 
 			}
@@ -86,9 +80,25 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 void CGoomba::Render()
 {
-	int ani = GOOMBA_ANI_WALKING;
+	int ani = -1;
 	if (state == GOOMBA_STATE_DIE) {
-		ani = GOOMBA_ANI_DIE;
+		if (model == 1)
+			ani = GOOMBA_ANI_DIE;
+		else ani = GOOMBA_ANI_WING_DIE;
+	}
+	else {
+		if (model == 2) {
+			if (vy > 0)
+				ani = GOOMBA_ANI_WING_FALLING;
+			else if (vy < 0)	
+					ani = GOOMBA_ANI_WING_JUMPING;
+			else if (Health == 2 )	
+					ani = GOOMBA_ANI_WING_WALKING;
+			else ani = GOOMBA_ANI_WING_WALKING_WITH_OUT_WING;
+				
+
+		}
+		else ani = GOOMBA_ANI_WALKING;
 	}
 
 	animation_set->at(ani)->Render(x,y);
@@ -102,13 +112,9 @@ void CGoomba::SetState(int state)
 	switch (state)
 	{
 	case GOOMBA_STATE_DIE:
-		y += GOOMBA_BBOX_HEIGHT - GOOMBA_BBOX_HEIGHT_DIE + 1;
+		vy = 0;
 		break;
 	case GOOMBA_STATE_WALKING: 
-		if (nx == 1) {
-			vx = -GOOMBA_WALKING_SPEED ;
-		}
-		else vx = GOOMBA_WALKING_SPEED;
 		break;
 	}
 }

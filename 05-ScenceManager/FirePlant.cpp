@@ -1,112 +1,168 @@
 #include "FirePlant.h"
+#include "Pipe.h"
+#include "Mario.h"
+#include "FireBall.h"
 
-
-
-FirePlant::FirePlant()
+FirePlant::FirePlant(CMario* mario)
 {
-	//this->x = X;
-	//this->y = Y;
-	SetAnimationSet(CAnimationSets::GetInstance()->Get(LOAD_FIRE_PLANT_FROM_FILE));
-	SetState(FIRE_PLANT_STATE_HIDING);
+	this->mario = mario;
 	timeHidding = 0;
 	timeAttack = 0;
-	timeAttackDelay = 0;
+	timeDelayAttack = 0;
 	this->marioRange = marioRange;
-	maxDistanceY = this->y;
+	SetState(FIRE_PLANT_STATE_HIDING);
 	
 }
 void FirePlant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	CGameObject::Update(dt, coObjects);
 
-	if (isFinish)
-		return;
 	x += dx;
 	y += dy;
 
-	if (y <= minDistanceY) {
-		y = minDistanceY;
+
+	vector<LPCOLLISIONEVENT> coEvents;
+	vector<LPCOLLISIONEVENT> coEventsResult;
+	coEvents.clear();
+	CalcPotentialCollisions(coObjects, coEvents);
+
+	if (CheckObjectInCamera(this))//TRONG CAMERA THI CHUI LEN
+		if (!isGrowUp) 
+			SetState(FIRE_PLANT_STATE_GROW_UP);
+
+	if (isGrowUp) {//DANG CHUI LEN SE SET TIMER
+		timeToAttack += dt;
+	}
+
+
+	if (timeToAttack > 0 && timeToAttack <= 1000) {//THOI GIAN DE CAY CHUI TU CONG LEN
+		vy = -MARIO_GRAVITY * dt;
+	}		
+	else if (timeToAttack > 1000) {//THOI GIAN TRUOC KHI KHAC LUA
 		vy = 0;
 		SetState(FIRE_PLANT_STATE_ATTACK);
 		timeAttack += dt;
-		timeAttackDelay += dt;
-	}
-	else if (y >= maxDistanceY) {
-		y = maxDistanceY;
-		vy = 0;
-		timeHidding += dt;
 	}
 
-	if (CheckObjectInCamera(this)) {
+	if (timeAttack >= 1000) {//KHAC LUA XONG HOLD 1 XIU		
+		if (isAttacking) {
+			SetState(FIRE_PLANT_STATE_HIDING);
+			timeToAttack = 0;
+		}
+		timeToHide += dt;
+		timeDelayAttack += dt;
+	}
+
+	if (timeToHide > 0 && timeToHide <= 700) {//HOLD XONG CHUI XUONG LAI
+		vy = MARIO_GRAVITY * dt;
+	}		
+	else if (timeToHide > 700) vy = 0;
+
+	if (timeDelayAttack > 5000) {	
 		SetState(FIRE_PLANT_STATE_GROW_UP);
+		timeToHide = 0;
+		timeDelayAttack = 0;
 	}
 
-	if (!GetSafeZone() && timeHidding > TIME_DELAY_GROW_UP){ //neu time tron trong ong > time delay & ko phai trong vung an toan thi grow up	{
-		SetState(FIRE_PLANT_STATE_GROW_UP);
-		timeHidding = 0;
+	if (state == FIRE_PLANT_STATE_ATTACK) {
+		if (listFire.size() < 1) {
+			FireBall *fire = new FireBall(this->x,
+											this->y,
+											this->vxFire,
+											this->vyFire);
+			fire->nx = this->nx;
+			listFire.push_back(fire);
+		}
 	}
-
-	//if (timeAttackDelay > TIME_ATTACK_DELAY) {
-	//	if (listFirePlant.size() < 1)
-	//		CreateFirePlant(marioRange);
-	//	timeAttackDelay = 0;
-	//}
-
-	if (timeAttack > TIME_ATTACK) {
-		SetState(FIRE_PLANT_STATE_HIDING);
-		timeAttack = 0;
+	for (int i = 0; i < listFire.size(); i++) {
+		listFire[i]->Update(dt, coObjects);
+		if (!CheckObjectInCamera(listFire.at(i)) || listFire.at(i)->isFinish == true) {
+			listFire.erase(listFire.begin() + i);
+		}
 	}
+		
+	//DebugOut(L"-------------------------------------- \n");
+	//DebugOut(L"timeAttack: %d \n", timeAttack);
+	//DebugOut(L"timeToHide: %d \n", timeToHide);
+	//DebugOut(L"timeDelayAttack: %d \n", timeDelayAttack);
+	//DebugOut(L"-------------------------------------- \n");
 
-	if (!(CheckObjectInCamera(this))) //ra khoi cam thi xoa plant
+	if (coEvents.size() == 0)
 	{
-		isFinish = false;
+		x += dx;
+		y += dy;
 	}
-	SetFireFly(marioRange); 
+	else
+	{
+		float min_tx, min_ty, nx = 0, ny;
+		float rdx = 0;
+		float rdy = 0;
+		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
+		x += min_tx * dx + nx * 0.4f;
+		y += min_ty * dy + ny * 0.4f;
+		if (nx != 0) vx = 0;
+		if (ny != 0) vy = 0;
 
+		for (UINT i = 0; i < coEventsResult.size(); i++)
+		{
+			LPCOLLISIONEVENT e = coEventsResult[i];
+
+			if (dynamic_cast<Pipe *>(e->obj)) // if e->obj is Goomba 
+			{
+				Pipe *pipe = dynamic_cast<Pipe *>(e->obj);
+
+				if (e->ny < 0)
+				{
+					
+				}
+			}
+		}
+	}
+	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
 
 }
-void FirePlant::SetFireFly(int marioRange)
+void FirePlant::ShootFire(int marioRange)
 {
 	switch (marioRange)
 	{
 	case LEFT_TOP_SIDE_NEAR:
-		vy = -FIRE_ENEMY_SPEED_Y_NEAR * dt;
-		vx = -FIRE_ENEMY_SPEED_X_NEAR * dt;
+		vyFire = -FIRE_ENEMY_SPEED_Y_NEAR;
+		vxFire = FIRE_ENEMY_SPEED_X_NEAR;
 		this->nx = -1;
 		break;
 	case LEFT_TOP_SIDE_FAR:
-		vy = -FIRE_ENEMY_SPEED_Y_FAR * dt;
-		vx = -FIRE_ENEMY_SPEED_X_FAR * dt;
+		vyFire = -FIRE_ENEMY_SPEED_Y_FAR;
+		vxFire = FIRE_ENEMY_SPEED_X_FAR;
 		this->nx = -1;
 		break;
 	case LEFT_BOTTOM_SIDE_NEAR:
-		vy = FIRE_ENEMY_SPEED_Y_NEAR * dt;
-		vx = -FIRE_ENEMY_SPEED_X_NEAR * dt;
+		vyFire = FIRE_ENEMY_SPEED_Y_NEAR;
+		vxFire = FIRE_ENEMY_SPEED_X_NEAR;
 		this->nx = -1;
 		break;
 	case LEFT_BOTTOM_SIDE_FAR:
-		vy = FIRE_ENEMY_SPEED_Y_FAR * dt;
-		vx = -FIRE_ENEMY_SPEED_X_FAR * dt;
+		vyFire = FIRE_ENEMY_SPEED_Y_FAR;
+		vxFire = FIRE_ENEMY_SPEED_X_FAR;
 		this->nx = -1;
 		break;
 	case RIGHT_TOP_SIDE_NEAR:
-		vy = -FIRE_ENEMY_SPEED_Y_NEAR * dt;
-		vx = FIRE_ENEMY_SPEED_X_NEAR * dt;
+		vyFire = -FIRE_ENEMY_SPEED_Y_NEAR;
+		vxFire = FIRE_ENEMY_SPEED_X_NEAR;
 		this->nx = 1;
 		break;
 	case RIGHT_TOP_SIDE_FAR:
-		vy = -FIRE_ENEMY_SPEED_Y_FAR * dt;
-		vx = FIRE_ENEMY_SPEED_X_FAR * dt;
+		vyFire = -FIRE_ENEMY_SPEED_Y_FAR;
+		vxFire = FIRE_ENEMY_SPEED_X_FAR;
 		this->nx = 1;
 		break;
 	case RIGHT_BOTTOM_SIDE_NEAR:
-		vy = FIRE_ENEMY_SPEED_Y_NEAR * dt;
-		vx = FIRE_ENEMY_SPEED_X_NEAR * dt;
+		vyFire = FIRE_ENEMY_SPEED_Y_NEAR;
+		vxFire = FIRE_ENEMY_SPEED_X_NEAR;
 		this->nx = 1;
 		break;
 	case RIGHT_BOTTOM_SIDE_FAR:
-		vy = FIRE_ENEMY_SPEED_Y_FAR * dt;
-		vx = FIRE_ENEMY_SPEED_X_FAR * dt;
+		vyFire = FIRE_ENEMY_SPEED_Y_FAR;
+		vxFire = FIRE_ENEMY_SPEED_X_FAR;
 		this->nx = 1;
 		break;
 	}
@@ -116,9 +172,10 @@ void FirePlant::SetFireFly(int marioRange)
 void FirePlant::Render()
 {
 	int ani = -1;
-	if (isFinish)
-		return;
+	//if (isFinish)
+	//	return;
 	marioRange = GetCurrentMarioRange();
+
 	if (state == FIRE_PLANT_STATE_ATTACK)
 	{
 		if (marioRange == LEFT_TOP_SIDE_NEAR || marioRange == LEFT_TOP_SIDE_FAR)
@@ -138,7 +195,7 @@ void FirePlant::Render()
 			ani = FIRE_PLANT_ANI_ATTACK_RIGHT_BOTTOM;
 		}
 	}
-	else
+	else if (state == FIRE_PLANT_STATE_GROW_UP)
 	{
 		if (marioRange == LEFT_TOP_SIDE_NEAR || marioRange == LEFT_TOP_SIDE_FAR)
 		{
@@ -157,9 +214,18 @@ void FirePlant::Render()
 			ani = FIRE_PLANT_ANI_RIGHT_BOTTOM;
 		}
 	}
+	else
+	{
+		return;
+	}
 
+	for (int i = 0; i < listFire.size(); i++)
+	{
+		listFire[i]->Render();
+	}
 
 	animation_set->at(ani)->Render(x, y);
+	RenderBoundingBox();
 }
 
 void FirePlant::SetState(int state)
@@ -167,19 +233,23 @@ void FirePlant::SetState(int state)
 	CGameObject::SetState(state);
 	switch (state)
 	{
-	case FIRE_PLANT_STATE_GROW_UP:
-	{
-		
-		break;
-	}
 	case FIRE_PLANT_STATE_HIDING:
 	{
-		vy = PLANT_SPEED_HIDDING * dt;
+		isAttacking = false;
+		isHiding = true;
+		break;
+	}
+	case FIRE_PLANT_STATE_GROW_UP:
+	{		
+		isGrowUp = true;
+		isHiding = false;
 		break;
 	}
 	case FIRE_PLANT_STATE_ATTACK:
 	{
-		isFinish = true;
+		ShootFire(marioRange);
+		isGrowUp = false;
+		isAttacking = true;
 		break;
 	}
 	}
@@ -190,12 +260,12 @@ void FirePlant::GetBoundingBox(float& left, float& top, float& right, float& bot
 	top = y;
 	if (state == FIRE_PLANT_STATE_GROW_UP || state == FIRE_PLANT_STATE_ATTACK) {
 		right = left + FIRE_PLANT_BBOX_WIDTH;
-		bottom = top - FIRE_BBOX_HEIGHT;
+		bottom = top + FIRE_PLANT_RED_BBOX_HEIGHT;
 	}
-	else right = bottom = 0;
-
-	if (isFinish)
-		left = top = right = bottom = 0;
+	else {
+		right = left + FIRE_PLANT_BBOX_WIDTH;
+		bottom = y;
+	} 
 }
 
 
@@ -262,15 +332,6 @@ int FirePlant::GetCurrentMarioRange() {
 	}
 }
 
-
-
-
-void FirePlant::CreateFirePlant(int marioRange)
-{
-	marioRange = GetCurrentMarioRange();
-	FirePlant* fireplant = new FirePlant();
-	listFirePlant.push_back(fireplant);
-}
 
 FirePlant::~FirePlant()
 {

@@ -5,31 +5,35 @@
 #include "PlayScence.h"
 class FirePlant : public CGameObject
 {
-
-	float maxDistanceY;
-	float minDistanceY;
-	
 	CMario *mario;
-	DWORD timeAttackDelay;
+	vector<LPGAMEOBJECT> listFire;
+
+	DWORD timeDelayAttack;
 	DWORD timeHidding;
 	DWORD timeAttack;
-	bool isHidding;
+	DWORD timeToAttack;
+	DWORD timeToHide;
+
+	bool isHiding;
 	bool isGrowUp;
+	bool isAttacking;
 	bool isSafe;
+
 public:
 	int marioRange;
-	vector<LPGAMEOBJECT> listFirePlant;
-	bool isFinish = false;
+	float vxFire, vyFire;
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	virtual void Render();
 	virtual void SetState(int state);
-	void SetFireFly(int marioRange);
-	void ShootFire();
+	void ShootFire(int marioRange);
 	int GetCurrentMarioRange();
 	bool GetSafeZone();
-	void CreateFirePlant(int marioRange);
-	FirePlant();
+	FirePlant(CMario* mario);
+
+	void StartGrowUp() { isGrowUp = true; timeToAttack = GetTickCount(); }
+	void StartHiding() { isHiding = true; timeDelayAttack = GetTickCount(); }
+
 	~FirePlant();
 };
 
