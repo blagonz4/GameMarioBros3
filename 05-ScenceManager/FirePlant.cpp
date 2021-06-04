@@ -74,7 +74,7 @@ void FirePlant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			listFire.push_back(fire);
 		}
 	}
-	for (int i = 0; i < listFire.size(); i++) {
+	for (size_t i = 0; i < listFire.size(); i++) {
 		listFire[i]->Update(dt, coObjects);
 		if (!CheckObjectInCamera(listFire.at(i)) || listFire.at(i)->isFinish == true) {
 			listFire.erase(listFire.begin() + i);
@@ -107,15 +107,6 @@ void FirePlant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		{
 			LPCOLLISIONEVENT e = coEventsResult[i];
 
-			if (dynamic_cast<Pipe *>(e->obj)) // if e->obj is Goomba 
-			{
-				Pipe *pipe = dynamic_cast<Pipe *>(e->obj);
-
-				if (e->ny < 0)
-				{
-					
-				}
-			}
 		}
 	}
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
@@ -219,7 +210,7 @@ void FirePlant::Render()
 		return;
 	}
 
-	for (int i = 0; i < listFire.size(); i++)
+	for (size_t i = 0; i < listFire.size(); i++)
 	{
 		listFire[i]->Render();
 	}
@@ -291,41 +282,41 @@ int FirePlant::GetCurrentMarioRange() {
 		{
 			return LEFT_TOP_SIDE_NEAR;
 		}
-		if (this->x - mario->x >= DISTANCE_FROM_MARIO_TO_PLANT)
+		else // (this->x - mario->x >= DISTANCE_FROM_MARIO_TO_PLANT)
 		{
 			return LEFT_TOP_SIDE_FAR;
 		}
 	}
-	if (mario->x < this->x && mario->y > this->y)
+	else if (mario->x < this->x && mario->y > this->y)
 	{
 		if (this->x - mario->x < DISTANCE_FROM_MARIO_TO_PLANT)
 		{
 			return LEFT_BOTTOM_SIDE_NEAR;
 		}
-		if (this->x - mario->x > DISTANCE_FROM_MARIO_TO_PLANT)
+		else// (this->x - mario->x > DISTANCE_FROM_MARIO_TO_PLANT)
 		{
 			return LEFT_BOTTOM_SIDE_FAR;
 		}
 
 	}
-	if (mario->x > this->x && mario->y < this->y)
+	else if (mario->x > this->x && mario->y < this->y)
 	{
 		if (this->x - mario->x < DISTANCE_FROM_MARIO_TO_PLANT)
 		{
 			return RIGHT_TOP_SIDE_NEAR;
 		}
-		if (this->x - mario->x >= DISTANCE_FROM_MARIO_TO_PLANT)
+		else// (this->x - mario->x >= DISTANCE_FROM_MARIO_TO_PLANT)
 		{
 			return RIGHT_TOP_SIDE_FAR;
 		}
 	}
-	if (mario->x > this->x && mario->y > this->y)
+	else  //(mario->x > this->x && mario->y > this->y)
 	{
 		if (this->x - mario->x < DISTANCE_FROM_MARIO_TO_PLANT)
 		{
 			return RIGHT_BOTTOM_SIDE_NEAR;
 		}
-		if (this->x - mario->x >= DISTANCE_FROM_MARIO_TO_PLANT)
+		else  //(this->x - mario->x >= DISTANCE_FROM_MARIO_TO_PLANT)
 		{
 			return RIGHT_BOTTOM_SIDE_FAR;
 		}

@@ -45,7 +45,8 @@ struct CCollisionEvent
 class CGameObject
 {
 protected:
-	
+	Type eType;
+	ObjectType objType;
 public:
 
 	float x; 
@@ -57,7 +58,7 @@ public:
 	float vx;
 	float vy;
 
-	int nx;	 
+	float nx;	 
 	float width;
 	float height;
 	int state;
@@ -100,6 +101,8 @@ public:
 	virtual void Render() = 0;
 	virtual void SetState(int state) { this->state = state; }
 
+	Type GetType() { return this->eType; };
+	ObjectType GetObjectType() { return this->objType; };
 
 	~CGameObject();
 };

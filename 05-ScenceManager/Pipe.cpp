@@ -1,8 +1,8 @@
 #include "Pipe.h"
-Pipe::Pipe(int model)
+Pipe::Pipe(float model)
 {
 	this->model = model;
-
+	eType = Type::PIPE;
 }
 
 void Pipe::Render()

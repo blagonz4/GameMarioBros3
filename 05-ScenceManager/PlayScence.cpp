@@ -62,7 +62,7 @@ void CPlayScene::_ParseSection_ANIMATIONS(string line)
 	LPANIMATION ani = new CAnimation();
 
 	int ani_id = atoi(tokens[0].c_str());
-	for (int i = 1; i < tokens.size(); i += 2)	// why i+=2 ?  sprite_id | frame_time  
+	for (size_t i = 1; i < tokens.size(); i += 2)	// why i+=2 ?  sprite_id | frame_time  
 	{
 		int sprite_id = atoi(tokens[i].c_str());
 		int frame_time = atoi(tokens[i+1].c_str());
@@ -83,7 +83,7 @@ void CPlayScene::_ParseSection_ANIMATION_SETS(string line)
 
 	CAnimations *animations = CAnimations::GetInstance();
 
-	for (int i = 1; i < tokens.size(); i++)
+	for (size_t i = 1; i < tokens.size(); i++)
 	{
 		int ani_id = atoi(tokens[i].c_str());
 		
@@ -134,8 +134,8 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	} 
 	case OBJECT_TYPE_BRICK: obj = new CBrick(); break;
 	case OBJECT_TYPE_KOOPAS: {
-		int model = atof(tokens[4].c_str());
-		int direction = atof(tokens[5].c_str());
+		float model = atof(tokens[4].c_str());
+		float direction = atof(tokens[5].c_str());
 		obj = new CKoopas(model,direction,player); break;
 	} 
 	case OBJECT_TYPE_PLATFORM: {
@@ -269,6 +269,8 @@ void CPlayScene::Update(DWORD dt)
 	for (size_t i = 0; i < objects.size(); i++)
 	{
 		objects[i]->Update(dt, &coObjects);
+		if (objects.at(i)->isFinish)
+			objects.erase(objects.begin() +i);
 	}
 
 
@@ -295,7 +297,7 @@ void CPlayScene::Update(DWORD dt)
 	camera->Update(dt);
 	 //skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
 	if (player == NULL) return; 
-	
+
 	//if (CGame::GetInstance()->GetScene() == SCENE_TEST) {
 	//	
 	//	if (player == NULL) return;
@@ -324,7 +326,7 @@ void CPlayScene::Update(DWORD dt)
 void CPlayScene::Render()
 {
 	map->DrawMap();
-	for (int i = 0; i < objects.size(); i++)
+	for (size_t i = 0; i < objects.size(); i++)
 		objects[i]->Render();
 }
 
@@ -333,7 +335,7 @@ void CPlayScene::Render()
 */
 void CPlayScene::Unload()
 {
-	for (int i = 0; i < objects.size(); i++)
+	for (size_t i = 0; i < objects.size(); i++)
 		delete objects[i];
 
 	objects.clear();

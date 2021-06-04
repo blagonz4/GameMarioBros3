@@ -6,7 +6,7 @@ ColorBlock::ColorBlock(float w, float h,CMario* mario)
 	player = mario;
 	this->width = w;
 	this->height = h;
-
+	eType = Type::COLORBLOCK;
 }
 
 void ColorBlock::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)

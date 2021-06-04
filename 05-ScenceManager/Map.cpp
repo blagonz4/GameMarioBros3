@@ -3,7 +3,7 @@
 #include <iostream>
 #include "define.h"
 
-Map::Map(int TexID,int RowMap,int ColumnMap,int RowTile, int ColumnTile,int TotalTile)
+Map::Map(int TexID, int RowMap, int ColumnMap, int RowTile, int ColumnTile, int TotalTile)
 {
 	Tex = CTextures::GetInstance()->Get(TexID);
 	this->RowMap = RowMap;

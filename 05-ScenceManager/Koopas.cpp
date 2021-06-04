@@ -1,12 +1,14 @@
 #include "Koopas.h"
 #include "Platform.h"
 #include "Pipe.h"
-CKoopas::CKoopas(int &model, int &direction,CMario* mario)
+CKoopas::CKoopas(float &model, float &direction,CMario* mario)
 {
 	player = mario;
 	isDefend = 0;
 	nx = direction;
-	SetState(KOOPAS_STATE_DEFEND);
+	SetState(KOOPAS_STATE_WALKING);
+	eType = Type::KOOPAS;
+	objType = ObjectType::ENEMY;
 }
 
 
@@ -93,9 +95,8 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		{
 			LPCOLLISIONEVENT e = coEventsResult[i];
 
-			if (dynamic_cast<Platform *>(e->obj))
+			if (e->obj->GetType() == COLORBLOCK)
 			{
-				Platform *platform = dynamic_cast<Platform *>(e->obj);
 
 				if (this->state == KOOPAS_STATE_BALL) {
 					if (e->nx < 0) {
@@ -120,9 +121,8 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 			}
 
-			if (dynamic_cast<Pipe *>(e->obj))
+			if (e->obj->GetType() == PIPE)
 			{
-				Pipe *pipe = dynamic_cast<Pipe *>(e->obj);
 
 				if (this->state == KOOPAS_STATE_BALL) {
 					if (e->nx < 0) {

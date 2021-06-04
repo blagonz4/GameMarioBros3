@@ -10,6 +10,7 @@ FireBall::FireBall(float X, float Y,float defineVx, float defineVy)
 	SetAnimationSet(CAnimationSets::GetInstance()->Get(LOAD_FIRE_FROM_FILE));
 	this->defineVx = defineVx;
 	this->defineVy = defineVy;
+	eType = Type::FIRE;
 }
 
 void FireBall::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
@@ -52,21 +53,19 @@ void FireBall::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		{
 			LPCOLLISIONEVENT e = coEventsResult[i];
 
-			if (dynamic_cast<CKoopas *>(e->obj)) 
+			if (e->obj->GetType() == KOOPAS) 
 			{
-				CKoopas *koopas = dynamic_cast<CKoopas *>(e->obj);
-				koopas->nx = this->nx;
-				koopas->SetState(KOOPAS_STATE_DIE);
-				isFinish = true;
-			}
-			else if (dynamic_cast<CGoomba *>(e->obj)) {
-				CGoomba *goomba = dynamic_cast<CGoomba *>(e->obj);
+				e->obj->nx = this->nx;
+				e->obj->SetState(KOOPAS_STATE_DIE);
 				this->isFinish = true;
-				goomba->nx = this->nx;
-				goomba->SetState(GOOMBA_STATE_DIE);
 			}
-			else if (dynamic_cast<Pipe *>(e->obj)) {
-				Pipe *pipe = dynamic_cast<Pipe *>(e->obj);
+			else if (e->obj->GetType() == GOOMBA) {
+				this->isFinish = true;
+				e->obj->nx = this->nx;
+				e->obj->SetState(GOOMBA_STATE_DIE);
+				this->isFinish = true;
+			}
+			else if (e->obj->GetType() == PIPE) {
 				if (e->nx != 0) 
 					this->isFinish = true;
 			}

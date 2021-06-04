@@ -770,7 +770,7 @@
 # type: 0 = Mario , 1 = PLATFORM, 2 = Goomba, 3 = Koopas
 #############MARIO#############
 # MARIO
-0	200	368	1
+0	50	368	1
 ##############PLATFORM#############
 1	0	417	2	624	16
 1	624	400	2	464	32
@@ -789,14 +789,14 @@
 1	1792	384	2	32	32
 1	1856	368	2	32	48
 1	2256	368	2	32	48
-1
+
 ######################GOOMBA################ 3 ani_set_id 6 ## model 1: base 2: red 3:base fly
 #type   x       y    ani_set_id model    direction
 2	208	400	2	1	-1
 2	512	400	2	1	-1
 2	864	383	2	1	-1
 2	816	383	2	1	-1
-2	1000	383	2	2	-1
+2	928	380	2	2	-1
 
 ###################KOOPAS###################
 #TYPE    X       Y  ANI_SET_ID  MODEL   DIRECTION 1:GOOMBA base 2:GOOMBA RED

@@ -7,13 +7,13 @@
 */
 class CPortal : public CGameObject
 {
-	int scene_id;	// target scene to switch to 
+	float scene_id;	// target scene to switch to 
 
-	int width;
-	int height; 
+	float width;
+	float height;
 public:
-	CPortal(float l, float t, float r, float b, int scene_id);
+	CPortal(float l, float t, float r, float b, float scene_id);
 	virtual void Render();
 	virtual void GetBoundingBox(float &l, float &t, float &r, float &b);
-	int GetSceneId() { return scene_id;  }
+	float GetSceneId() { return scene_id;  }
 };

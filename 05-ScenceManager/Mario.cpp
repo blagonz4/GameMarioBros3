@@ -13,6 +13,7 @@ CMario::CMario(float x, float y) : CGameObject()
 	start_y = y; 
 	this->x = x; 
 	this->y = y; 
+	eType = Type::MARIO;
 }
 
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
@@ -47,7 +48,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		}
 
 	}
-	for (int i = 0; i < listFire.size(); i++)
+	for (size_t i = 0; i < listFire.size(); i++)
 	{
 		listFire[i]->Update(dt, coObjects);
 		if (!CheckObjectInCamera(listFire.at(i)) || listFire.at(i)->isFinish == true) {
@@ -105,23 +106,26 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		{
 			LPCOLLISIONEVENT e = coEventsResult[i];
 
-			if (dynamic_cast<CGoomba *>(e->obj)) // if e->obj is Goomba 
+			if (e->obj->GetType() == GOOMBA) // if e->obj is Goomba 
 			{
 				CGoomba *goomba = dynamic_cast<CGoomba *>(e->obj);
 
 				if (e->ny < 0)
 				{
-					if (goomba->GetState() != GOOMBA_STATE_DIE)
-					{
-						if (goomba->Health == 2){
-							goomba->Health = 1;
+					if (untouchable == 0) {
+						if (goomba->GetState() != GOOMBA_STATE_DIE)
+						{
+							if (goomba->Health == 2) {
+								goomba->Health = 1;
+							}
+							else goomba->SetState(GOOMBA_STATE_DIE);						
+							this->vy = -MARIO_JUMP_DEFLECT_SPEED;
 						}
-						else goomba->SetState(GOOMBA_STATE_DIE);			
-						this->vy = -MARIO_JUMP_DEFLECT_SPEED;
-					}
+					}				
 				}
-				else if (e->nx != 0)
+				else if (e->nx != 0 || e->ny >0)
 				{
+					
 					if (state == MARIO_STATE_SPIN && level == MARIO_LEVEL_RACOON) {
 						goomba->nx = this->nx;
 						goomba->SetState(GOOMBA_STATE_DIE);
@@ -141,7 +145,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					}
 				}
 			}
-			else if (dynamic_cast<CKoopas *>(e->obj))
+			else if (e->obj->GetType() == KOOPAS)
 			{
 				CKoopas *koopa = dynamic_cast<CKoopas *>(e->obj);
 				if (e->ny < 0)
@@ -189,10 +193,8 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					}
 				}
 			}
-			else if (dynamic_cast<ColorBlock *>(e->obj))
+			else if (e->obj->GetType() == COLORBLOCK)
 			{
-				ColorBlock *block = dynamic_cast<ColorBlock *>(e->obj);
-
 				if (e->ny > 0) {
 					y += dy;
 				}
@@ -457,7 +459,7 @@ void CMario::Render()
 		if (untouchable) alpha = 128;
 		animation_set->at(ani)->Render(x, y, alpha);
 
-		for (int i = 0; i < listFire.size(); i++)
+		for (size_t i = 0; i < listFire.size(); i++)
 		{
 			listFire[i]->Render();
 		}

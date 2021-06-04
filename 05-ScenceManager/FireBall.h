@@ -7,6 +7,7 @@
 class FireBall : public CGameObject
 {
 	float defineVx, defineVy;
+	
 public:
 	
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);

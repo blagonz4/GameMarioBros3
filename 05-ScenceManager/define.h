@@ -1,10 +1,11 @@
+#pragma once
 #include <Windows.h>
 #include <stdio.h>
 #include <iomanip>
 #include <d3d9.h>
 #include <d3dx9.h>
 #include <iostream>
-
+#include <algorithm>
 
 using namespace std;
 
@@ -24,6 +25,26 @@ using namespace std;
 #define SCREEN_HEIGHT 300
 
 #define MAX_FRAME_RATE 120
+
+
+//------------------------ENUM TYPE---------------------------------
+enum Type {
+	MARIO = 0,
+
+	PLATFORM = 1,
+	GOOMBA = 2,
+	KOOPAS = 3,
+	COLORBLOCK = 4,
+	FIRE = 5,
+	FIREPLANT = 6,
+	PIPE = 7,
+};
+
+enum ObjectType {
+	MISC = 1,
+	ENEMY = 2,
+	ITEM = 3,
+};
 
 //-------------------------------map----------------------------
 #define TILE_WIDTH 16.0f
@@ -73,16 +94,16 @@ using namespace std;
 #define MAX_SCENE_LINE 1024
 #define SCENE_TEST 1
 //-----------------------------Goomba
-#define GOOMBA_WALKING_SPEED			0.005
+#define GOOMBA_WALKING_SPEED					0.005
 
-#define GOOMBA_BBOX_WIDTH				16
-#define GOOMBA_BBOX_HEIGHT				15
-#define GOOMBA_BBOX_HEIGHT_DIE			9
+#define GOOMBA_BBOX_WIDTH						16
+#define GOOMBA_WING_BBOX_WIDTH					20
+#define GOOMBA_BBOX_HEIGHT						15
+#define GOOMBA_WING_BBOX_HEIGHT					24
+#define GOOMBA_BBOX_HEIGHT_DIE					9
 
-#define GOOMBA_STATE_DIE				100
-#define GOOMBA_STATE_WALKING			200
-#define GOOMBA_STATE_WING_JUMPING		300
-#define GOOMBA_STATE_WING_FALLING		400
+
+#define GOOMBA_STATE_DIE						100
 
 #define GOOMBA_ANI_DIE							0
 #define GOOMBA_ANI_WING_DIE						1
@@ -92,8 +113,8 @@ using namespace std;
 #define GOOMBA_ANI_WING_JUMPING					5
 #define GOOMBA_ANI_WING_FALLING					6
 
-#define GOOMBA_JUMPING_SPEED		0.05f
-
+#define GOOMBA_JUMPING_SPEED					0.25f
+#define TIME_TO_DIE								500
 //-----------------------------Koopas----------------------------
 #define KOOPAS_DEFEND_TIME			100000
 #define KOOPAS_DEFEND_HITBOX		16
@@ -187,7 +208,7 @@ using namespace std;
 #define MARIO_JUMP_SPEED					0.01f
 #define MARIO_FLY_SPEED						0.02f
 #define MARIO_JUMP_SPEED_PEEK				0.005f
-#define MARIO_JUMP_DEFLECT_SPEED			0.45f
+#define MARIO_JUMP_DEFLECT_SPEED			0.40f
 #define MARIO_GRAVITY						0.002f
 #define MARIO_DIE_DEFLECT_SPEED				0.3f
 #define MARIO_SLIDING_SPEED					1.5f
