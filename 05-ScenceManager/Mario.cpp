@@ -4,7 +4,7 @@
 #include "Goomba.h"
 #include "Platform.h"
 #include "ColorBlock.h"
-CMario::CMario(float x, float y) : CGameObject()
+CMario::CMario(float x, float y) 
 {
 	level = MARIO_LEVEL_BIG;
 	untouchable = 0;
@@ -33,10 +33,8 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	coEvents.clear();
 
-	// turn off collision when die 
 	if (state != MARIO_STATE_DIE)
 		CalcPotentialCollisions(coObjects, coEvents);
-	// reset untouchable timer if untouchable time has passed
 
 	//-----------------------------FIRE BALL-------------------------------
 
@@ -199,22 +197,31 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					y += dy;
 				}
 			}
-			//else if (dynamic_cast<FireBall *>(e->obj)) // if e->obj is fireball 
-			//{
-			//	FireBall *fireball = dynamic_cast<FireBall *>(e->obj);
-//
-			//	if (untouchable == 0)
-			//	{
-			//		
-			//		if (level > MARIO_LEVEL_SMALL)
-			//		{
-			//			level = MARIO_LEVEL_SMALL;
-			//			StartUntouchable();
-			//		}
-			//		else
-			//			SetState(MARIO_STATE_DIE);
-			//	}
-			//}
+			else if (e->obj->GetType() == FIRE){ // if e->obj is fireball 
+				if (untouchable == 0)
+				{					
+					if (level > MARIO_LEVEL_SMALL)
+					{
+						level = MARIO_LEVEL_SMALL;
+						StartUntouchable();
+					}
+					else
+						SetState(MARIO_STATE_DIE);
+				}
+			}
+			else if (e->obj->GetType() == FIREPLANT) { // if e->obj is fireball 
+				if (untouchable == 0)
+				{
+
+					if (level > MARIO_LEVEL_SMALL)
+					{
+						level = MARIO_LEVEL_SMALL;
+						StartUntouchable();
+					}
+					else
+						SetState(MARIO_STATE_DIE);
+				}
+			}
 		}
 	}
 

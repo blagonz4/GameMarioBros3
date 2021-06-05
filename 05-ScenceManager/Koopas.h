@@ -16,6 +16,8 @@ class CKoopas : public CGameObject
 
 public:
 	bool isBeingHeld;
+	float model;
+	int Health;
 	CKoopas(float &model, float &direction,CMario* mario);
 	virtual void SetState(int state);
 };

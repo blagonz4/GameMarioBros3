@@ -106,8 +106,8 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	if (tokens.size() < 3) return; // skip invalid lines - an object set must have at least id, x, y
 
 	int object_type = atoi(tokens[0].c_str());
-	float x = atof(tokens[1].c_str());
-	float y = atof(tokens[2].c_str());
+	float x = (float)atof(tokens[1].c_str());
+	float y = (float)atof(tokens[2].c_str());
 	int ani_set_id = atoi(tokens[3].c_str());
 
 	CAnimationSets * animation_sets = CAnimationSets::GetInstance();
@@ -128,42 +128,42 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		DebugOut(L"[INFO] Player object created!\n");
 		break;
 	case OBJECT_TYPE_GOOMBA: {
-		float model = atof(tokens[4].c_str());
-		float direction = atof(tokens[5].c_str());
+		float model = (float)atof(tokens[4].c_str());
+		float direction = (float)atof(tokens[5].c_str());
 		obj = new CGoomba(model,direction); break;
 	} 
 	case OBJECT_TYPE_BRICK: obj = new CBrick(); break;
 	case OBJECT_TYPE_KOOPAS: {
-		float model = atof(tokens[4].c_str());
-		float direction = atof(tokens[5].c_str());
+		float model = (float)atof(tokens[4].c_str());
+		float direction = (float)atof(tokens[5].c_str());
 		obj = new CKoopas(model,direction,player); break;
 	} 
 	case OBJECT_TYPE_PLATFORM: {
-		float w = atof(tokens[4].c_str());
-		float h = atof(tokens[5].c_str());
+		float w = (float)atof(tokens[4].c_str());
+		float h = (float)atof(tokens[5].c_str());
 		obj = new Platform(w, h);
 		break;
 	}
 	case OBJECT_TYPE_COLOR_BLOCK: {
-		float w = atof(tokens[4].c_str());
-		float h = atof(tokens[5].c_str());
+		float w = (float)atof(tokens[4].c_str());
+		float h = (float)atof(tokens[5].c_str());
 		obj = new ColorBlock(w, h,player);
 		break;
 	}
 	case OBJECT_TYPE_PORTAL:
 		{	
-			float r = atof(tokens[4].c_str());
-			float b = atof(tokens[5].c_str());
-			float scene_id = atoi(tokens[6].c_str());
+			float r = (float)atof(tokens[4].c_str());
+			float b = (float)atof(tokens[5].c_str());
+			float scene_id = (float)atoi(tokens[6].c_str());
 			obj = new CPortal(x, y, r, b, scene_id);
 		}
 	case OBJECT_TYPE_PIPE: {
-		int model = atof(tokens[4].c_str());
+		float model = (float)atof(tokens[4].c_str());
 		obj = new Pipe(model);
 		break;
 	}
 	case OBJECT_TYPE_FIRE_PLANT: {
-		int model = atof(tokens[4].c_str());
+		float model = (float)atof(tokens[4].c_str());
 		obj = new FirePlant(player);
 		break;
 	}

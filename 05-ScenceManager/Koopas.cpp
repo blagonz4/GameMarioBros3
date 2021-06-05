@@ -3,10 +3,15 @@
 #include "Pipe.h"
 CKoopas::CKoopas(float &model, float &direction,CMario* mario)
 {
+	this->model = model;
+	Health = (this->model == KOOPAS_MODEL_RED) ? 1 : 2;
 	player = mario;
 	isDefend = 0;
 	nx = direction;
-	SetState(KOOPAS_STATE_WALKING);
+
+	if (Health == 2) SetState(KOOPAS_STATE_FLY);
+	else SetState(KOOPAS_STATE_WALKING);
+
 	eType = Type::KOOPAS;
 	objType = ObjectType::ENEMY;
 }
@@ -16,7 +21,15 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
 	CGameObject::Update(dt);
 	if (!isBeingHeld)
-		vy = MARIO_GRAVITY * dt;
+		vy += MARIO_GRAVITY * dt;
+	if (state == KOOPAS_STATE_WALKING || state == KOOPAS_STATE_FLY) {
+		if (nx > 0)
+			vx = KOOPAS_WALKING_SPEED * dt;
+		else
+			vx = -KOOPAS_WALKING_SPEED * dt;
+	}
+
+
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
 
@@ -89,7 +102,8 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		y += min_ty * dy + ny * 0.4f;
 
 		if (nx != 0) vx = 0;
-		if (ny != 0) vy = 0;
+		if (ny != 0 && state == KOOPAS_STATE_FLY) vy -= KOOPAS_FLY_SPEED * dt;
+			else vy = 0;
 
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{
@@ -108,7 +122,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						this->vx = KOOPAS_BALL_SPEED * dt;
 					}
 				}
-				if (this->state == KOOPAS_STATE_WALKING) {
+				else if (this->state == KOOPAS_STATE_WALKING) {
 					if (e->nx < 0) {
 						this->nx = -1;
 						this->vx = -KOOPAS_WALKING_SPEED * dt;
@@ -121,7 +135,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 			}
 
-			if (e->obj->GetType() == PIPE)
+			else if (e->obj->GetType() == PIPE)
 			{
 
 				if (this->state == KOOPAS_STATE_BALL) {
@@ -134,7 +148,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						this->vx = KOOPAS_BALL_SPEED * dt;
 					}
 				}
-				if (this->state == KOOPAS_STATE_WALKING) {
+				else if (this->state == KOOPAS_STATE_WALKING) {
 					if (e->nx < 0) {
 						this->nx = -1;
 						this->vx = -KOOPAS_WALKING_SPEED * dt;
@@ -144,7 +158,30 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						this->vx = KOOPAS_WALKING_SPEED * dt;
 					}
 				}
+			}
 
+			else if (e->obj->GetType() == PLATFORM) {
+
+				if (this->state == KOOPAS_STATE_BALL) {
+					if (e->nx < 0) {
+						this->nx = -1;
+						this->vx = -KOOPAS_BALL_SPEED * dt;
+					}
+					else if (e->nx > 0) {
+						this->nx = 1;
+						this->vx = KOOPAS_BALL_SPEED * dt;
+					}
+				}
+				else if (this->state == KOOPAS_STATE_WALKING) {
+					if (e->nx < 0) {
+						this->nx = -1;
+						this->vx = -KOOPAS_WALKING_SPEED * dt;
+					}
+					else if (e->nx > 0) {
+						this->nx = 1;
+						this->vx = KOOPAS_WALKING_SPEED * dt;
+					}
+				}
 			}
 		}
 	}
@@ -154,26 +191,48 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 void CKoopas::Render()
 {
 	int ani = -1;
-	if (state == KOOPAS_STATE_DIE) {
-		ani = KOOPAS_ANI_DIE;
-	}
-	else if (state == KOOPAS_STATE_WALKING) {
-		if (vx > 0) ani = KOOPAS_ANI_WALKING_RIGHT;
-		else ani = KOOPAS_ANI_WALKING_LEFT;
-	}
-	else if (state == KOOPAS_STATE_DEFEND) {
-		ani = KOOPAS_ANI_DEFEND;
-	}
-		
-	else if (state == KOOPAS_STATE_BALL) {
-		ani = KOOPAS_ANI_BALL;
-	}
-	if (state == KOOPAS_STATE_REVIVE) {
+	if (model == KOOPAS_MODEL_RED) {
+		if (state == KOOPAS_STATE_DIE) {
+			ani = KOOPAS_ANI_RED_DIE;
+		}
+		else if (state == KOOPAS_STATE_WALKING) {
+			if (vx > 0) ani = KOOPAS_ANI_RED_WALKING_RIGHT;
+			else ani = KOOPAS_ANI_RED_WALKING_LEFT;
+		}
+		else if (state == KOOPAS_STATE_DEFEND) {
+			ani = KOOPAS_ANI_RED_DEFEND;
+		}
+
+		else if (state == KOOPAS_STATE_BALL) {
+			ani = KOOPAS_ANI_RED_BALL;
+		}
+
 	}
 
+	else {
+		if (state == KOOPAS_STATE_DIE) {
+			ani = KOOPAS_ANI_GREEN_DIE;
+		}
+		else if (state == KOOPAS_STATE_WALKING) {
+			if (vx > 0) ani = KOOPAS_ANI_GREEN_WALKING_RIGHT;
+			else ani = KOOPAS_ANI_GREEN_WALKING_LEFT;
+		}
+		else if (state == KOOPAS_STATE_DEFEND) {
+			ani = KOOPAS_ANI_GREEN_DEFEND;
+		}
+
+		else if (state == KOOPAS_STATE_BALL) {
+			ani = KOOPAS_ANI_GREEN_BALL;
+		}
+		else if (state == KOOPAS_STATE_FLY) {
+			if (vx > 0) ani = KOOPAS_ANI_GREEN_FLY_RIGHT;
+			else ani = KOOPAS_ANI_GREEN_FLY_LEFT;
+		}
+	}
+	
 	animation_set->at(ani)->Render(x, y);
 
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void CKoopas::SetState(int state)
@@ -189,10 +248,7 @@ void CKoopas::SetState(int state)
 		vy = MARIO_DIE_DEFLECT_SPEED*dt;
 		break;
 	case KOOPAS_STATE_WALKING:
-		if ( nx > 0 )
-			vx = KOOPAS_WALKING_SPEED * dt;
-		else
-			vx = -KOOPAS_WALKING_SPEED * dt;
+		
 		break;
 	case KOOPAS_STATE_DEFEND:
 		vx = 0;

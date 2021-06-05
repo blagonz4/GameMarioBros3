@@ -11,6 +11,7 @@ FirePlant::FirePlant(CMario* mario)
 	timeDelayAttack = 0;
 	this->marioRange = marioRange;
 	SetState(FIRE_PLANT_STATE_HIDING);
+	eType = Type::FIREPLANT;
 	
 }
 void FirePlant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
@@ -27,44 +28,28 @@ void FirePlant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	CalcPotentialCollisions(coObjects, coEvents);
 
 	if (CheckObjectInCamera(this))//TRONG CAMERA THI CHUI LEN
-		if (!isGrowUp) 
+		if (!isGrowUp && isHiding) {
 			SetState(FIRE_PLANT_STATE_GROW_UP);
+		}
+
+	if (!CheckObjectInCamera(this)) {
+		SetState(FIRE_PLANT_STATE_HIDING);
+		timeAttack = 0;
+		timeDelayAttack = 0;
+		timeToHide = 0;
+		vy = 0;
+	}
+		
 
 	if (isGrowUp) {//DANG CHUI LEN SE SET TIMER
-		timeToAttack += dt;
-	}
-
-
-	if (timeToAttack > 0 && timeToAttack <= 1000) {//THOI GIAN DE CAY CHUI TU CONG LEN
 		vy = -MARIO_GRAVITY * dt;
-	}		
-	else if (timeToAttack > 1000) {//THOI GIAN TRUOC KHI KHAC LUA
-		vy = 0;
-		SetState(FIRE_PLANT_STATE_ATTACK);
-		timeAttack += dt;
-	}
-
-	if (timeAttack >= 1000) {//KHAC LUA XONG HOLD 1 XIU		
-		if (isAttacking) {
-			SetState(FIRE_PLANT_STATE_HIDING);
-			timeToAttack = 0;
+		if (y < 338) {
+			vy = 0;
+			SetState(FIRE_PLANT_STATE_ATTACK);
 		}
-		timeToHide += dt;
-		timeDelayAttack += dt;
 	}
 
-	if (timeToHide > 0 && timeToHide <= 700) {//HOLD XONG CHUI XUONG LAI
-		vy = MARIO_GRAVITY * dt;
-	}		
-	else if (timeToHide > 700) vy = 0;
-
-	if (timeDelayAttack > 5000) {	
-		SetState(FIRE_PLANT_STATE_GROW_UP);
-		timeToHide = 0;
-		timeDelayAttack = 0;
-	}
-
-	if (state == FIRE_PLANT_STATE_ATTACK) {
+	if (isAttacking) {
 		if (listFire.size() < 1) {
 			FireBall *fire = new FireBall(this->x,
 											this->y,
@@ -73,19 +58,38 @@ void FirePlant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			fire->nx = this->nx;
 			listFire.push_back(fire);
 		}
+		timeAttack += dt;
 	}
+
+
+	if (timeAttack >= 1000) {//KHAC LUA XONG HOLD 1 XIU		
+		SetState(FIRE_PLANT_STATE_HIDING);	
+		timeAttack = 0;
+	}
+
+	if (listFire.size() == 1 && CheckObjectInCamera(this)) {
+		timeToHide += dt;
+		timeDelayAttack += dt;
+	}
+	
+
+	if (timeToHide > 1000) {//HOLD XONG CHUI XUONG LAI
+		vy = MARIO_GRAVITY * dt;
+		if (y > 380) {
+			vy = 0;			
+		}
+		if (timeToHide > 3000) {
+			SetState(FIRE_PLANT_STATE_HIDING);
+			timeToHide = 0;
+		}
+	}		
+
 	for (size_t i = 0; i < listFire.size(); i++) {
 		listFire[i]->Update(dt, coObjects);
 		if (!CheckObjectInCamera(listFire.at(i)) || listFire.at(i)->isFinish == true) {
 			listFire.erase(listFire.begin() + i);
 		}
 	}
-		
-	//DebugOut(L"-------------------------------------- \n");
-	//DebugOut(L"timeAttack: %d \n", timeAttack);
-	//DebugOut(L"timeToHide: %d \n", timeToHide);
-	//DebugOut(L"timeDelayAttack: %d \n", timeDelayAttack);
-	//DebugOut(L"-------------------------------------- \n");
 
 	if (coEvents.size() == 0)
 	{

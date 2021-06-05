@@ -4,7 +4,7 @@
 
 Platform::Platform(float w, float h)
 {
-	//eType = Type::PLATFORM;
+	eType = Type::PLATFORM;
 	this->width = w;
 	this->height = h;
 }

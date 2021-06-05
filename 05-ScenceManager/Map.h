@@ -33,7 +33,7 @@ public:
 		CamX = x;
 		CamY = y;
 	}
-	int GetMapWidth();
-	int GetMapHeight();
+	float GetMapWidth();
+	float GetMapHeight();
 
 };

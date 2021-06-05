@@ -94,13 +94,16 @@ enum ObjectType {
 #define MAX_SCENE_LINE 1024
 #define SCENE_TEST 1
 //-----------------------------Goomba
-#define GOOMBA_WALKING_SPEED					0.005
+#define GOOMBA_WALKING_SPEED					0.005f
 
 #define GOOMBA_BBOX_WIDTH						16
 #define GOOMBA_WING_BBOX_WIDTH					20
 #define GOOMBA_BBOX_HEIGHT						15
 #define GOOMBA_WING_BBOX_HEIGHT					24
 #define GOOMBA_BBOX_HEIGHT_DIE					9
+
+#define GOOMBA_MODEL_NORMAL						1
+#define GOOMBA_MODEL_WING						2
 
 
 #define GOOMBA_STATE_DIE						100
@@ -121,8 +124,11 @@ enum ObjectType {
 #define KOOPAS_WALK_HITBOX_WIDTH	16
 #define KOOPAS_WALK_HITBOX_HEIGHT	27
 
+#define KOOPAS_MODEL_RED			1
+#define KOOPAS_MODEL_GREEN			2
 
 #define KOOPAS_WALKING_SPEED		0.003f
+#define	KOOPAS_FLY_SPEED			0.04f
 #define KOOPAS_BALL_SPEED			0.03f
 #define KOOPAS_BBOX_WIDTH			16
 #define KOOPAS_BBOX_HEIGHT			26
@@ -133,13 +139,20 @@ enum ObjectType {
 #define KOOPAS_STATE_BALL			300
 #define KOOPAS_STATE_REVIVE			400	//come back up side down
 #define KOOPAS_STATE_DIE			500
+#define KOOPAS_STATE_FLY			600
 
-#define KOOPAS_ANI_WALKING_LEFT		0
-#define KOOPAS_ANI_WALKING_RIGHT	1
-#define KOOPAS_ANI_DEFEND			2
-#define KOOPAS_ANI_BALL				3		
-#define KOOPAS_ANI_DIE				4
-
+#define KOOPAS_ANI_RED_WALKING_LEFT			0
+#define KOOPAS_ANI_RED_WALKING_RIGHT		1
+#define KOOPAS_ANI_RED_DEFEND				2
+#define KOOPAS_ANI_RED_BALL					3		
+#define KOOPAS_ANI_GREEN_WALKING_LEFT		4
+#define KOOPAS_ANI_GREEN_WALKING_RIGHT		5
+#define KOOPAS_ANI_GREEN_DEFEND				6
+#define KOOPAS_ANI_GREEN_BALL				7		
+#define KOOPAS_ANI_GREEN_FLY_RIGHT			8
+#define KOOPAS_ANI_GREEN_FLY_LEFT			9
+#define KOOPAS_ANI_RED_DIE					10
+#define KOOPAS_ANI_GREEN_DIE				11
 //-----------------------------FIRE PLANT----------------------------
 #define DISTANCE_SAFE_ZONE				25
 

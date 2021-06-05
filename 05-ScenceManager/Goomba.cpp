@@ -5,7 +5,7 @@ CGoomba::CGoomba(float model, float direction)
 {	
 	this->model = model;
 	nx = direction;
-	Health = (this->model == 1) ? 1 : 2;
+	Health = (this->model == GOOMBA_MODEL_NORMAL) ? 1 : 2;
 	eType = Type::GOOMBA;
 	objType = ObjectType::ENEMY;
 }
@@ -104,12 +104,12 @@ void CGoomba::Render()
 {
 	int ani = -1;
 	if (state == GOOMBA_STATE_DIE) {
-		if (model == 1)
+		if (model == GOOMBA_MODEL_NORMAL)
 			ani = GOOMBA_ANI_DIE;
 		else ani = GOOMBA_ANI_WING_DIE;
 	}
 	else {
-		if (model == 2) {
+		if (model == GOOMBA_MODEL_WING){
 			if (Health == 2) {
 				if (vy > 0)
 					ani = GOOMBA_ANI_WING_FALLING;
@@ -124,7 +124,7 @@ void CGoomba::Render()
 
 	animation_set->at(ani)->Render(x,y);
 
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void CGoomba::SetState(int state)
@@ -142,13 +142,13 @@ void CGoomba::GetBoundingBox(float &left, float &top, float &right, float &botto
 {
 	left = x;
 	top = y;
-	if (model == 1)
+	if (model == GOOMBA_MODEL_NORMAL)
 		right = x + GOOMBA_BBOX_WIDTH;
 	else right = x + GOOMBA_WING_BBOX_WIDTH;
 
 	if (state == GOOMBA_STATE_DIE)
 		bottom = y + GOOMBA_BBOX_HEIGHT_DIE;
-	else if (model == 1 || Health == 1)
+	else if (model == GOOMBA_MODEL_NORMAL || Health == 1)
 		bottom = y + GOOMBA_BBOX_HEIGHT;
 	else bottom = y + GOOMBA_WING_BBOX_HEIGHT;
 

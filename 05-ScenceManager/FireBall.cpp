@@ -44,10 +44,17 @@ void FireBall::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
 		x += min_tx * dx + nx * 0.4f;
 		y += min_ty * dy + ny * 0.1f;
+
 		if (ny != 0 && defineVy == FIRE_GRAVITY)
 		{	
 			vy = -FIRE_BOUNCE_SPEED_Y ;
 		}
+		//
+		if (defineVy != FIRE_GRAVITY) {
+			if (nx != 0) vx =0;
+			if (ny != 0) vy =0;
+		}
+		
 
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{
@@ -68,6 +75,28 @@ void FireBall::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			else if (e->obj->GetType() == PIPE) {
 				if (e->nx != 0) 
 					this->isFinish = true;
+			}
+			
+			else if (e->obj->GetType() == MARIO) {
+				
+				if (e->obj->untouchable == 0) {
+					
+					if (e->obj->level > MARIO_LEVEL_SMALL)
+					{
+						
+						e->obj->level = MARIO_LEVEL_SMALL;
+						e->obj->StartUntouchable();
+					}
+					else
+						e->obj->SetState(MARIO_STATE_DIE);
+				}
+			}
+
+			else if (e->obj->GetType() == PLATFORM) {
+				if (defineVy != FIRE_GRAVITY) {
+					if ( e->nx != 0 )	this->isFinish = true;
+					else { x += dx;	y += dy; }
+				}	
 			}
 		}
 	}
