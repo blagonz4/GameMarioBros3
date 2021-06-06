@@ -24,11 +24,13 @@
 #include "QuestionBrick.h"
 #include "GoldBrick.h"
 #include "Coin.h"
+#include "PSwitch.h"
 class CPlayScene: public CScene
 {
 private:
 	float CamX = 0, CamY = 0;
 protected: 
+	bool isHavePSwitch = false;
 	CMario* player;					// A play scene has to have player, right? 
 	CGame* game = CGame::GetInstance();
 	Map* map;
@@ -49,7 +51,7 @@ public:
 	virtual void Update(DWORD dt);
 	virtual void Render();
 	virtual void Unload();
-
+	void GoldBrickDestroy(int model, float x, float y);
 
 	CMario * GetPlayer() { return player; } 
 
@@ -62,6 +64,7 @@ public:
 	virtual void KeyState(BYTE *states);
 	virtual void OnKeyDown(int KeyCode);
 	virtual void OnKeyUp(int KeyCode) ;
+	
 	CPlayScenceKeyHandler(CScene *s) :CScenceKeyHandler(s) {};
 };
 

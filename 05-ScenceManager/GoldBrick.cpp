@@ -3,7 +3,7 @@
 GoldBrick::GoldBrick(float x, float y, float model)
 {
 	this->model = model;
-	this->Health = 1;
+	//this->Health = 1;
 	startX = x; startY = y;
 	minY = y - QUESTION_BRICK_MIN_Y;
 	eType = Type::GOLDBRICK;
@@ -13,14 +13,14 @@ void GoldBrick::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	CGameObject::Update(dt);
 	y += dy;
-	if (Health == 0)
-	{
-		if (model == GOLD_BRICK_STATE_IDLE_COIN)
-		{
-			isFinish = true;
-		}
-		else SetState(GOLD_BRICK_STATE_UNBOX);
-	}
+	//if (Health == 0)
+	//{
+	//	if (model == GOLD_BRICK_MODEL_COIN)
+	//	{
+	//		isFinish = true;
+	//	}
+	//	else SetState(GOLD_BRICK_STATE_UNBOX);
+	//}
 	if (y <= minY)
 	{
 		vy = QUESTION_BRICK_SPEED_UP * dt;
@@ -30,14 +30,16 @@ void GoldBrick::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		y = startY;
 		vy = 0;
 	}
+	
 	if (state == GOLD_BRICK_STATE_IDLE_COIN)
 	{
-		TimeTranform += dt;
+		timeTransform += dt;
 	}
-	if (TimeTranform > 2000)
+	if (timeTransform > TIME_FROM_COIN_TO_BRICK)
 	{
-		SetState(GOLD_BRICK_STATE_BOX);
+		this->SetState(GOLD_BRICK_STATE_BOX);
 	}
+	
 }
 void GoldBrick::GetBoundingBox(float& l, float& t, float& r, float& b)
 {
@@ -58,9 +60,10 @@ void GoldBrick::Render()
 		ani = GOLD_BRICK_ANI_BOX;
 		if (state == GOLD_BRICK_STATE_UNBOX)
 			ani = GOLD_BRICK_ANI_UNBOX;
-		if (state == GOLD_BRICK_STATE_IDLE_COIN)
-			ani = GOLD_BRICK_STATE_IDLE_COIN;
 	}
+	else if (eType == Type::COIN)
+		ani = GOLD_BRICK_ANI_IDLE_COIN;
+
 	animation_set->at(ani)->Render(x, y);
 }
 void GoldBrick::SetState(int state)
@@ -69,18 +72,13 @@ void GoldBrick::SetState(int state)
 	switch (state)
 	{
 	case GOLD_BRICK_STATE_BOX:
-	{
-		
-	}
-	case GOLD_BRICK_STATE_UNBOX:
-	{
-		
-	}
-	case GOLD_BRICK_STATE_IDLE_COIN:
-	{
-		if (model == 1)
-			eType = Type::GOLDBRICK;
-	}
+		eType = Type::GOLDBRICK;
+		break;
+	case GOLD_BRICK_STATE_UNBOX:		
+		break;
+	case GOLD_BRICK_STATE_IDLE_COIN:		
+		eType = Type::COIN;
+		break;
 	}
 }
 GoldBrick::~GoldBrick()

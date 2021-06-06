@@ -280,7 +280,44 @@ void CPlayScene::Update(DWORD dt)
 
 	for (size_t i = 0; i < objects.size(); i++)
 	{
-		objects[i]->Update(dt, &coObjects);
+		LPGAMEOBJECT e = objects[i];
+		if (objects[i]->CheckObjectInCamera(objects[i]))
+			objects[i]->Update(dt, &coObjects);
+
+		if (e->GetType() == GOLDBRICK)
+		{
+			GoldBrick* gb = dynamic_cast<GoldBrick*>(e);
+			if (gb->state == GOLD_BRICK_STATE_UNBOX)
+			{
+				if (!isHavePSwitch) {
+					objects.push_back(new PSwitch(gb->x, gb->y - QUESTION_BRICK_BBOX_HEIGHT));
+					isHavePSwitch = true;
+				}
+
+			}
+		}
+		if (e->GetType() == PSWITCH)
+		{
+			PSwitch* pswitch = dynamic_cast<PSwitch*>(e);
+			if (pswitch->GetState() == PSWITCH_STATE_USED && !pswitch->isUsed)
+			{
+				for (UINT i = 0; i < objects.size(); i++)
+				{
+					if (objects[i]->GetType() == GOLDBRICK)
+					{
+						GoldBrick* goldbrick = dynamic_cast<GoldBrick*>(objects[i]);
+						if (goldbrick->model == GOLD_BRICK_MODEL_COIN)
+						{
+							if (goldbrick->CheckObjectInCamera(goldbrick))
+							{
+								goldbrick->SetState(GOLD_BRICK_STATE_IDLE_COIN);
+							}
+						}
+					}
+				}
+				pswitch->isUsed = true;
+			}
+		}
 		if (objects.at(i)->isFinish)
 			objects.erase(objects.begin() +i);
 	}
@@ -464,5 +501,41 @@ void CPlayScenceKeyHandler::OnKeyUp(int KeyCode) {
 	case DIK_Q:
 		mario->isHolding = false;
 		mario->SetState(MARIO_STATE_KICK);
+	}
+}
+
+
+void CPlayScene::GoldBrickDestroy(int model, float x, float y)
+{
+	switch (model)
+	{
+	case GOLD_BRICK_MODEL_PSWITCH:
+	{
+		/*PSwitch* pswitch = new PSwitch(x, y);
+		if (!pswitch->CheckObjectInCamera(pswitch))*/
+			objects.push_back(new PSwitch(x, y));
+		break;
+	}
+	//case GB_CONTAIN_MUSHROOM_1_UP:
+	//{
+	//	ListItem.push_back(new CMushRoom(x, y + 10, MUSHROOM_GREEN));
+	//	break;
+	//}
+	//case GB_CONTAIN_POWER_UP:
+	//{
+	//	if (player->level == MARIO_LEVEL_SMALL)
+	//	{
+	//		ListItem.push_back(new CMushRoom(x, y + 10, MUSHROOM_RED));
+	//	}
+	//	if (player->level == MARIO_LEVEL_BIG)
+	//	{
+	//		ListItem.push_back(new Leaf(x, y));
+	//	}
+	//	if (player->level == MARIO_LEVEL_RACCOON || player->level == MARIO_LEVEL_FIRE)
+	//	{
+	//		ListItem.push_back(new Flower(x, y));
+	//	}
+	//	break;
+	//}
 	}
 }

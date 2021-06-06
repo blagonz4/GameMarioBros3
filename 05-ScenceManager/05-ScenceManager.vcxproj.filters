@@ -91,6 +91,12 @@
     <Filter Include="Game Object\Item">
       <UniqueIdentifier>{50194965-8690-4247-b4cc-580b2123fab0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game Object\Item\Coin">
+      <UniqueIdentifier>{5542244e-8ee3-4272-98fe-f2abb84c6155}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Object\Item\PSwitch">
+      <UniqueIdentifier>{60a36f2a-9548-4d09-8d90-5e2349673b3b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animations.cpp">
@@ -163,7 +169,10 @@
       <Filter>Game Object\Brick\GoldBrick</Filter>
     </ClCompile>
     <ClCompile Include="Coin.cpp">
-      <Filter>Game Object\Item</Filter>
+      <Filter>Game Object\Item\Coin</Filter>
+    </ClCompile>
+    <ClCompile Include="PSwitch.cpp">
+      <Filter>Game Object\Item\PSwitch</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -240,7 +249,10 @@
       <Filter>Game Object\Brick\GoldBrick</Filter>
     </ClInclude>
     <ClInclude Include="Coin.h">
-      <Filter>Game Object\Item</Filter>
+      <Filter>Game Object\Item\Coin</Filter>
+    </ClInclude>
+    <ClInclude Include="PSwitch.h">
+      <Filter>Game Object\Item\PSwitch</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

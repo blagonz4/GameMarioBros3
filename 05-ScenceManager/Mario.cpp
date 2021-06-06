@@ -7,6 +7,7 @@
 #include "QuestionBrick.h"
 #include "GoldBrick.h"
 #include "Coin.h"
+#include "PSwitch.h"
 CMario::CMario(float x, float y) 
 {
 	level = MARIO_LEVEL_BIG;
@@ -242,18 +243,36 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			}
 			else if (e->obj->GetType() == GOLDBRICK) { // if e->obj is fireball 
 				GoldBrick* gb = dynamic_cast<GoldBrick*>(e->obj);
+				int model = gb->model;
 				if (e->ny > 0)
 				{
-					if (gb->Health == 1)
-					{
-						gb->vy = -QUESTION_BRICK_SPEED_UP * dt;
-						gb->Health = 0;
+					switch (model) {
+					case GOLD_BRICK_MODEL_COIN:
+						if (gb->y >= gb->minY) {
+							gb->vy = -QUESTION_BRICK_SPEED_UP * dt;
+						}
+							
+						//gb->SetState(GOLD_BRICK_STATE_IDLE_COIN);
+						break;
+					case GOLD_BRICK_MODEL_PSWITCH:
+						gb->SetState(GOLD_BRICK_STATE_UNBOX);
+						//gb->Health--;
+						break;
 					}
 				}
 			}
-			else if (e->obj->GetType() == COIN) { // if e->obj is fireball 
-				Coin* coin = dynamic_cast<Coin*>(e->obj);
-				coin->isFinish = true;
+			else if (e->obj->GetType() == COIN) { 
+				//Coin* coin = dynamic_cast<Coin*>(e->obj);
+				e->obj->isFinish = true;
+			}
+			if (e->obj->GetType() == PSWITCH)
+			{
+				PSwitch* pswitch = dynamic_cast<PSwitch*>(e->obj);
+				if (e->ny < 0)
+				{
+					pswitch->SetState(PSWITCH_STATE_USED);
+					pswitch->SetPosition(pswitch->x, pswitch->y + PSWITCH_SMALLER);
+				}
 			}
 		}
 	}

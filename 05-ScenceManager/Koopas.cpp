@@ -171,15 +171,37 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				GoldBrick* gb = dynamic_cast<GoldBrick*>(e->obj);
 				if (e->nx != 0) {
 					this->nx *= -1;
-					if (this->state == KOOPAS_STATE_BALL) {
+					this->vx = this->nx * KOOPAS_WALKING_SPEED * dt;
+					if (state == KOOPAS_STATE_BALL) {
 						this->vx = this->nx * KOOPAS_BALL_SPEED * dt;
-						if (gb->Health == 1)
+						int model = gb->model;
+						switch (model)
 						{
-							gb->vy = -QUESTION_BRICK_SPEED_UP * dt;
+						case GOLD_BRICK_MODEL_COIN:
+							//gb->SetState(GOLD_BRICK_STATE_IDLE_COIN);
 							gb->isFinish = true;
+							break;
+						case GOLD_BRICK_MODEL_PSWITCH:
+						{
+							gb->SetState(GOLD_BRICK_STATE_UNBOX);
+							/*if (gb->GetState() != GOLD_BRICK_STATE_UNBOX)
+							{
+								gb->SetState(GOLD_BRICK_STATE_UNBOX);
+							}*/
+							break;
+						}
+						//case GOLD_BRICK_MODEL_MUSHROOM_1_UP:
+						//{
+						//	if (gb->Health != 0)
+						//	{
+						//		gb->vy = -QUESTION_BRICK_SPEED_UP * dt;
+						//		gb->Health--;
+						//	}
+						//	break;
+						//}
 						}
 					}
-				}					
+				}								
 			}
 		}
 	}

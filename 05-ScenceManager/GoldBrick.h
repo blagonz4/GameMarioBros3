@@ -4,9 +4,10 @@
 
 class GoldBrick : public CGameObject
 {
-	DWORD TimeTranform;
+	DWORD timeTransform;
 public:
 	float model;
+	int isUnbox;
 	float startX, startY, minY;
 	GoldBrick(float x, float y, float model);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);

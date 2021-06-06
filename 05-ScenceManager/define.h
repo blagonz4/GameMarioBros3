@@ -41,6 +41,7 @@ enum Type {
 	QUESTIONBRICK = 8,
 	GOLDBRICK = 9,
 	COIN = 10,
+	PSWITCH = 11,
 };
 
 enum ObjectType {
@@ -231,14 +232,16 @@ enum ObjectType {
 
 #define QUESTION_BRICK_ANI_BOX				0
 #define QUESTION_BRICK_ANI_EMPTY			1
+#define	QUESTION_BRICK_ANI_POWER_UP			2
 
 #define QUESTION_BRICK_MIN_Y				15
 #define QUESTION_BRICK_SPEED_UP				0.01f
 
-#define	QB_MODEL_1UP_ANI					2
 #define QUESTION_BRICK_MODEL_COIN			1
 #define QUESTION_BRICK_MODEL_POWER_UP		2
 //-----------------------
+#define	TIME_FROM_COIN_TO_BRICK				5000
+
 #define GOLD_BRICK_ANI_BOX					0
 #define GOLD_BRICK_ANI_UNBOX				1
 #define GOLD_BRICK_ANI_IDLE_COIN			2
@@ -246,6 +249,21 @@ enum ObjectType {
 #define GOLD_BRICK_STATE_UNBOX				200
 #define GOLD_BRICK_STATE_IDLE_COIN			300
 
+#define GOLD_BRICK_MODEL_COIN					1
+#define GOLD_BRICK_MODEL_PSWITCH				2
+#define GOLD_BRICK_MODEL_MUSHROOM_1_UP			3
+#define GOLD_BRICK_MODEL_MODEL_MANY_COIN		4
+#define GOLD_BRICK_MODEL_POWER_UP				5
+//---------------------PSwitch
+#define PSWITCH_BBOX_HEIGHT					16
+#define PSWITCH_BBOX_USED_HEIGHT			7
+#define PSWITCH_BBOX_WIDTH					16
+#define PSWITCH_ANI							0
+#define PSWITCH_ANI_USED					1
+#define LOAD_PSWITCH_FROM_TXT				11
+#define PSWITCH_STATE_NORMAL				100
+#define PSWITCH_STATE_USED					200
+#define PSWITCH_SMALLER						10
 
 //----------------------Mario------------------------
 #define MARIO_WALKING_SPEED					0.00012f 
@@ -279,76 +297,6 @@ enum ObjectType {
 #define MARIO_STATE_SPIN					15000	//racoon
 #define MARIO_STATE_RUN_MAXSPEED			16000
 
-////----------------------Mario SMALL------------------------
-//#define MARIO_ANI_SMALL_IDLE_RIGHT			100
-//#define MARIO_ANI_SMALL_IDLE_LEFT			101
-//#define MARIO_ANI_SMALL_WALK_RIGHT			102
-//#define MARIO_ANI_SMALL_WALK_LEFT			103
-//#define MARIO_ANI_SMALL_RUN_RIGHT			104
-//#define MARIO_ANI_SMALL_RUN_LEFT			105
-//#define MARIO_ANI_SMALL_TURN_RIGHT			106
-//#define MARIO_ANI_SMALL_TURN_LEFT			107
-//#define MARIO_ANI_SMALL_JUMP_RIGHT			108
-//#define MARIO_ANI_SMALL_JUMP_LEFT			109
-//#define MARIO_ANI_SMALL_FLY_RIGHT			110
-//#define MARIO_ANI_SMALL_FLY_LEFT			111
-////----------------------Mario BIG------------------------
-//
-//
-//#define MARIO_ANI_BIG_IDLE_RIGHT			200
-//#define MARIO_ANI_BIG_IDLE_LEFT				201
-//#define MARIO_ANI_BIG_WALK_RIGHT			202
-//#define MARIO_ANI_BIG_WALK_LEFT				203
-//#define MARIO_ANI_BIG_RUN_RIGHT				204
-//#define MARIO_ANI_BIG_RUN_LEFT				205
-//#define MARIO_ANI_BIG_JUMP_RIGHT			206
-//#define MARIO_ANI_BIG_JUMP_LEFT				207
-//#define MARIO_ANI_BIG_SIT_RIGHT				208
-//#define MARIO_ANI_BIG_SIT_LEFT				209
-//#define MARIO_ANI_BIG_TURN_RIGHT			210
-//#define MARIO_ANI_BIG_TURN_LEFT				211
-//#define MARIO_ANI_BIG_RUN_RIGHT_MAXSPEED	212
-//#define MARIO_ANI_BIG_RUN_LEFT_MAXSPEED		213
-//#define MARIO_ANI_BIG_FLY_RIGHT				214
-//#define MARIO_ANI_BIG_FLY_LEFT				215
-////----------------------Mario FIRE------------------------
-//
-//#define MARIO_ANI_FIRE_IDLE_RIGHT			300
-//#define MARIO_ANI_FIRE_IDLE_LEFT			301
-//#define MARIO_ANI_FIRE_WALK_RIGHT			302
-//#define MARIO_ANI_FIRE_WALK_LEFT			303
-//#define MARIO_ANI_FIRE_RUN_RIGHT			304
-//#define MARIO_ANI_FIRE_RUN_LEFT				305
-//#define MARIO_ANI_FIRE_JUMP_RIGHT			306
-//#define MARIO_ANI_FIRE_JUMP_LEFT			307
-//#define MARIO_ANI_FIRE_SIT_RIGHT			308
-//#define MARIO_ANI_FIRE_SIT_LEFT				309
-//#define MARIO_ANI_FIRE_TURN_RIGHT			310
-//#define MARIO_ANI_FIRE_TURN_LEFT			311
-//#define MARIO_ANI_FIRE_RUN_RIGHT_MAXSPEED	312
-//#define MARIO_ANI_FIRE_RUN_LEFT_MAXSPEED	313
-//#define MARIO_ANI_FIRE_FLY_RIGHT			314
-//#define MARIO_ANI_FIRE_FLY_LEFT				315
-////----------------------Mario RACOON------------------------
-//
-//#define MARIO_ANI_RACOON_IDLE_RIGHT			400
-//#define MARIO_ANI_RACOON_IDLE_LEFT			401
-//#define MARIO_ANI_RACOON_WALK_RIGHT			402
-//#define MARIO_ANI_RACOON_WALK_LEFT			403
-//#define MARIO_ANI_RACOON_RUN_RIGHT			404
-//#define MARIO_ANI_RACOON_RUN_LEFT			405
-//#define MARIO_ANI_RACOON_JUMP_RIGHT			406
-//#define MARIO_ANI_RACOON_JUMP_LEFT			407
-//#define MARIO_ANI_RACOON_SIT_RIGHT			408
-//#define MARIO_ANI_RACOON_SIT_LEFT			409
-//#define MARIO_ANI_RACOON_TURN_RIGHT			410
-//#define MARIO_ANI_RACOON_TURN_LEFT			411
-//#define MARIO_ANI_RACOON_RUN_RIGHT_MAXSPEED	412
-//#define MARIO_ANI_RACOON_RUN_LEFT_MAXSPEED	413
-//#define MARIO_ANI_RACOON_FLY_RIGHT			414
-//#define MARIO_ANI_RACOON_FLY_LEFT			415
-//
-//#define MARIO_ANI_DIE						999
 //----------------------Mario SMALL------------------------
 #define MARIO_ANI_SMALL_IDLE_RIGHT			0
 #define MARIO_ANI_SMALL_IDLE_LEFT			1

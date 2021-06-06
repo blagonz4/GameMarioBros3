@@ -138,6 +138,7 @@
     <ClCompile Include="Pipe.cpp" />
     <ClCompile Include="Platform.cpp" />
     <ClCompile Include="Portal.cpp" />
+    <ClCompile Include="PSwitch.cpp" />
     <ClCompile Include="QuestionBrick.cpp" />
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="Game.cpp" />
@@ -165,6 +166,7 @@
     <ClInclude Include="Pipe.h" />
     <ClInclude Include="Platform.h" />
     <ClInclude Include="Portal.h" />
+    <ClInclude Include="PSwitch.h" />
     <ClInclude Include="QuestionBrick.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="Game.h" />
