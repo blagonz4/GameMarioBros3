@@ -38,6 +38,9 @@ enum Type {
 	FIRE = 5,
 	FIREPLANT = 6,
 	PIPE = 7,
+	QUESTIONBRICK = 8,
+	GOLDBRICK = 9,
+	COIN = 10,
 };
 
 enum ObjectType {
@@ -86,14 +89,15 @@ enum ObjectType {
 #define OBJECT_TYPE_FIRE_BALL			5
 #define OBJECT_TYPE_FIRE_PLANT			6
 #define OBJECT_TYPE_PIPE				7
-#define OBJECT_TYPE_BRICK				8
-#define OBJECT_TYPE_BITE_PLANT			9
+#define OBJECT_TYPE_QUESTION_BRICK		8
+#define OBJECT_TYPE_GOLD_BRICK			9
+#define OBJECT_TYPE_COIN				10	
 #define OBJECT_TYPE_PORTAL				50
 
 
 #define MAX_SCENE_LINE 1024
 #define SCENE_TEST 1
-//-----------------------------Goomba
+//-----------------------------Goomba---------------------------
 #define GOOMBA_WALKING_SPEED					0.005f
 
 #define GOOMBA_BBOX_WIDTH						16
@@ -126,6 +130,7 @@ enum ObjectType {
 
 #define KOOPAS_MODEL_RED			1
 #define KOOPAS_MODEL_GREEN			2
+#define KOOPAS_MODEL_GREEN_WING		3
 
 #define KOOPAS_WALKING_SPEED		0.003f
 #define	KOOPAS_FLY_SPEED			0.04f
@@ -171,24 +176,29 @@ enum ObjectType {
 
 #define FIRE_ENEMY_SPEED_Y_FAR			0.003f
 #define FIRE_ENEMY_SPEED_Y_NEAR			0.0025f
-#define FIRE_ENEMY_SPEED_X_NEAR			0.004f
-#define FIRE_ENEMY_SPEED_X_FAR			0.005f
+#define FIRE_ENEMY_SPEED_X_NEAR			0.003f
+#define FIRE_ENEMY_SPEED_X_FAR			0.003f
 
 #define FIRE_PLANT_BBOX_WIDTH			16
 #define FIRE_PLANT_RED_BBOX_HEIGHT		32
 #define FIRE_PLANT_GREEN_BBOX_HEIGHT	24
+//----------------------Red Plant---------------------
+#define	FIRE_PLANT_RED_ANI_LEFT_TOP					0
+#define FIRE_PLANT_RED_ANI_LEFT_BOTTOM				1
+#define FIRE_PLANT_RED_ANI_RIGHT_TOP				2
+#define FIRE_PLANT_RED_ANI_RIGHT_BOTTOM				3
+#define FIRE_PLANT_RED_ANI_ATTACK_LEFT_TOP			4
+#define FIRE_PLANT_RED_ANI_ATTACK_LEFT_BOTTOM		5
+#define FIRE_PLANT_RED_ANI_ATTACK_RIGHT_TOP			6
+#define FIRE_PLANT_RED_ANI_ATTACK_RIGHT_BOTTOM		7
+//----------------------Green Plant---------------------
+#define	FIRE_PLANT_GREEN_ANI_LEFT_TOP				8
+#define FIRE_PLANT_GREEN_ANI_LEFT_BOTTOM			9
+#define FIRE_PLANT_GREEN_ANI_RIGHT_TOP				10
+#define FIRE_PLANT_GREEN_ANI_RIGHT_BOTTOM			11
 
-#define	FIRE_PLANT_ANI_LEFT_TOP				0
-#define FIRE_PLANT_ANI_LEFT_BOTTOM			1
-#define FIRE_PLANT_ANI_RIGHT_TOP			2
-#define FIRE_PLANT_ANI_RIGHT_BOTTOM			3
-#define FIRE_PLANT_ANI_ATTACK_LEFT_TOP		4
-#define FIRE_PLANT_ANI_ATTACK_LEFT_BOTTOM	5
-#define FIRE_PLANT_ANI_ATTACK_RIGHT_TOP		6
-#define FIRE_PLANT_ANI_ATTACK_RIGHT_BOTTOM	7
-
-#define FIRE_PLANT_BBOX_HEIGHT
-
+//----------------------Bite Plant---------------------
+#define	BITE_PLANT_ANI_ATTACK						12
 #define PLANT_SPEED_GROW_UP				0.02f
 #define PLANT_SPEED_HIDDING				0.02f
 #define TIME_DELAY_GROW_UP				1500
@@ -200,6 +210,9 @@ enum ObjectType {
 #define FIRE_PLANT_STATE_ATTACK			2
 #define FIRE_PLANT_STATE_HIDING			3
 
+#define	FIRE_PLANT_RED					1
+#define FIRE_PLANT_GREEN				2
+#define BITE_PLANT						3
 //-------------------------Pipe-----------
 #define SHORT_PIPE 1
 #define MEDIUM_PIPE 2
@@ -210,8 +223,29 @@ enum ObjectType {
 #define PIPE_MEDIUM_BBOX_HEIGHT 48
 
 //--------------------Brick------------------------
-#define BRICK_BBOX_WIDTH  16
-#define BRICK_BBOX_HEIGHT 16
+#define BRICK_BBOX_WIDTH					16
+#define BRICK_BBOX_HEIGHT					16
+
+#define QUESTION_BRICK_BBOX_WIDTH			16
+#define QUESTION_BRICK_BBOX_HEIGHT			16
+
+#define QUESTION_BRICK_ANI_BOX				0
+#define QUESTION_BRICK_ANI_EMPTY			1
+
+#define QUESTION_BRICK_MIN_Y				15
+#define QUESTION_BRICK_SPEED_UP				0.01f
+
+#define	QB_MODEL_1UP_ANI					2
+#define QUESTION_BRICK_MODEL_COIN			1
+#define QUESTION_BRICK_MODEL_POWER_UP		2
+//-----------------------
+#define GOLD_BRICK_ANI_BOX					0
+#define GOLD_BRICK_ANI_UNBOX				1
+#define GOLD_BRICK_ANI_IDLE_COIN			2
+#define GOLD_BRICK_STATE_BOX				100
+#define GOLD_BRICK_STATE_UNBOX				200
+#define GOLD_BRICK_STATE_IDLE_COIN			300
+
 
 //----------------------Mario------------------------
 #define MARIO_WALKING_SPEED					0.00012f 
@@ -460,3 +494,8 @@ enum ObjectType {
 #define SHOOT_FIRE_RIGHT 0
 #define SHOOT_FIRE_LEFT 1
 #define LOAD_FIRE_FROM_FILE 5
+
+//------------------------COIN----------------------
+#define COIN_ANI 0
+#define COIN_WIDTH 16
+#define COIN_HEIGHT 16

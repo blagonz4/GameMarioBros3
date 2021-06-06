@@ -4,6 +4,9 @@
 #include "Goomba.h"
 #include "Platform.h"
 #include "ColorBlock.h"
+#include "QuestionBrick.h"
+#include "GoldBrick.h"
+#include "Coin.h"
 CMario::CMario(float x, float y) 
 {
 	level = MARIO_LEVEL_BIG;
@@ -148,6 +151,10 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				CKoopas *koopa = dynamic_cast<CKoopas *>(e->obj);
 				if (e->ny < 0)
 				{
+					if (koopa->model == KOOPAS_MODEL_GREEN_WING) {
+						koopa->model = 1;
+						koopa->SetState(KOOPAS_STATE_WALKING);
+					}						
 					if (koopa->GetState() == KOOPAS_STATE_DEFEND) {
 						vy = -MARIO_JUMP_DEFLECT_SPEED;
 						koopa->SetState(KOOPAS_STATE_BALL);
@@ -221,6 +228,32 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					else
 						SetState(MARIO_STATE_DIE);
 				}
+			}
+			else if (e->obj->GetType() == QUESTIONBRICK) { // if e->obj is fireball 
+				QuestionBrick* qb = dynamic_cast<QuestionBrick*>(e->obj);
+				if (e->ny > 0)
+				{
+					if (qb->Health == 1)
+					{
+						qb->vy = -QUESTION_BRICK_SPEED_UP *dt;
+						qb->Health = 0;
+					}
+				}
+			}
+			else if (e->obj->GetType() == GOLDBRICK) { // if e->obj is fireball 
+				GoldBrick* gb = dynamic_cast<GoldBrick*>(e->obj);
+				if (e->ny > 0)
+				{
+					if (gb->Health == 1)
+					{
+						gb->vy = -QUESTION_BRICK_SPEED_UP * dt;
+						gb->Health = 0;
+					}
+				}
+			}
+			else if (e->obj->GetType() == COIN) { // if e->obj is fireball 
+				Coin* coin = dynamic_cast<Coin*>(e->obj);
+				coin->isFinish = true;
 			}
 		}
 	}

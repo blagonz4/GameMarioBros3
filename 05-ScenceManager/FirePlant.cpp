@@ -3,7 +3,7 @@
 #include "Mario.h"
 #include "FireBall.h"
 
-FirePlant::FirePlant(CMario* mario)
+FirePlant::FirePlant(CMario* mario,float model)
 {
 	this->mario = mario;
 	timeHidding = 0;
@@ -12,7 +12,7 @@ FirePlant::FirePlant(CMario* mario)
 	this->marioRange = marioRange;
 	SetState(FIRE_PLANT_STATE_HIDING);
 	eType = Type::FIREPLANT;
-	
+	this->model = model;
 }
 void FirePlant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
@@ -43,14 +43,22 @@ void FirePlant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	if (isGrowUp) {//DANG CHUI LEN SE SET TIMER
 		vy = -MARIO_GRAVITY * dt;
-		if (y < 338) {
+		if (y < 338 && model == FIRE_PLANT_RED) {
+			vy = 0;
+			SetState(FIRE_PLANT_STATE_ATTACK);
+		}
+		if (y < 344 && model == FIRE_PLANT_GREEN) {
+			vy = 0;
+			SetState(FIRE_PLANT_STATE_ATTACK);
+		}
+		if (y < 361 && model == BITE_PLANT) {
 			vy = 0;
 			SetState(FIRE_PLANT_STATE_ATTACK);
 		}
 	}
 
 	if (isAttacking) {
-		if (listFire.size() < 1) {
+		if (listFire.size() < 1 && model != BITE_PLANT) {
 			FireBall *fire = new FireBall(this->x,
 											this->y,
 											this->vxFire,
@@ -67,16 +75,23 @@ void FirePlant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		timeAttack = 0;
 	}
 
-	if (listFire.size() == 1 && CheckObjectInCamera(this)) {
-		timeToHide += dt;
-		timeDelayAttack += dt;
-	}
+	if (listFire.size() == 1 )
+		if (CheckObjectInCamera(this)) {
+			timeToHide += dt;
+			timeDelayAttack += dt;
+		}
 	
 
 	if (timeToHide > 1000) {//HOLD XONG CHUI XUONG LAI
 		vy = MARIO_GRAVITY * dt;
-		if (y > 380) {
+		if (y > 380 && model == FIRE_PLANT_RED) {
 			vy = 0;			
+		}
+		if (y >368 && model == FIRE_PLANT_GREEN) {
+			vy = 0;
+		}
+		if (y < 384 && model == BITE_PLANT) {
+			vy = 0;
 		}
 		if (timeToHide > 3000) {
 			SetState(FIRE_PLANT_STATE_HIDING);
@@ -171,48 +186,46 @@ void FirePlant::Render()
 	//	return;
 	marioRange = GetCurrentMarioRange();
 
-	if (state == FIRE_PLANT_STATE_ATTACK)
+	if (model == FIRE_PLANT_RED){
+		if (state == FIRE_PLANT_STATE_ATTACK)
+		{
+			if (marioRange == LEFT_TOP_SIDE_NEAR || marioRange == LEFT_TOP_SIDE_FAR)
+				ani = FIRE_PLANT_RED_ANI_ATTACK_LEFT_TOP;
+			if (marioRange == LEFT_BOTTOM_SIDE_NEAR || marioRange == LEFT_BOTTOM_SIDE_FAR)
+				ani = FIRE_PLANT_RED_ANI_ATTACK_LEFT_BOTTOM;
+			if (marioRange == RIGHT_TOP_SIDE_NEAR || marioRange == RIGHT_TOP_SIDE_FAR)
+				ani = FIRE_PLANT_RED_ANI_ATTACK_RIGHT_TOP;
+			if (marioRange == RIGHT_BOTTOM_SIDE_NEAR || marioRange == RIGHT_BOTTOM_SIDE_FAR)
+				ani = FIRE_PLANT_RED_ANI_ATTACK_RIGHT_BOTTOM;
+		}
+		else if (state == FIRE_PLANT_STATE_GROW_UP)
+		{
+			if (marioRange == LEFT_TOP_SIDE_NEAR || marioRange == LEFT_TOP_SIDE_FAR)
+				ani = FIRE_PLANT_RED_ANI_LEFT_TOP;
+			if (marioRange == LEFT_BOTTOM_SIDE_NEAR || marioRange == LEFT_BOTTOM_SIDE_FAR)
+				ani = FIRE_PLANT_RED_ANI_LEFT_BOTTOM;
+			if (marioRange == RIGHT_TOP_SIDE_NEAR || marioRange == RIGHT_TOP_SIDE_FAR)
+				ani = FIRE_PLANT_RED_ANI_RIGHT_TOP;
+			if (marioRange == RIGHT_BOTTOM_SIDE_NEAR || marioRange == RIGHT_BOTTOM_SIDE_FAR)
+				ani = FIRE_PLANT_RED_ANI_RIGHT_BOTTOM;
+		}
+		else return;
+	}
+	else if (model == FIRE_PLANT_GREEN)
 	{
 		if (marioRange == LEFT_TOP_SIDE_NEAR || marioRange == LEFT_TOP_SIDE_FAR)
-		{
-			ani = FIRE_PLANT_ANI_ATTACK_LEFT_TOP;
-		}
-		if (marioRange == LEFT_BOTTOM_SIDE_NEAR || marioRange == LEFT_BOTTOM_SIDE_FAR)
-		{
-			ani = FIRE_PLANT_ANI_ATTACK_LEFT_BOTTOM;
-		}
-		if (marioRange == RIGHT_TOP_SIDE_NEAR || marioRange == RIGHT_TOP_SIDE_FAR)
-		{
-			ani = FIRE_PLANT_ANI_ATTACK_RIGHT_TOP;
-		}
-		if (marioRange == RIGHT_BOTTOM_SIDE_NEAR || marioRange == RIGHT_BOTTOM_SIDE_FAR)
-		{
-			ani = FIRE_PLANT_ANI_ATTACK_RIGHT_BOTTOM;
-		}
+				ani = FIRE_PLANT_GREEN_ANI_LEFT_TOP;
+		else if (marioRange == LEFT_BOTTOM_SIDE_NEAR || marioRange == LEFT_BOTTOM_SIDE_FAR)
+				ani = FIRE_PLANT_GREEN_ANI_LEFT_BOTTOM;
+		else if (marioRange == RIGHT_TOP_SIDE_NEAR || marioRange == RIGHT_TOP_SIDE_FAR)
+				ani = FIRE_PLANT_GREEN_ANI_RIGHT_TOP;
+		else if (marioRange == RIGHT_BOTTOM_SIDE_NEAR || marioRange == RIGHT_BOTTOM_SIDE_FAR)
+				ani = FIRE_PLANT_GREEN_ANI_RIGHT_BOTTOM;
+		else return;
 	}
-	else if (state == FIRE_PLANT_STATE_GROW_UP)
-	{
-		if (marioRange == LEFT_TOP_SIDE_NEAR || marioRange == LEFT_TOP_SIDE_FAR)
-		{
-			ani = FIRE_PLANT_ANI_LEFT_TOP;
-		}
-		if (marioRange == LEFT_BOTTOM_SIDE_NEAR || marioRange == LEFT_BOTTOM_SIDE_FAR)
-		{
-			ani = FIRE_PLANT_ANI_LEFT_BOTTOM;
-		}
-		if (marioRange == RIGHT_TOP_SIDE_NEAR || marioRange == RIGHT_TOP_SIDE_FAR)
-		{
-			ani = FIRE_PLANT_ANI_RIGHT_TOP;
-		}
-		if (marioRange == RIGHT_BOTTOM_SIDE_NEAR || marioRange == RIGHT_BOTTOM_SIDE_FAR)
-		{
-			ani = FIRE_PLANT_ANI_RIGHT_BOTTOM;
-		}
-	}
-	else
-	{
-		return;
-	}
+	else if (model == BITE_PLANT)
+			ani = BITE_PLANT_ANI_ATTACK;
+	else return;
 
 	for (size_t i = 0; i < listFire.size(); i++)
 	{
@@ -220,7 +233,7 @@ void FirePlant::Render()
 	}
 
 	animation_set->at(ani)->Render(x, y);
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void FirePlant::SetState(int state)

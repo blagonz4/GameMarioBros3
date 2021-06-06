@@ -80,13 +80,16 @@
       <UniqueIdentifier>{aef8aea9-e278-40bd-a750-041b86b0aabd}</UniqueIdentifier>
     </Filter>
     <Filter Include="Game Object\Plant">
-      <UniqueIdentifier>{5cc37685-f635-404a-aa5f-161671d66c5f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game Object\Plant\Fire Red">
       <UniqueIdentifier>{692880a8-b3bb-4e2d-abcc-e42fff4a0947}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game Object\Plant\Bite Green">
-      <UniqueIdentifier>{4ff4ce84-50ea-4fad-88ed-8d54e848ce73}</UniqueIdentifier>
+    <Filter Include="Game Object\Brick\QuestionBrick">
+      <UniqueIdentifier>{82c450aa-edd4-4830-82a0-6459e7aa1615}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Object\Brick\GoldBrick">
+      <UniqueIdentifier>{984f5be0-12f2-4386-8b47-b47bc395b02a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Object\Item">
+      <UniqueIdentifier>{50194965-8690-4247-b4cc-580b2123fab0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -151,7 +154,16 @@
       <Filter>Game Object\Pipe</Filter>
     </ClCompile>
     <ClCompile Include="FirePlant.cpp">
-      <Filter>Game Object\Plant\Fire Red</Filter>
+      <Filter>Game Object\Plant</Filter>
+    </ClCompile>
+    <ClCompile Include="QuestionBrick.cpp">
+      <Filter>Game Object\Brick\QuestionBrick</Filter>
+    </ClCompile>
+    <ClCompile Include="GoldBrick.cpp">
+      <Filter>Game Object\Brick\GoldBrick</Filter>
+    </ClCompile>
+    <ClCompile Include="Coin.cpp">
+      <Filter>Game Object\Item</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -219,7 +231,16 @@
       <Filter>Game Object\Pipe</Filter>
     </ClInclude>
     <ClInclude Include="FirePlant.h">
-      <Filter>Game Object\Plant\Fire Red</Filter>
+      <Filter>Game Object\Plant</Filter>
+    </ClInclude>
+    <ClInclude Include="QuestionBrick.h">
+      <Filter>Game Object\Brick\QuestionBrick</Filter>
+    </ClInclude>
+    <ClInclude Include="GoldBrick.h">
+      <Filter>Game Object\Brick\GoldBrick</Filter>
+    </ClInclude>
+    <ClInclude Include="Coin.h">
+      <Filter>Game Object\Item</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -63,6 +63,7 @@ public:
 	float height;
 	int state;
 	int level;
+	float Health;
 	bool isFinish = false;
 	int untouchable;
 	DWORD dt; 

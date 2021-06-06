@@ -20,6 +20,7 @@ class FirePlant : public CGameObject
 	bool isSafe;
 
 public:
+	float model;
 	int marioRange;
 	float vxFire, vyFire;
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
@@ -29,7 +30,7 @@ public:
 	void ShootFire(int marioRange);
 	int GetCurrentMarioRange();
 	bool GetSafeZone();
-	FirePlant(CMario* mario);
+	FirePlant(CMario* mario, float model);
 
 	void StartGrowUp() { isGrowUp = true; timeToAttack = GetTickCount(); }
 	void StartHiding() { isHiding = true; timeDelayAttack = GetTickCount(); }

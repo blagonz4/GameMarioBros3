@@ -132,7 +132,6 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		float direction = (float)atof(tokens[5].c_str());
 		obj = new CGoomba(model,direction); break;
 	} 
-	case OBJECT_TYPE_BRICK: obj = new CBrick(); break;
 	case OBJECT_TYPE_KOOPAS: {
 		float model = (float)atof(tokens[4].c_str());
 		float direction = (float)atof(tokens[5].c_str());
@@ -164,10 +163,23 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	}
 	case OBJECT_TYPE_FIRE_PLANT: {
 		float model = (float)atof(tokens[4].c_str());
-		obj = new FirePlant(player);
+		obj = new FirePlant(player,model);
 		break;
 	}
-		
+	case OBJECT_TYPE_QUESTION_BRICK: {
+		float model = (float) atof(tokens[4].c_str());
+		obj = new QuestionBrick(x,y,model);
+		break;
+	}
+	case OBJECT_TYPE_GOLD_BRICK: {
+		float model = (float)atof(tokens[4].c_str());
+		obj = new GoldBrick(x, y, model);
+		break;
+	}
+	case OBJECT_TYPE_COIN: {
+		obj = new Coin();
+		break;
+	}
 	default:
 		DebugOut(L"[ERR] Invalid object type: %d\n", object_type);
 		return;

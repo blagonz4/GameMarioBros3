@@ -1,10 +1,14 @@
 #include "Koopas.h"
 #include "Platform.h"
 #include "Pipe.h"
+#include "QuestionBrick.h"
+#include "GoldBrick.h"
 CKoopas::CKoopas(float &model, float &direction,CMario* mario)
 {
 	this->model = model;
-	Health = (this->model == KOOPAS_MODEL_RED) ? 1 : 2;
+	if (this->model == KOOPAS_MODEL_RED || this->model == KOOPAS_MODEL_GREEN)
+		Health = 1;
+	else Health = 2;
 	player = mario;
 	isDefend = 0;
 	nx = direction;
@@ -102,7 +106,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		y += min_ty * dy + ny * 0.4f;
 
 		if (nx != 0) vx = 0;
-		if (ny != 0 && state == KOOPAS_STATE_FLY) vy -= KOOPAS_FLY_SPEED * dt;
+		if (ny != 0 && state == KOOPAS_STATE_FLY) vy = -KOOPAS_FLY_SPEED * dt;
 			else vy = 0;
 
 		for (UINT i = 0; i < coEventsResult.size(); i++)
@@ -111,77 +115,71 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 			if (e->obj->GetType() == COLORBLOCK)
 			{
-
-				if (this->state == KOOPAS_STATE_BALL) {
-					if (e->nx < 0) {
-						this->nx = -1;
-						this->vx = -KOOPAS_BALL_SPEED * dt;
+				if (e->nx != 0) {
+					this->nx *= -1;
+					if (this->state == KOOPAS_STATE_BALL) {
+						this->vx = this->nx * KOOPAS_BALL_SPEED * dt;
 					}
-					else if (e->nx > 0) {
-						this->nx = 1;
-						this->vx = KOOPAS_BALL_SPEED * dt;
+					else if (this->state == KOOPAS_STATE_WALKING) {
+						this->vx = this->nx * KOOPAS_WALKING_SPEED * dt;
 					}
 				}
-				else if (this->state == KOOPAS_STATE_WALKING) {
-					if (e->nx < 0) {
-						this->nx = -1;
-						this->vx = -KOOPAS_WALKING_SPEED * dt;
-					}
-					else if (e->nx > 0) {
-						this->nx = 1;
-						this->vx = KOOPAS_WALKING_SPEED * dt;
-					}
-				}
-
 			}
 
 			else if (e->obj->GetType() == PIPE)
 			{
-
-				if (this->state == KOOPAS_STATE_BALL) {
-					if (e->nx < 0) {
-						this->nx = -1;
-						this->vx = -KOOPAS_BALL_SPEED * dt;
+				if (e->nx != 0) {
+					this->nx *= -1;
+					if (this->state == KOOPAS_STATE_BALL) {
+							this->vx = this->nx * KOOPAS_BALL_SPEED * dt;
 					}
-					else if (e->nx > 0) {
-						this->nx = 1;
-						this->vx = KOOPAS_BALL_SPEED * dt;
+					else if (this->state == KOOPAS_STATE_WALKING) {
+							this->vx = this->nx * KOOPAS_WALKING_SPEED * dt;
 					}
-				}
-				else if (this->state == KOOPAS_STATE_WALKING) {
-					if (e->nx < 0) {
-						this->nx = -1;
-						this->vx = -KOOPAS_WALKING_SPEED * dt;
-					}
-					else if (e->nx > 0) {
-						this->nx = 1;
-						this->vx = KOOPAS_WALKING_SPEED * dt;
-					}
-				}
+				}				
 			}
 
 			else if (e->obj->GetType() == PLATFORM) {
-
-				if (this->state == KOOPAS_STATE_BALL) {
-					if (e->nx < 0) {
-						this->nx = -1;
-						this->vx = -KOOPAS_BALL_SPEED * dt;
+				if (e->nx != 0) {
+					this->nx *= -1;
+					if (this->state == KOOPAS_STATE_BALL) {
+						this->vx = this->nx * KOOPAS_BALL_SPEED * dt;
 					}
-					else if (e->nx > 0) {
-						this->nx = 1;
-						this->vx = KOOPAS_BALL_SPEED * dt;
+					else if (this->state == KOOPAS_STATE_WALKING) {
+						this->vx = this->nx * KOOPAS_WALKING_SPEED * dt;
 					}
 				}
-				else if (this->state == KOOPAS_STATE_WALKING) {
-					if (e->nx < 0) {
-						this->nx = -1;
-						this->vx = -KOOPAS_WALKING_SPEED * dt;
+			}
+			else if (e->obj->GetType() == QUESTIONBRICK) {
+				QuestionBrick* qb = dynamic_cast<QuestionBrick*>(e->obj);
+				if (e->nx != 0) {
+					this->nx *= -1;
+					if (this->state == KOOPAS_STATE_BALL) {
+						this->vx = this->nx * KOOPAS_BALL_SPEED * dt;
+						if (qb->Health == 1)
+						{
+							qb->vy = -QUESTION_BRICK_SPEED_UP * dt;
+							qb->Health = 0;
+						}
 					}
-					else if (e->nx > 0) {
-						this->nx = 1;
-						this->vx = KOOPAS_WALKING_SPEED * dt;
+					else if (this->state == KOOPAS_STATE_WALKING) {
+						this->vx = this->nx * KOOPAS_WALKING_SPEED * dt;
 					}
 				}
+			}
+			else if (e->obj->GetType() == GOLDBRICK) {
+				GoldBrick* gb = dynamic_cast<GoldBrick*>(e->obj);
+				if (e->nx != 0) {
+					this->nx *= -1;
+					if (this->state == KOOPAS_STATE_BALL) {
+						this->vx = this->nx * KOOPAS_BALL_SPEED * dt;
+						if (gb->Health == 1)
+						{
+							gb->vy = -QUESTION_BRICK_SPEED_UP * dt;
+							gb->isFinish = true;
+						}
+					}
+				}					
 			}
 		}
 	}
@@ -241,10 +239,6 @@ void CKoopas::SetState(int state)
 	switch (state)
 	{
 	case KOOPAS_STATE_DIE:
-		//y += KOOPAS_BBOX_HEIGHT - KOOPAS_BBOX_HEIGHT_DIE + 1;
-		/*if (nx > 0)
-			vx = FIRE_SPEED*dt;
-		else vx = -FIRE_SPEED*dt;*/
 		vy = MARIO_DIE_DEFLECT_SPEED*dt;
 		break;
 	case KOOPAS_STATE_WALKING:
@@ -257,6 +251,8 @@ void CKoopas::SetState(int state)
 	case KOOPAS_STATE_BALL:
 		if (nx>0) vx = KOOPAS_BALL_SPEED * dt;
 		else vx = -KOOPAS_BALL_SPEED * dt;
+		break;
+	case KOOPAS_STATE_FLY:
 		break;
 	}
 

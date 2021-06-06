@@ -21,6 +21,9 @@
 #include "Pipe.h"
 #include "FirePlant.h"
 #include "Camera.h"
+#include "QuestionBrick.h"
+#include "GoldBrick.h"
+#include "Coin.h"
 class CPlayScene: public CScene
 {
 private:
