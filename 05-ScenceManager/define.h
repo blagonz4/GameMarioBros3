@@ -42,6 +42,18 @@ enum Type {
 	GOLDBRICK = 9,
 	COIN = 10,
 	PSWITCH = 11,
+	MUSHROOM = 12,
+	LEAF = 13,
+
+	EFFECT_DISAPPER = 14,
+	EFFECT_TAIL_HIT	= 15,
+	EFFECT_BROKEN_BRICK = 16,
+	EFFECT_COIN	= 17,
+	EFFECT_POINT = 18,
+	EFFECT_1UP = 19,
+
+	MUSHROOM_POWER = 50,
+	MUSHROOM_1_UP = 51,
 };
 
 enum ObjectType {
@@ -92,7 +104,9 @@ enum ObjectType {
 #define OBJECT_TYPE_PIPE				7
 #define OBJECT_TYPE_QUESTION_BRICK		8
 #define OBJECT_TYPE_GOLD_BRICK			9
-#define OBJECT_TYPE_COIN				10	
+#define OBJECT_TYPE_COIN				10
+#define OBJECT_TYPE_MUSHROOM			11
+#define OBJECT_TYPE_LEAF				12
 #define OBJECT_TYPE_PORTAL				50
 
 
@@ -135,7 +149,7 @@ enum ObjectType {
 
 #define KOOPAS_WALKING_SPEED		0.003f
 #define	KOOPAS_FLY_SPEED			0.04f
-#define KOOPAS_BALL_SPEED			0.03f
+#define KOOPAS_BALL_SPEED			0.01f
 #define KOOPAS_BBOX_WIDTH			16
 #define KOOPAS_BBOX_HEIGHT			26
 #define KOOPAS_BBOX_HEIGHT_DIE		16
@@ -239,7 +253,7 @@ enum ObjectType {
 
 #define QUESTION_BRICK_MODEL_COIN			1
 #define QUESTION_BRICK_MODEL_POWER_UP		2
-//-----------------------
+//---
 #define	TIME_FROM_COIN_TO_BRICK				5000
 
 #define GOLD_BRICK_ANI_BOX					0
@@ -264,6 +278,30 @@ enum ObjectType {
 #define PSWITCH_STATE_NORMAL				100
 #define PSWITCH_STATE_USED					200
 #define PSWITCH_SMALLER						10
+//----------------------Leaf
+#define LOAD_LEAF_FROM_TXT					13
+#define LEAF_BBOX_WIDTH						16
+#define LEAF_BBOX_HEIGHT					16
+#define LEAF_GRAVITY						0.003f
+#define LEAF_ANI_LEFT						0
+#define LEAF_ANI_RIGHT						1
+#define LEAF_MIN_Y							32
+#define LEAF_MAX_RIGHT_X					24
+#define LEAF_STATE_APPEAR					100
+#define LEAF_SPEED_X						0.005f
+//-----------------Mushroom
+#define MUSHROOM_MODEL_RED						1
+#define MUSHROOM_MODEL_GREEN					2
+#define MUSHROOM_BBOX_WIDTH						16
+#define MUSHROOM_BBOX_HEIGHT					16
+#define MUSHROOM_RED_ANI						0
+#define MUSHROOM_GREEN_ANI						1
+#define MUSHROOM_GRAVITY						0.02f
+#define MUSHROOM_SPEED							0.006f
+#define MUSHROOM_SPEED_APPEAR_Y					0.01f
+#define MUSHROOM_STATE_APPEAR					100
+#define MUSHROOM_STATE_MOVING					200
+#define LOAD_MUSHROOM_FROM_TXT					12
 
 //----------------------Mario------------------------
 #define MARIO_WALKING_SPEED					0.00012f 
@@ -447,3 +485,43 @@ enum ObjectType {
 #define COIN_ANI 0
 #define COIN_WIDTH 16
 #define COIN_HEIGHT 16
+
+
+//--------------------------EFFECT---------------------
+//----BrokenBrick----
+#define LOAD_EFFECT_BROKEN_BRICK		16
+#define EFFECT_BROKEN_BRICK_ANI			0
+#define EFFECT_BROKEN_BRICK_SPEED_X		0.008f
+#define EFFECT_BROKEN_BRICK_SPEED_Y		0.025f
+#define EFFECT_BROKEN_BRICK_GRAVITY		0.0009f
+//----CoinEffect------
+#define COIN_EFFECT_ANI					0
+#define LOAD_EFFECT_COIN				17
+#define TIME_EFFECT						300
+#define COIN_EFFECT_SPEED_Y				0.2f
+#define SET_EFFECT_IN_BRICK_X			4
+#define SET_EFFECT_IN_BRICK_Y			14
+#define COIN_EFFECT_MIN_Y				35
+#define COIN_EFFECT_MAX_Y				10
+//-------Point------------
+#define POINT_EFFECT_MODEL_100			0 
+#define POINT_EFFECT_MODEL_200			1	
+#define	POINT_EFFECT_MODEL_400			2
+#define POINT_EFFECT_MODEL_800			3 
+#define	POINT_EFFECT_MODEL_1K			4 
+#define	POINT_EFFECT_MODEL_2K			5
+#define	POINT_EFFECT_MODEL_4K			6
+#define	POINT_EFFECT_MODEL_8K			7
+
+#define POINT_EFFECT_SPEED_Y			0.05f
+#define POINT_EFFECT_MIN_Y				15
+#define LOAD_POINT_EFFECT				18
+
+#define POINT_EFFECT_ANI_100			0
+#define POINT_EFFECT_ANI_200			1	
+#define	POINT_EFFECT_ANI_400			2
+#define POINT_EFFECT_ANI_800			3
+#define	POINT_EFFECT_ANI_1K				4 
+#define	POINT_EFFECT_ANI_2K				5
+#define	POINT_EFFECT_ANI_4K				6
+#define	POINT_EFFECT_ANI_8K				7

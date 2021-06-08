@@ -97,6 +97,33 @@
     <Filter Include="Game Object\Item\PSwitch">
       <UniqueIdentifier>{60a36f2a-9548-4d09-8d90-5e2349673b3b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game Object\Item\Leaf">
+      <UniqueIdentifier>{9c969a64-f238-4d2d-8432-c6e34da35ddd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Object\Item\Mushroom">
+      <UniqueIdentifier>{a1df22c2-08a7-4408-b653-cf9e57094439}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Object\Effect">
+      <UniqueIdentifier>{eb333550-8a63-4eb1-a9b0-33d06605c01e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Object\Effect\TailHit">
+      <UniqueIdentifier>{1a47b8b9-0a21-41c7-8ebf-efeec8a8e3f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Object\Effect\BrokenBrick">
+      <UniqueIdentifier>{6f4daa93-6600-4c0b-b4d0-27f9199a97b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Object\Effect\Point">
+      <UniqueIdentifier>{d018ff24-c610-4d25-95ec-9fbf70c80045}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Object\Effect\Coin">
+      <UniqueIdentifier>{15dd1a13-f517-4e6a-8e84-89a89750b759}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Object\Effect\1UP">
+      <UniqueIdentifier>{f5ba84e4-68f6-452c-93c3-26026b85e8bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Object\Effect\Disappear">
+      <UniqueIdentifier>{a9dc6c3e-69f5-477d-8f48-5dc8e1067c06}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animations.cpp">
@@ -173,6 +200,30 @@
     </ClCompile>
     <ClCompile Include="PSwitch.cpp">
       <Filter>Game Object\Item\PSwitch</Filter>
+    </ClCompile>
+    <ClCompile Include="Leaf.cpp">
+      <Filter>Game Object\Item\Leaf</Filter>
+    </ClCompile>
+    <ClCompile Include="Mushroom.cpp">
+      <Filter>Game Object\Item\Mushroom</Filter>
+    </ClCompile>
+    <ClCompile Include="Effect1Up.cpp">
+      <Filter>Game Object\Effect\1UP</Filter>
+    </ClCompile>
+    <ClCompile Include="EffectBrokenBrick.cpp">
+      <Filter>Game Object\Effect\BrokenBrick</Filter>
+    </ClCompile>
+    <ClCompile Include="EffectCoin.cpp">
+      <Filter>Game Object\Effect\Coin</Filter>
+    </ClCompile>
+    <ClCompile Include="EffectDisappear.cpp">
+      <Filter>Game Object\Effect\Disappear</Filter>
+    </ClCompile>
+    <ClCompile Include="EffectPoint.cpp">
+      <Filter>Game Object\Effect\Point</Filter>
+    </ClCompile>
+    <ClCompile Include="EffectTailHit.cpp">
+      <Filter>Game Object\Effect\TailHit</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -253,6 +304,30 @@
     </ClInclude>
     <ClInclude Include="PSwitch.h">
       <Filter>Game Object\Item\PSwitch</Filter>
+    </ClInclude>
+    <ClInclude Include="Leaf.h">
+      <Filter>Game Object\Item\Leaf</Filter>
+    </ClInclude>
+    <ClInclude Include="Mushroom.h">
+      <Filter>Game Object\Item\Mushroom</Filter>
+    </ClInclude>
+    <ClInclude Include="Effect1Up.h">
+      <Filter>Game Object\Effect\1UP</Filter>
+    </ClInclude>
+    <ClInclude Include="EffectBrokenBrick.h">
+      <Filter>Game Object\Effect\BrokenBrick</Filter>
+    </ClInclude>
+    <ClInclude Include="EffectCoin.h">
+      <Filter>Game Object\Effect\Coin</Filter>
+    </ClInclude>
+    <ClInclude Include="EffectDisappear.h">
+      <Filter>Game Object\Effect\Disappear</Filter>
+    </ClInclude>
+    <ClInclude Include="EffectPoint.h">
+      <Filter>Game Object\Effect\Point</Filter>
+    </ClInclude>
+    <ClInclude Include="EffectTailHit.h">
+      <Filter>Game Object\Effect\TailHit</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

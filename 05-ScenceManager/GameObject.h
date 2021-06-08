@@ -66,6 +66,7 @@ public:
 	float Health;
 	bool isFinish = false;
 	int untouchable;
+	float model;
 	DWORD dt; 
 	DWORD untouchable_start;
 	LPANIMATION_SET animation_set;
@@ -75,6 +76,8 @@ public:
 	void SetSpeed(float vx, float vy) { this->vx = vx, this->vy = vy; }
 	void GetPosition(float &x, float &y) { x = this->x; y = this->y; }
 	void GetSpeed(float &vx, float &vy) { vx = this->vx; vy = this->vy; }
+	void SetHealth(float Health) { this->Health = Health; }
+	void GetHealth(float &Health) {Health = this->Health;}
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount(); }
 	bool CheckObjectInCamera(CGameObject* obj);
 	int GetState() { return this->state; }

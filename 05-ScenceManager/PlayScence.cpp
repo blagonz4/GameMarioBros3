@@ -284,16 +284,31 @@ void CPlayScene::Update(DWORD dt)
 		if (objects[i]->CheckObjectInCamera(objects[i]))
 			objects[i]->Update(dt, &coObjects);
 
+		if (e->GetType() == QUESTIONBRICK)
+		{
+			QuestionBrick* qb = dynamic_cast<QuestionBrick*>(e);	
+			if (qb->isUnbox)
+			{
+				if (qb->model == QUESTION_BRICK_MODEL_COIN) {
+					EffectCoin* effectCoin = new EffectCoin(qb->x + 4, qb->y - 10);
+					objects.push_back(effectCoin);		
+				}
+				QuestionBrickDropItem(qb->GetModel(), qb->x, qb->y);
+				qb->isUnbox = false;
+			}
+		}
 		if (e->GetType() == GOLDBRICK)
 		{
 			GoldBrick* gb = dynamic_cast<GoldBrick*>(e);
+			//if (gb->isFinish) {
+			//	objects.push_back(new EffectBrokenBrick(gb->x, gb->y));
+			//}
 			if (gb->state == GOLD_BRICK_STATE_UNBOX)
 			{
 				if (!isHavePSwitch) {
 					objects.push_back(new PSwitch(gb->x, gb->y - QUESTION_BRICK_BBOX_HEIGHT));
 					isHavePSwitch = true;
 				}
-
 			}
 		}
 		if (e->GetType() == PSWITCH)
@@ -318,6 +333,26 @@ void CPlayScene::Update(DWORD dt)
 				pswitch->isUsed = true;
 			}
 		}
+		if (e->GetType() == EFFECT_COIN) {
+			EffectCoin* effectCoin = dynamic_cast<EffectCoin*>(e);
+			if (effectCoin->isFinish) {
+				EffectPoint* effectPoint = new EffectPoint(effectCoin->x,
+					effectCoin->y,
+					POINT_EFFECT_MODEL_100);
+				objects.push_back(effectPoint);
+			}
+		}
+		if (e->GetType() == GOOMBA) {
+			CGoomba* goomba = dynamic_cast<CGoomba*>(e);
+			if (goomba->isFinish)
+				ShowEffectPoint(goomba, POINT_EFFECT_MODEL_100);
+		}
+		if (e->GetType() == KOOPAS) {
+			CKoopas* koopa = dynamic_cast<CKoopas*>(e);
+			if (koopa->isFinish)
+				ShowEffectPoint(koopa, POINT_EFFECT_MODEL_100);
+		}
+
 		if (objects.at(i)->isFinish)
 			objects.erase(objects.begin() +i);
 	}
@@ -511,8 +546,6 @@ void CPlayScene::GoldBrickDestroy(int model, float x, float y)
 	{
 	case GOLD_BRICK_MODEL_PSWITCH:
 	{
-		/*PSwitch* pswitch = new PSwitch(x, y);
-		if (!pswitch->CheckObjectInCamera(pswitch))*/
 			objects.push_back(new PSwitch(x, y));
 		break;
 	}
@@ -538,4 +571,22 @@ void CPlayScene::GoldBrickDestroy(int model, float x, float y)
 	//	break;
 	//}
 	}
+}
+
+void CPlayScene::QuestionBrickDropItem(float model, float x, float y) {
+	
+	switch ((int)model) {
+	case QUESTION_BRICK_MODEL_COIN:
+		break;
+	case QUESTION_BRICK_MODEL_POWER_UP:
+		if (player->GetLevel() == MARIO_LEVEL_SMALL)
+			objects.push_back(new Mushroom(x, y - 10, MUSHROOM_MODEL_RED));
+		if (player->GetLevel() == MARIO_LEVEL_BIG)
+			objects.push_back(new Leaf(x, y - 10));
+	}
+}
+
+void CPlayScene::ShowEffectPoint(CGameObject* obj, float model) {
+	EffectPoint* effectPoint = new EffectPoint(obj->x, obj->y, model);
+	objects.push_back(effectPoint);
 }

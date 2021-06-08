@@ -25,6 +25,12 @@
 #include "GoldBrick.h"
 #include "Coin.h"
 #include "PSwitch.h"
+#include "Leaf.h"
+#include "Mushroom.h"
+#include "EffectBrokenBrick.h"
+#include "EffectCoin.h"
+#include "EffectPoint.h"
+
 class CPlayScene: public CScene
 {
 private:
@@ -52,7 +58,8 @@ public:
 	virtual void Render();
 	virtual void Unload();
 	void GoldBrickDestroy(int model, float x, float y);
-
+	void QuestionBrickDropItem(float model, float x, float y);
+	void ShowEffectPoint(CGameObject* obj, float model);
 	CMario * GetPlayer() { return player; } 
 
 	//friend class CPlayScenceKeyHandler;
