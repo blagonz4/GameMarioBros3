@@ -45,7 +45,7 @@ enum Type {
 	MUSHROOM = 12,
 	LEAF = 13,
 
-	EFFECT_DISAPPER = 14,
+	EFFECT_DISAPPEAR = 14,
 	EFFECT_TAIL_HIT	= 15,
 	EFFECT_BROKEN_BRICK = 16,
 	EFFECT_COIN	= 17,
@@ -54,6 +54,7 @@ enum Type {
 
 	MUSHROOM_POWER = 50,
 	MUSHROOM_1_UP = 51,
+	PORTAL = 52,
 };
 
 enum ObjectType {
@@ -107,11 +108,12 @@ enum ObjectType {
 #define OBJECT_TYPE_COIN				10
 #define OBJECT_TYPE_MUSHROOM			11
 #define OBJECT_TYPE_LEAF				12
-#define OBJECT_TYPE_PORTAL				50
+#define OBJECT_TYPE_PORTAL				52
 
 
 #define MAX_SCENE_LINE 1024
 #define SCENE_TEST 1
+#define WORLD1_1_1	2
 //-----------------------------Goomba---------------------------
 #define GOOMBA_WALKING_SPEED					0.005f
 
@@ -466,7 +468,8 @@ enum ObjectType {
 #define MARIO_BIG_BBOX_SIT_WIDTH			15
 #define MARIO_BIG_BBOX_SIT_HEIGHT			18
 #define MARIO_RACOON_BBOX_SPIN_WIDTH		23
-#define MARIO_UNTOUCHABLE_TIME				5000
+#define TIME_UNTOUCHABLE_SHORT				500
+#define	TIME_UNTOUCHABLE_LONG				5000
 #define MARIO_LIMIT_JUMP_TIME				450
 #define MARIO_LIMIT_FLY_TIME				400
 
@@ -491,8 +494,8 @@ enum ObjectType {
 //----BrokenBrick----
 #define LOAD_EFFECT_BROKEN_BRICK		16
 #define EFFECT_BROKEN_BRICK_ANI			0
-#define EFFECT_BROKEN_BRICK_SPEED_X		0.008f
-#define EFFECT_BROKEN_BRICK_SPEED_Y		0.025f
+#define EFFECT_BROKEN_BRICK_SPEED_X		0.02f
+#define EFFECT_BROKEN_BRICK_SPEED_Y		0.05f
 #define EFFECT_BROKEN_BRICK_GRAVITY		0.0009f
 //----CoinEffect------
 #define COIN_EFFECT_ANI					0
@@ -525,3 +528,10 @@ enum ObjectType {
 #define	POINT_EFFECT_ANI_2K				5
 #define	POINT_EFFECT_ANI_4K				6
 #define	POINT_EFFECT_ANI_8K				7
+//-------------Disappear--------------
+#define DISAPPEAR_EFFECT_ANI			0
+#define LOAD_EFFECT_DISAPPEAR			14
+#define TIME_EFFECT_DISAPEAR			500
+//--------------Tail Hit---------------
+#define TAIL_HIT_EFFECT_ANI				0
+#define LOAD_EFFECT_TAIL_HIT			15

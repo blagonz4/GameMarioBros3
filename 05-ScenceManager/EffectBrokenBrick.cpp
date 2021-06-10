@@ -2,14 +2,14 @@
 
 
 
-EffectBrokenBrick::EffectBrokenBrick(float X, float Y)
+EffectBrokenBrick::EffectBrokenBrick(float X, float Y,float nx)
 {
 	//this->deflectY = defY;
 	this->x = X;
 	this->y = Y;
 	SetAnimationSet(CAnimationSets::GetInstance()->Get(LOAD_EFFECT_BROKEN_BRICK));
-	vx = EFFECT_BROKEN_BRICK_SPEED_X *dt;
-	vy = -EFFECT_BROKEN_BRICK_SPEED_Y *dt;
+	vx = nx *EFFECT_BROKEN_BRICK_SPEED_X;
+	vy = abs(nx) *-EFFECT_BROKEN_BRICK_SPEED_Y;
 	eType = Type::EFFECT_BROKEN_BRICK;
 }
 

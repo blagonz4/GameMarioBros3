@@ -14,7 +14,6 @@ void EffectPoint::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	CGameObject::Update(dt, coObjects);
 	y += dy;
-	DebugOut(L"isFinish \n");
 	if (y <= minY)
 	{
 		isFinish = true;

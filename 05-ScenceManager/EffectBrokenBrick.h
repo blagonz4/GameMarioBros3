@@ -5,7 +5,7 @@ class EffectBrokenBrick : public CGameObject
 {
 public:
 	float deflectY;
-	EffectBrokenBrick(float X, float Y);
+	EffectBrokenBrick(float X, float Y,float nx);
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 	void Render();

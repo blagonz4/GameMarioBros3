@@ -14,4 +14,5 @@ public:
 	int Health;
 	CGoomba(float model, float direction);
 	virtual void SetState(int state);
+	float GetModel() { return model; }
 };

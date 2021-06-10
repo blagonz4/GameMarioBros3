@@ -20,7 +20,6 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
 	coEvents.clear();
-
 	CalcPotentialCollisions(coObjects, coEvents);
 	if (state == GOOMBA_STATE_DIE) {
 		timeToDie += dt;
@@ -42,7 +41,7 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		x += min_tx * dx + nx * 0.4f;
 		y += min_ty * dy + ny * 0.4f;
 
-		//if (nx != 0 ) vx = 0;
+		if (nx != 0 ) x+=dx;
 		/*if (ny < 0 && Health == 2) {
 			vy = -GOOMBA_JUMPING_SPEED;
 		}
@@ -80,10 +79,17 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			}*/
 
 			if (e->nx != 0) {
-				vx *= -1;
-				this->nx *= -1;				
+				/*vx *= -1;
+				this->nx *= -1;*/				
 				if (e->obj->GetType() == COLORBLOCK || e->obj->GetObjectType() == ENEMY) {
 					x += dx;
+				}
+				if (e->obj->GetType() == PIPE || 
+					e->obj->GetType() == PLATFORM ||
+					e->obj->GetType() == QUESTIONBRICK ||
+					e->obj->GetType() == GOLDBRICK) {
+					this->nx *= -1;
+					this->vx = nx * GOOMBA_WALKING_SPEED * dt;
 				}
 			}
 			if (ny != 0 ) {

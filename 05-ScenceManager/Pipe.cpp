@@ -10,8 +10,7 @@ void Pipe::Render()
 	int ani = -1;
 	if (model == SHORT_PIPE)
 		ani = ANI_SHORT_PIPE;
-	if (model == MEDIUM_PIPE)
-		ani = ANI_MEDIUM_PIPE;
+	else ani = ANI_MEDIUM_PIPE;
 	animation_set->at(ani)->Render(x, y);
 
 	RenderBoundingBox();

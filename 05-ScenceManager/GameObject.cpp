@@ -149,3 +149,14 @@ bool CGameObject::CheckObjectInCamera(CGameObject* obj)
 		return false;
 	return true;
 }
+
+bool CGameObject::CheckAABB(CGameObject* obj) {
+	float leftThis, topThis, rightThis, bottomThis;
+	float leftObj, topObj, rightObj, bottomObj;
+
+	this->GetBoundingBox(leftThis, topThis, rightThis, bottomThis);
+	obj->GetBoundingBox(leftObj, topObj, rightObj, bottomObj);
+
+	return (CGame::GetInstance()->checkAABB(leftThis, topThis, rightThis, bottomThis, leftObj, topObj, rightObj, bottomObj));
+
+}

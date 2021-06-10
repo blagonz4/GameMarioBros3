@@ -203,6 +203,10 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					}
 				}								
 			}
+			else if (e->obj->GetType() == GOOMBA) {
+				x += dx;
+				this->vx = this->nx * KOOPAS_BALL_SPEED * dt;
+			}
 		}
 	}
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
@@ -271,8 +275,8 @@ void CKoopas::SetState(int state)
 		StartDefendTime();
 		break;
 	case KOOPAS_STATE_BALL:
-		if (nx>0) vx = KOOPAS_BALL_SPEED * dt;
-		else vx = -KOOPAS_BALL_SPEED * dt;
+		vx = nx * KOOPAS_BALL_SPEED * dt; 
+		StartDefendTime();
 		break;
 	case KOOPAS_STATE_FLY:
 		break;

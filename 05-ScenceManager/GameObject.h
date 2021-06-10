@@ -66,6 +66,7 @@ public:
 	float Health;
 	bool isFinish = false;
 	int untouchable;
+	int timeUntouchable;
 	float model;
 	DWORD dt; 
 	DWORD untouchable_start;
@@ -78,7 +79,11 @@ public:
 	void GetSpeed(float &vx, float &vy) { vx = this->vx; vy = this->vy; }
 	void SetHealth(float Health) { this->Health = Health; }
 	void GetHealth(float &Health) {Health = this->Health;}
-	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount(); }
+	void StartUntouchable(int timeUntouchable) {
+		this->timeUntouchable = timeUntouchable;
+		untouchable = 1; 
+		untouchable_start = GetTickCount();
+	}
 	bool CheckObjectInCamera(CGameObject* obj);
 	int GetState() { return this->state; }
 
@@ -90,6 +95,7 @@ public:
 	}
 
 	LPCOLLISIONEVENT SweptAABBEx(LPGAMEOBJECT coO);
+	bool CheckAABB(CGameObject* obj);
 	void CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vector<LPCOLLISIONEVENT> &coEvents);
 	void FilterCollision(
 		vector<LPCOLLISIONEVENT> &coEvents, 

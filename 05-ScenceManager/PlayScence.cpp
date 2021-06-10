@@ -150,12 +150,13 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		break;
 	}
 	case OBJECT_TYPE_PORTAL:
-		{	
-			float r = (float)atof(tokens[4].c_str());
-			float b = (float)atof(tokens[5].c_str());
-			float scene_id = (float)atoi(tokens[6].c_str());
-			obj = new CPortal(x, y, r, b, scene_id);
-		}
+	{
+		float r = (float)atof(tokens[4].c_str());
+		float b = (float)atof(tokens[5].c_str());
+		float scene_id = (float)atoi(tokens[6].c_str());
+		obj = new CPortal(x,y,r, b, scene_id);
+		break;
+	}
 	case OBJECT_TYPE_PIPE: {
 		float model = (float)atof(tokens[4].c_str());
 		obj = new Pipe(model);
@@ -300,9 +301,12 @@ void CPlayScene::Update(DWORD dt)
 		if (e->GetType() == GOLDBRICK)
 		{
 			GoldBrick* gb = dynamic_cast<GoldBrick*>(e);
-			//if (gb->isFinish) {
-			//	objects.push_back(new EffectBrokenBrick(gb->x, gb->y));
-			//}
+			if (gb->isFinish) {
+				objects.push_back(new EffectBrokenBrick(gb->x, gb->y, 2));	//he so nx de hieu ung bay cho dep 
+				objects.push_back(new EffectBrokenBrick(gb->x, gb->y, 5));
+				objects.push_back(new EffectBrokenBrick(gb->x, gb->y, -2));
+				objects.push_back(new EffectBrokenBrick(gb->x, gb->y, -5));
+			}
 			if (gb->state == GOLD_BRICK_STATE_UNBOX)
 			{
 				if (!isHavePSwitch) {
@@ -345,7 +349,9 @@ void CPlayScene::Update(DWORD dt)
 		if (e->GetType() == GOOMBA) {
 			CGoomba* goomba = dynamic_cast<CGoomba*>(e);
 			if (goomba->isFinish)
-				ShowEffectPoint(goomba, POINT_EFFECT_MODEL_100);
+				if (goomba->GetModel() == GOOMBA_MODEL_NORMAL)
+					ShowEffectPoint(goomba, POINT_EFFECT_MODEL_100);
+				else ShowEffectPoint(goomba, POINT_EFFECT_MODEL_200);
 		}
 		if (e->GetType() == KOOPAS) {
 			CKoopas* koopa = dynamic_cast<CKoopas*>(e);
@@ -353,56 +359,17 @@ void CPlayScene::Update(DWORD dt)
 				ShowEffectPoint(koopa, POINT_EFFECT_MODEL_100);
 		}
 
-		if (objects.at(i)->isFinish)
-			objects.erase(objects.begin() +i);
 	}
 
-
-	//if (timeAttackDelay > TIME_ATTACK_DELAY) {
-	//	if (listFirePlant.size() < 1)
-	//		CreateFirePlant(marioRange);
-	//	timeAttackDelay = 0;
-	//}
-	//
-	//for (UINT i = 0; i < listFirePlant.size(); i++)
-	//{
-	//	listFirePlant.at[i]->Update(dt, &coObjects);
-	//}
-	//for (UINT i = 0; i < listFirePlant.size(); i++)
-	//{
-	//	if (listFirePlant.at[i]->isFinish)
-	//	{
-	//		listFirePlant.erase(listFirePlant.begin() + i);
-	//	}
-	//}
-
+	for (size_t i = 0; i < objects.size(); i++) {
+		if (objects.at(i)->isFinish)
+			objects.erase(objects.begin() + i);
+	}
 
 	Camera* camera = new Camera(player, game, map);
 	camera->Update(dt);
 	 //skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
 	if (player == NULL) return; 
-
-	//if (CGame::GetInstance()->GetScene() == SCENE_TEST) {
-	//	
-	//	if (player == NULL) return;
-	//
-	//	// Update camera to follow mario
-	//	float cx, cy, __cx,__cy, sw, sh, mw, mh, px, py;
-	//	player->GetPosition(px, py);
-	//
-	//	CGame *game = CGame::GetInstance();
-	//	sw = game->GetScreenWidth();
-	//	sh = game->GetScreenHeight();
-	//	mw = map->GetMapWidth();
-	//	mh = map->GetMapHeight();
-	//	cx = 0; cy = 250;
-	//	__cx = px-50; __cy = cy; //Cam theo Mario
-	//	if (__cx < cx)
-	//		__cx = cx;//khong cho qua ben trai dau map
-	//	CGame::GetInstance()->SetCamPos((int) __cx,(int) __cy);
-	//	map->SetCamPos((int)__cx, (int)__cy);
-	//}
-	
 
 }
 
@@ -581,7 +548,7 @@ void CPlayScene::QuestionBrickDropItem(float model, float x, float y) {
 	case QUESTION_BRICK_MODEL_POWER_UP:
 		if (player->GetLevel() == MARIO_LEVEL_SMALL)
 			objects.push_back(new Mushroom(x, y - 10, MUSHROOM_MODEL_RED));
-		if (player->GetLevel() == MARIO_LEVEL_BIG)
+		if (player->GetLevel() == MARIO_LEVEL_BIG || player->GetLevel() == MARIO_LEVEL_RACOON)
 			objects.push_back(new Leaf(x, y - 10));
 	}
 }
