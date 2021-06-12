@@ -181,6 +181,11 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj = new Coin();
 		break;
 	}
+	case OBJECT_TYPE_BOX:
+	{
+		obj = new Box();
+		break;
+	}
 	default:
 		DebugOut(L"[ERR] Invalid object type: %d\n", object_type);
 		return;
@@ -292,6 +297,7 @@ void CPlayScene::Update(DWORD dt)
 			{
 				if (qb->model == QUESTION_BRICK_MODEL_COIN) {
 					EffectCoin* effectCoin = new EffectCoin(qb->x + 4, qb->y - 10);
+					player->PlusCoinCollect(1);
 					objects.push_back(effectCoin);		
 				}
 				QuestionBrickDropItem(qb->GetModel(), qb->x, qb->y);
@@ -343,22 +349,36 @@ void CPlayScene::Update(DWORD dt)
 				EffectPoint* effectPoint = new EffectPoint(effectCoin->x,
 					effectCoin->y,
 					POINT_EFFECT_MODEL_100);
+				player->PlusScore(100);
 				objects.push_back(effectPoint);
 			}
 		}
 		if (e->GetType() == GOOMBA) {
 			CGoomba* goomba = dynamic_cast<CGoomba*>(e);
 			if (goomba->isFinish)
-				if (goomba->GetModel() == GOOMBA_MODEL_NORMAL)
+				if (goomba->GetModel() == GOOMBA_MODEL_NORMAL) {
 					ShowEffectPoint(goomba, POINT_EFFECT_MODEL_100);
-				else ShowEffectPoint(goomba, POINT_EFFECT_MODEL_200);
+					player->PlusScore(100);
+				}				
+				else {
+					player->PlusScore(200);
+					ShowEffectPoint(goomba, POINT_EFFECT_MODEL_200);
+				}
 		}
 		if (e->GetType() == KOOPAS) {
 			CKoopas* koopa = dynamic_cast<CKoopas*>(e);
-			if (koopa->isFinish)
+			if (koopa->isFinish) {
+				player->PlusScore(100);
 				ShowEffectPoint(koopa, POINT_EFFECT_MODEL_100);
+			}				
 		}
-
+		if (e->GetType() == BOX) {
+			Box* box = dynamic_cast<Box*>(e);
+			if (box->isUnbox) {
+				player->SetState(MARIO_STATE_WALK_RIGHT);
+				player->x++;
+			}
+		}
 	}
 
 	for (size_t i = 0; i < objects.size(); i++) {
@@ -377,8 +397,19 @@ void CPlayScene::Update(DWORD dt)
 void CPlayScene::Render()
 {
 	map->DrawMap();
-	for (size_t i = 0; i < objects.size(); i++)
+	for (size_t i = 0; i < objects.size(); i++) {
+
 		objects[i]->Render();
+
+		if (objects[i]->GetType() == BOX) {
+			Box* box = dynamic_cast<Box*>(objects[i]);
+			if (box->isUnbox) {
+				AnnounceSceneEnd(box->stateUnbox);
+			}
+		}
+	}
+	Board* board = new Board(CGame::GetInstance()->GetCamX(), CGame::GetInstance()->GetCamY() + SCREEN_HEIGHT - DISTANCE_FROM_BOTTOM_CAM_TO_TOP_BOARD);
+	board->Render(player, 999);
 }
 
 /*
@@ -556,4 +587,23 @@ void CPlayScene::QuestionBrickDropItem(float model, float x, float y) {
 void CPlayScene::ShowEffectPoint(CGameObject* obj, float model) {
 	EffectPoint* effectPoint = new EffectPoint(obj->x, obj->y, model);
 	objects.push_back(effectPoint);
+}
+
+void CPlayScene::AnnounceSceneEnd(int boxState) {
+	text = new Font();
+	text->Draw(2635, 275, "COURSE CLEAR !");
+	text->Draw(2620, 300, "YOU GOT A CARD");
+	LPDIRECT3DTEXTURE9 Tex = CTextures::GetInstance()->Get(TEXID_FONT35);
+	if (boxState == BOX_STATE_MUSHROOM) {
+		LPSPRITE SpriteTile = new CSprite(64, 187, 33, 211, 61, Tex);
+		SpriteTile->Draw(2740, 290);
+	}
+	else if (boxState == BOX_STATE_FLOWER) {
+		LPSPRITE SpriteTile = new CSprite(65, 211, 33, 235, 61, Tex);
+		SpriteTile->Draw(2740, 290);
+	}
+	else if (boxState == BOX_STATE_STAR) {
+		LPSPRITE SpriteTile = new CSprite(66, 235, 33, 259, 61, Tex);
+		SpriteTile->Draw(2740, 290);
+	}
 }

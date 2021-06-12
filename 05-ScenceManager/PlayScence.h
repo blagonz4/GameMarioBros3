@@ -30,7 +30,9 @@
 #include "EffectBrokenBrick.h"
 #include "EffectCoin.h"
 #include "EffectPoint.h"
-
+#include "Box.h"
+#include "Font.h"
+#include "Board.h"
 class CPlayScene: public CScene
 {
 private:
@@ -39,6 +41,7 @@ protected:
 	bool isHavePSwitch = false;
 	CMario* player;					// A play scene has to have player, right? 
 	CGame* game = CGame::GetInstance();
+	Font* text;
 	Map* map;
 	vector<LPGAMEOBJECT> objects;
 	void _ParseSection_TEXTURES(string line);
@@ -59,6 +62,7 @@ public:
 	void GoldBrickDestroy(int model, float x, float y);
 	void QuestionBrickDropItem(float model, float x, float y);
 	void ShowEffectPoint(CGameObject* obj, float model);
+	void AnnounceSceneEnd(int boxState);
 	CMario * GetPlayer() { return player; } 
 
 	//friend class CPlayScenceKeyHandler;

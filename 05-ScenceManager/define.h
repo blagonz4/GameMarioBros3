@@ -52,6 +52,11 @@ enum Type {
 	EFFECT_POINT = 18,
 	EFFECT_1UP = 19,
 
+	MUSHROOM_SYMBOL = 20,
+	FLOWER = 21,
+	STAR = 22,
+	BOX = 23,
+	
 	MUSHROOM_POWER = 50,
 	MUSHROOM_1_UP = 51,
 	PORTAL = 52,
@@ -73,8 +78,8 @@ enum ObjectType {
 //----------------------------Camera----------------------------
 #define DISTANCE_TO_MARIO_X					120
 #define DISTANCE_TO_MARIO_Y					5
-#define DISTANCE_MARIO_FLY_THROUGH_SKY_Y	280
-#define CAMERA_COORDINATE_Y					250
+#define DISTANCE_MARIO_FLY_THROUGH_SKY_Y	250
+#define CAMERA_COORDINATE_Y					220
 #define CAMERA_ROOT_Y						0
 //-------------------------------------------------------------
 #define MAX_GAME_LINE 1024
@@ -108,12 +113,22 @@ enum ObjectType {
 #define OBJECT_TYPE_COIN				10
 #define OBJECT_TYPE_MUSHROOM			11
 #define OBJECT_TYPE_LEAF				12
+#define OBJECT_TYPE_BOX					13
 #define OBJECT_TYPE_PORTAL				52
 
 
-#define MAX_SCENE_LINE 1024
-#define SCENE_TEST 1
-#define WORLD1_1_1	2
+#define MAX_SCENE_LINE					1024
+#define SCENE_TEST						1
+#define WORLD1_1_1						2
+#define TEXID_FONT35					35
+//-------------------------------Board-------------------
+#define TEXID_BOARD								45
+#define DISTANCE_FROM_BOTTOM_CAM_TO_TOP_BOARD	90.f
+//-----------------------------Font----------------------
+#define TEXID_FONT						55
+#define TILE_FONT_WIDTH					8
+#define TILE_FONT_A_HEIGHT				8
+#define TILE_FONT_NUMBER_HEIGHT			7
 //-----------------------------Goomba---------------------------
 #define GOOMBA_WALKING_SPEED					0.005f
 
@@ -488,7 +503,27 @@ enum ObjectType {
 #define COIN_ANI 0
 #define COIN_WIDTH 16
 #define COIN_HEIGHT 16
+//-----------------------Box---------------------
+#define BOX_BBOX_WIDTH 26
+#define BOX_BBOX_HEIGHT 26
 
+#define BOX_STATE_MUSHROOM				100
+#define BOX_STATE_FLOWER				200
+#define BOX_STATE_STAR					300
+#define BOX_STATE_FLOWER_UP				400
+#define BOX_STATE_MUSHROOM_UP			500
+#define BOX_STATE_STAR_UP				600
+
+
+#define BOX_ANI_MUSHROOM				0
+#define BOX_ANI_FLOWER					1
+#define BOX_ANI_STAR					2
+#define BOX_ANI_MUSHROOM_UP				3
+#define BOX_ANI_FLOWER_UP				4
+#define BOX_ANI_STAR_UP					5
+#define BOX_SPEED_UP					0.065f
+
+#define NUMBER_OF_ITEM_IN_BOX 3
 
 //--------------------------EFFECT---------------------
 //----BrokenBrick----

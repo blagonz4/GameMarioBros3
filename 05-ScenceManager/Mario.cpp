@@ -15,7 +15,7 @@
 #include "EffectTailHit.h"
 #include "EffectBrokenBrick.h"
 #include "Portal.h"
-
+#include "Box.h"
 CMario::CMario(float x, float y) 
 {
 	level = MARIO_LEVEL_BIG;
@@ -34,7 +34,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	CGame *game = CGame::GetInstance();
 	// Calculate dx, dy 
 	CGameObject::Update(dt);
-
 	if (vx * nx < 0) {
 		SetState(MARIO_STATE_TURN);
 	}
@@ -165,6 +164,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 							if (goomba->Health == 2) {
 								goomba->Health = 1;
 								ShowEffectPoint(goomba, POINT_EFFECT_MODEL_100);
+								PlusScore(100);
 							}
 							else 
 							{
@@ -215,6 +215,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					if (koopa->model == KOOPAS_MODEL_GREEN_WING) {
 						koopa->model = 1;
 						ShowEffectPoint(koopa, POINT_EFFECT_MODEL_100);
+						PlusScore(100);
 						if(koopa->GetState() == KOOPAS_STATE_FLY)
 							koopa->SetState(KOOPAS_STATE_WALKING);
 					}						
@@ -225,6 +226,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					else if (koopa->GetState() != KOOPAS_STATE_DIE)
 					{
 						ShowEffectPoint(koopa, POINT_EFFECT_MODEL_100);
+						PlusScore(100);
 						koopa->SetState(KOOPAS_STATE_DEFEND);
 					}	
 				}
@@ -276,6 +278,9 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				if (e->ny > 0) {
 					y += dy;
 				}
+			}
+			else if (e->obj->GetType() == PLATFORM){
+				isOnGround = true;
 			}
 			else if (e->obj->GetType() == FIRE){ // if e->obj is fireball 
 				if (untouchable == 0)
@@ -349,6 +354,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			else if (e->obj->GetType() == COIN) { 
 				//Coin* coin = dynamic_cast<Coin*>(e->obj);
 				e->obj->isFinish = true;
+				PlusCoinCollect(1);
 			}
 			else if (e->obj->GetType() == PSWITCH)
 			{
@@ -364,6 +370,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				Mushroom* mushroom = dynamic_cast<Mushroom*>(e->obj);
 				mushroom->isFinish = true;
 				ShowEffectPoint(this, POINT_EFFECT_MODEL_1K);
+				PlusScore(1000);
 				this->y -= 20;
 				this->SetLevel(MARIO_LEVEL_BIG);			
 			}
@@ -372,13 +379,45 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				Leaf* leaf = dynamic_cast<Leaf*>(e->obj);
 				leaf->isFinish = true; this->y -= 5;
 				ShowEffectPoint(this, POINT_EFFECT_MODEL_1K);
+				PlusScore(1000);
 				this->isTransformToRacoon = true;
 				this->SetLevel(MARIO_LEVEL_RACOON);
 			}
 			else if (e->obj->GetType() == PORTAL) {
 				
 				CPortal* p = dynamic_cast<CPortal*>(e->obj);
-				CGame::GetInstance()->SwitchScene(p->GetSceneId());
+				if (p->GetSceneId() == SCENE_TEST) {
+					if(e->ny >0)
+						CGame::GetInstance()->SwitchScene(p->GetSceneId());
+				}
+				else if (p->GetSceneId() == WORLD1_1_1) {
+					if (e->ny < 0)
+						CGame::GetInstance()->SwitchScene(p->GetSceneId());
+				}
+			}
+			else if (e->obj->GetType() == BOX) {
+			Box* box = dynamic_cast<Box*>(e->obj);
+				this->x += dx;this->y += dy;
+				switch (box->GetState())
+				{
+				case BOX_STATE_FLOWER:
+					box->stateUnbox = box->GetState();
+					box->isUnbox = true;
+					box->SetState(BOX_STATE_FLOWER_UP);
+					break;
+				case BOX_STATE_MUSHROOM:
+					box->stateUnbox = box->GetState();
+					box->isUnbox = true;
+					box->SetState(BOX_STATE_MUSHROOM_UP);
+					break;
+				case BOX_STATE_STAR:
+					box->stateUnbox = box->GetState();
+					box->isUnbox = true;
+					box->SetState(BOX_STATE_MUSHROOM_UP);
+					break;
+				}
+				box->x += 2;
+				box->vy = -MARIO_GRAVITY*2 * dt;
 			}
 		}
 	}
@@ -428,7 +467,7 @@ void CMario::Render()
 			if (state == MARIO_STATE_FLY_LEFT)
 				ani = MARIO_ANI_BIG_FLY_LEFT;
 
-			if (state == MARIO_STATE_JUMP && isJumping) {
+			if (state == MARIO_STATE_JUMP || !isOnGround) {
 				if (nx > 0) ani = MARIO_ANI_BIG_JUMP_RIGHT;
 				else ani = MARIO_ANI_BIG_JUMP_LEFT;				
 			}

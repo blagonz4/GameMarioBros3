@@ -12,6 +12,8 @@ class CMario : public CGameObject
 	DWORD timeTransform; 
 	float start_x;			// initial position of Mario at scene
 	float start_y; 
+	int score;
+	int coinCollect;
 public: 
 	bool isOnGround = true;
 	bool isSitting;
@@ -28,6 +30,10 @@ public:
 	virtual void Render();
 	int GetLevel(){return level;}
 	void SetState(int state);
+	void PlusScore(int score) { this->score += score; }
+	void PlusCoinCollect(int coin) { this->coinCollect += coin; }
+	int GetScore() { return score; }
+	int GetCoinCollect() { return coinCollect; }
 	void SetLevel(int l) { level = l; }
 	void StartLimitJump() { isJumping = true; limitjump_start = GetTickCount(); }
 	void StartLimitFly() { isFlying = true; limitfly_start = GetTickCount(); }

@@ -124,6 +124,21 @@
     <Filter Include="Game Object\Effect\Disappear">
       <UniqueIdentifier>{a9dc6c3e-69f5-477d-8f48-5dc8e1067c06}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game Object\Box">
+      <UniqueIdentifier>{8672c129-4744-4894-bcd3-8c7457bc103c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FrameWork\HUD">
+      <UniqueIdentifier>{27d8182e-3dad-4390-b026-57f1ea082ece}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FrameWork\HUD\Board">
+      <UniqueIdentifier>{575c05ae-46c4-4f03-92b6-8e7dcc14fbb5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FrameWork\HUD\Font">
+      <UniqueIdentifier>{8fc94b85-3c71-45d0-bbeb-69054cb9ee39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FrameWork\HUD\Power">
+      <UniqueIdentifier>{5e1808c9-325a-41ee-9f3e-7d4ecff45c8b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animations.cpp">
@@ -224,6 +239,15 @@
     </ClCompile>
     <ClCompile Include="EffectTailHit.cpp">
       <Filter>Game Object\Effect\TailHit</Filter>
+    </ClCompile>
+    <ClCompile Include="Box.cpp">
+      <Filter>Game Object\Box</Filter>
+    </ClCompile>
+    <ClCompile Include="Board.cpp">
+      <Filter>FrameWork\HUD\Board</Filter>
+    </ClCompile>
+    <ClCompile Include="Font.cpp">
+      <Filter>FrameWork\HUD\Font</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -328,6 +352,15 @@
     </ClInclude>
     <ClInclude Include="EffectTailHit.h">
       <Filter>Game Object\Effect\TailHit</Filter>
+    </ClInclude>
+    <ClInclude Include="Box.h">
+      <Filter>Game Object\Box</Filter>
+    </ClInclude>
+    <ClInclude Include="Board.h">
+      <Filter>FrameWork\HUD\Board</Filter>
+    </ClInclude>
+    <ClInclude Include="Font.h">
+      <Filter>FrameWork\HUD\Font</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

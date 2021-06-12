@@ -8,7 +8,8 @@ using namespace std;
 
 class Camera{
 public:
-	float cx,__cx, px, py;
+	float cxMin,__cx, px, py;
+	float cxMax = 2500;
 	float __cy = CAMERA_COORDINATE_Y;
 	CMario* mario;
 	CGame* game = CGame::GetInstance();

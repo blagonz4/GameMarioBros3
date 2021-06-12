@@ -8,11 +8,15 @@
 20	textures\misc.png	176	224	248
 25	textures\effect.png	176	224	248
 30	textures\enemies-2.png	0	128	128
+35	textures\font.png	255	0	255
 40	textures\enemies3.png	3	26	110
+45	textures\board.png	255	0	255
 50	textures\enemies4.png	255	255	255
+55	textures\Font1.png	255	0	255
 70	textures\enemies5.png	255	255	255
 90	textures\misc2.png	0	117	255
-
+35	textures\font.png	255	0	255
+11	textures\misc-2.png	0	117	255
 # id	left	top	right	bottom	texture_id
 [SPRITES]
 # -------------------BIG MARIO -------------------
@@ -475,6 +479,20 @@
 807	62	24	69	32	25
 808	44	21	58	35	25
 809	28	20	43	35	25
+#============== EFFECT BOX FLY UP =======
+86	131	176	147	192	11
+87	151	177	167	192	11
+88	151	158	167	174	11
+89	169	158	185	174	11
+90	93	176	109	192	11
+91	110	176	126	192	11
+92	169	176	185	192	11
+#============= MUSHROOM SYMBOL =======
+64	187	33	211	61	35
+#============== FLOWER SYMBOL ========
+65	211	33	235	61	35
+#============= STAR SYMBOL ============
+66	235	33	259	61	35
 # ani_id	sprite1_id	time1	sprite2_id	time2	...
 [ANIMATIONS]
 # ====================== MARIO ====================== 
@@ -840,6 +858,18 @@
 140	82	100	83	100
 #============== EFFECT 1_UP ===========
 152	61	100
+#============ MUSHROOM SYMBOL ==========
+155	64	100
+#=========== FLOWER SYMBOL ===========
+156	65	100
+#============ STAR SYMBOL ============
+157	66	100
+#================ BOX ==========
+160	64	100	65	100	66	100
+#======================= EFFECT BOX FLY UP ============
+168	86	50	92	50	87	50
+169	88	50	92	50	89	50
+170	90	50	92	50	91	50
 #--------Effect disappear--------
 153	807	50	808	50	809	50	807	50	808	50
 #
@@ -884,6 +914,14 @@
 18	139	140	141	142	143	144	145	146
 #EFFECT 1_UP
 19	152
+#MUSHROOM SYMBOL
+20	155
+#FLOWER
+21	156
+#STAR
+22	157
+#BOX
+23	155	156	157	168	169	170
 [OBJECTS]
 # type	x	y	ani_set_id	extra_settings per object type
 # type: 0 = Mario , 1 = PLATFORM, 2 = Goomba, 3 = Koopas
@@ -908,7 +946,7 @@
 1	1792	384	2	32	32
 1	1856	368	2	32	48
 1	2256	368	2	32	48
-
+1	2256	110	2	32	210
 ######################GOOMBA################ 3 ani_set_id 6 ## model 1: base 2: red 3:base fly
 #type   x       y    ani_set_id model    direction
 2	208	400	2	1	-1
@@ -1010,7 +1048,9 @@
 10	1761	128	10
 10	1809	96	10
 10	1841	128	10
+#BOX
+13	2684	330	23
 #PORTAL
-52	50	380	9	100	390	2
+52	2256	105	9	2287	110	2
 [TILEMAP]
 Tilemap/Map1-1.txt

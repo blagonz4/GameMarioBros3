@@ -35,5 +35,5 @@ public:
 	}
 	float GetMapWidth();
 	float GetMapHeight();
-
+	float GetColumnMap() { return ColumnMap; }
 };

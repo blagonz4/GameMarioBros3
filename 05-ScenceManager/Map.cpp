@@ -26,7 +26,8 @@ void Map::SetMap(int** tilemap) {
 void Map::DrawMap() {
 	float FirstColumn = floor(CamX / TILE_WIDTH);
 	float LastColumn = ceil((CamX + CGame::GetInstance()->GetScreenWidth()) / TILE_WIDTH);
-	
+	if (LastColumn >= ColumnMap)
+		LastColumn = ColumnMap - 1;
 	for (int CurrentRow = 0; CurrentRow < RowMap; CurrentRow++) {
 		for (int CurrentColumn = 0; CurrentColumn <= LastColumn; CurrentColumn++) {	//2 vong lap ve map
 			int index = TileMap[CurrentRow][CurrentColumn] - 1;
@@ -53,5 +54,5 @@ float Map::GetMapHeight() {
 	return RowMap * TILE_HEIGHT;
 }
 float Map::GetMapWidth() {
-	return ColumnMap * TILE_WIDTH;
+	return ColumnMap * TILE_WIDTH -1;
 }
