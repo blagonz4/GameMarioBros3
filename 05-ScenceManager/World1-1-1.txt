@@ -837,7 +837,7 @@
 147	48	10	49	10	50	10	51	10	49	10	48	10	49	10	50	10	51	10	48	10
 155	80	10	80	10	80	10
 #BROKEN BRICK EFFECT
-140	82	100	83	100
+149	82	100	83	100
 #============== EFFECT 1_UP ===========
 152	61	100
 #--------Effect disappear--------
@@ -877,7 +877,7 @@
 # TAIL HIT EFFECT
 15	155
 #EFFECT BROKEN BRICK 
-16	140
+16	149
 #COIN EFFECT 
 17	138
 #point effect
@@ -889,7 +889,7 @@
 # type: 0 = Mario , 1 = PLATFORM, 2 = Goomba, 3 = Koopas
 #############MARIO#############
 # MARIO
-0	128	32	1
+0	2300	32	1
 ########################## BRICK ####################
 # --- platform (hint: I created the list using Excel!) ----
 1	112	0	2	16	160

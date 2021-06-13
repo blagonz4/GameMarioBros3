@@ -121,6 +121,7 @@ enum ObjectType {
 #define SCENE_TEST						1
 #define WORLD1_1_1						2
 #define TEXID_FONT35					35
+#define GAME_TIME_LIMIT					999999
 //-------------------------------Board-------------------
 #define TEXID_BOARD								45
 #define DISTANCE_FROM_BOTTOM_CAM_TO_TOP_BOARD	90.f

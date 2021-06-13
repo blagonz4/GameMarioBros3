@@ -5,6 +5,7 @@
 #include "Font.h"
 #include "Textures.h"
 #include <string>
+
 class Board	
 {
 	float x, y;
@@ -18,6 +19,7 @@ public:
 	Board(float X, float Y);
 	void GetBoundingBox(float& left, float& top, float& right, float& bottom) {}
 	void Render(CMario* mario, int RemainingTime);
+	void DrawPowerBar(float X, float Y);
 	string FillNumber(string s, UINT amountOfNumber);
 	~Board();
 };

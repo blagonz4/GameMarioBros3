@@ -22,7 +22,7 @@ public:
 	bool isTransformToRacoon = false;
 	bool isJumping = false;
 	bool isFlying = false;
-
+	int gotCard;
 	CMario(float x = 0.0f, float y = 0.0f);
 	vector<LPGAMEOBJECT> listFire;
 	vector<LPGAMEOBJECT> listEffect;

@@ -402,16 +402,19 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				{
 				case BOX_STATE_FLOWER:
 					box->stateUnbox = box->GetState();
+					this->gotCard = box->stateUnbox;
 					box->isUnbox = true;
 					box->SetState(BOX_STATE_FLOWER_UP);
 					break;
 				case BOX_STATE_MUSHROOM:
 					box->stateUnbox = box->GetState();
+					this->gotCard = box->stateUnbox;
 					box->isUnbox = true;
 					box->SetState(BOX_STATE_MUSHROOM_UP);
 					break;
 				case BOX_STATE_STAR:
 					box->stateUnbox = box->GetState();
+					this->gotCard = box->stateUnbox;
 					box->isUnbox = true;
 					box->SetState(BOX_STATE_MUSHROOM_UP);
 					break;

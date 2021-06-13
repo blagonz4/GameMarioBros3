@@ -43,6 +43,7 @@ protected:
 	CGame* game = CGame::GetInstance();
 	Font* text;
 	Map* map;
+	DWORD playTime = GAME_TIME_LIMIT;
 	vector<LPGAMEOBJECT> objects;
 	void _ParseSection_TEXTURES(string line);
 	void _ParseSection_SPRITES(string line);

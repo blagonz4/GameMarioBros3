@@ -279,6 +279,8 @@ void CPlayScene::Update(DWORD dt)
 
 	vector<LPGAMEOBJECT> coObjects;
 
+	playTime -= dt;
+
 	for (size_t i = 1; i < objects.size(); i++)
 	{
 		coObjects.push_back(objects[i]);
@@ -409,7 +411,7 @@ void CPlayScene::Render()
 		}
 	}
 	Board* board = new Board(CGame::GetInstance()->GetCamX(), CGame::GetInstance()->GetCamY() + SCREEN_HEIGHT - DISTANCE_FROM_BOTTOM_CAM_TO_TOP_BOARD);
-	board->Render(player, 999);
+	board->Render(player, playTime);
 }
 
 /*
