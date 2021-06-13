@@ -139,6 +139,21 @@
     <Filter Include="FrameWork\HUD\Power">
       <UniqueIdentifier>{5e1808c9-325a-41ee-9f3e-7d4ecff45c8b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game Object\ObjetWorldMap">
+      <UniqueIdentifier>{a74154bb-948f-4139-a69e-8e0932f64a2c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Object\ObjetWorldMap\Bush">
+      <UniqueIdentifier>{c0364335-4251-43f8-a23d-053d2f92f5c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Object\ObjetWorldMap\Start">
+      <UniqueIdentifier>{b0dea346-17d9-405d-8ec0-420e23c22a24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Object\ObjetWorldMap\Scene">
+      <UniqueIdentifier>{591265d9-6c26-4abe-9903-949f38f9e019}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Object\ObjetWorldMap\Card">
+      <UniqueIdentifier>{3592e7d0-efe8-4f03-8cd3-bf473c51faa6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animations.cpp">
@@ -248,6 +263,18 @@
     </ClCompile>
     <ClCompile Include="Font.cpp">
       <Filter>FrameWork\HUD\Font</Filter>
+    </ClCompile>
+    <ClCompile Include="Bush.cpp">
+      <Filter>Game Object\ObjetWorldMap\Bush</Filter>
+    </ClCompile>
+    <ClCompile Include="Card.cpp">
+      <Filter>Game Object\ObjetWorldMap\Card</Filter>
+    </ClCompile>
+    <ClCompile Include="Start.cpp">
+      <Filter>Game Object\ObjetWorldMap\Start</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>Game Object\ObjetWorldMap\Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -361,6 +388,18 @@
     </ClInclude>
     <ClInclude Include="Font.h">
       <Filter>FrameWork\HUD\Font</Filter>
+    </ClInclude>
+    <ClInclude Include="Bush.h">
+      <Filter>Game Object\ObjetWorldMap\Bush</Filter>
+    </ClInclude>
+    <ClInclude Include="Card.h">
+      <Filter>Game Object\ObjetWorldMap\Card</Filter>
+    </ClInclude>
+    <ClInclude Include="Start.h">
+      <Filter>Game Object\ObjetWorldMap\Start</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>Game Object\ObjetWorldMap\Scene</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

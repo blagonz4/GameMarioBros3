@@ -33,6 +33,10 @@
 #include "Box.h"
 #include "Font.h"
 #include "Board.h"
+#include "Bush.h"
+#include "Card.h"
+#include "Start.h"
+#include "Scene.h"
 class CPlayScene: public CScene
 {
 private:

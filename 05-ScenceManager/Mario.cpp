@@ -38,7 +38,10 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		SetState(MARIO_STATE_TURN);
 	}
 	// Simple fall down
-	vy += MARIO_GRAVITY * dt;
+	if (CGame::GetInstance()->GetScene() != WORLDMAP)
+	{
+		vy += MARIO_GRAVITY * dt;
+	}
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
 
@@ -386,8 +389,10 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			else if (e->obj->GetType() == PORTAL) {
 				
 				CPortal* p = dynamic_cast<CPortal*>(e->obj);
+				x += dx; y += dy;
 				if (p->GetSceneId() == SCENE_TEST) {
-					if(e->ny >0)
+					CGame *game = CGame::GetInstance();
+					if(game->IsKeyDown(DIK_E) && CheckAABB(p))
 						CGame::GetInstance()->SwitchScene(p->GetSceneId());
 				}
 				else if (p->GetSceneId() == WORLD1_1_1) {
@@ -434,6 +439,7 @@ void CMario::Render()
 		int ani = -1;
 		if (state == MARIO_STATE_DIE)
 			ani = MARIO_ANI_DIE;
+		//-----------MARIO ---------------------
 		else if (level == MARIO_LEVEL_BIG) //MARIO BIG
 		{
 			if (vx == 0)
@@ -493,6 +499,8 @@ void CMario::Render()
 					ani = MARIO_ANI_BIG_HOLD_WALK_RIGHT;
 				else ani = MARIO_ANI_BIG_HOLD_WALK_LEFT;
 			}
+			if (state == MARIO_STATE_WORLD_MAP)
+				ani = MARIO_ANI_BIG_WORLD_MAP;
 		}
 
 		//-----------MARIO SMALL---------------------
@@ -550,7 +558,10 @@ void CMario::Render()
 					ani = MARIO_ANI_SMALL_HOLD_WALK_RIGHT;
 				else ani = MARIO_ANI_SMALL_HOLD_WALK_LEFT;
 			}
+			if (state == MARIO_STATE_WORLD_MAP)
+				ani = MARIO_ANI_SMALL_WORLD_MAP;
 		}
+		//-----------MARIO FIRE---------------------
 		else if (level == MARIO_LEVEL_FIRE) //----------------------------------------MARIO FIRE----------------------------------------
 		{
 			if (vx == 0)
@@ -604,7 +615,10 @@ void CMario::Render()
 				if (nx > 0) ani = MARIO_ANI_FIRE_SHOOT_FIRE_RIGHT;
 				else ani = MARIO_ANI_FIRE_SHOOT_FIRE_LEFT;
 			}
+			if (state == MARIO_STATE_WORLD_MAP)
+				ani = MARIO_ANI_FIRE_WORLD_MAP;
 		}
+		//-----------MARIO RACOON---------------------
 		else if (level == MARIO_LEVEL_RACOON)//----------------------------------------MARIO RACOON----------------------------------------
 		{
 			if (vx == 0)
@@ -660,6 +674,8 @@ void CMario::Render()
 				if (nx > 0) ani = MARIO_ANI_RACOON_SPIN_RIGHT;
 				else ani = MARIO_ANI_RACOON_SPIN_LEFT;
 			}
+			if (state == MARIO_STATE_WORLD_MAP)
+				ani = MARIO_ANI_RACOON_WORLD_MAP;
 
 		}
 		int alpha = 255;
@@ -748,6 +764,7 @@ void CMario::SetState(int state)
 	case MARIO_STATE_SPIN:
 	case MARIO_STATE_HOLD:
 	case MARIO_STATE_RUN_MAXSPEED:
+	case MARIO_STATE_WORLD_MAP:
 		break;
 	}
 
@@ -775,6 +792,10 @@ void CMario::GetBoundingBox(float &left, float &top, float &right, float &bottom
 	}
 	else
 	{
+		right = x + MARIO_SMALL_BBOX_WIDTH;
+		bottom = y + MARIO_SMALL_BBOX_HEIGHT;
+	}
+	if (state == MARIO_STATE_WORLD_MAP) {
 		right = x + MARIO_SMALL_BBOX_WIDTH;
 		bottom = y + MARIO_SMALL_BBOX_HEIGHT;
 	}

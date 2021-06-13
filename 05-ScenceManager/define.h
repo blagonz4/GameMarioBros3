@@ -115,9 +115,13 @@ enum ObjectType {
 #define OBJECT_TYPE_LEAF				12
 #define OBJECT_TYPE_BOX					13
 #define OBJECT_TYPE_PORTAL				52
-
+#define OBJECT_TYPE_BUSH				53
+#define OBJECT_TYPE_START				54
+#define OBJECT_TYPE_SCENE				55
+#define OBJECT_TYPE_CARD				56
 
 #define MAX_SCENE_LINE					1024
+#define WORLDMAP						0
 #define SCENE_TEST						1
 #define WORLD1_1_1						2
 #define TEXID_FONT35					35
@@ -130,6 +134,20 @@ enum ObjectType {
 #define TILE_FONT_WIDTH					8
 #define TILE_FONT_A_HEIGHT				8
 #define TILE_FONT_NUMBER_HEIGHT			7
+//-----------------------------SceneWorldMap-------------------
+#define SCENE_STATE_1					0
+#define SCENE_STATE_2					1
+#define SCENE_STATE_3					2
+#define SCENE_STATE_4					3
+#define SCENE_STATE_5					4
+#define SCENE_STATE_6					5
+
+#define SCENE_ANI_1					0
+#define SCENE_ANI_2					1
+#define SCENE_ANI_3					2
+#define SCENE_ANI_4					3
+#define SCENE_ANI_5					4
+#define SCENE_ANI_6					5
 //-----------------------------Goomba---------------------------
 #define GOOMBA_WALKING_SPEED					0.005f
 
@@ -352,7 +370,7 @@ enum ObjectType {
 #define MARIO_STATE_FLOAT					14000	//racoon
 #define MARIO_STATE_SPIN					15000	//racoon
 #define MARIO_STATE_RUN_MAXSPEED			16000
-
+#define MARIO_STATE_WORLD_MAP				17000
 //----------------------Mario SMALL------------------------
 #define MARIO_ANI_SMALL_IDLE_RIGHT			0
 #define MARIO_ANI_SMALL_IDLE_LEFT			1
@@ -471,6 +489,11 @@ enum ObjectType {
 #define MARIO_ANI_SMALL_RUN_LEFT_MAXSPEED	106
 #define MARIO_ANI_RACOON_FLOAT_RIGHT		107
 #define MARIO_ANI_RACOON_FLOAT_LEFT			108
+
+#define MARIO_ANI_SMALL_WORLD_MAP			109
+#define MARIO_ANI_BIG_WORLD_MAP				110
+#define MARIO_ANI_RACOON_WORLD_MAP			111
+#define MARIO_ANI_FIRE_WORLD_MAP			112
 
 //--------------------------HITBOX---------------------
 #define	MARIO_LEVEL_SMALL					51
