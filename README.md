@@ -1,10 +1,10 @@
 # GameMarioBros3
-Link github MarioBro3 lop game thay Dung
+Link github MarioBro3 lop game thay Dung<br />
 
-Keyboard:
-A for reset \n
-F1 F2 F3 F4 for Mario Big, Small, Fire, Raccoon
-↑ ↓ → ← for moving
-Q for run, spin, throw fire
-E for fly
-Space for jumping
+Keyboard:<br />
+A for reset <br />
+F1 F2 F3 F4 for Mario Big, Small, Fire, Raccoon<br />
+↑ ↓ → ← for moving<br />
+Q for run, spin, throw fire<br />
+E for fly<br />
+Space for jumping<br />
