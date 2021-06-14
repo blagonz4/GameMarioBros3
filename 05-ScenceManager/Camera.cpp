@@ -8,7 +8,7 @@ Camera::Camera(CMario* mario, CGame* game, Map* map) {
 
 void Camera::Update(DWORD dt) {
 
-	if (game->GetScene() == SCENE_TEST) {
+	if (game->GetScene() == SCENE_TEST || game->GetScene() == MAP1_3 || game->GetScene() == MAP1_3_1) {
 
 		if (mario == NULL) return;
 
@@ -36,7 +36,7 @@ void Camera::Update(DWORD dt) {
 		
 	}
 
-	else if (game->GetScene() == WORLD1_1_1) 
+	else if (game->GetScene() == MAP1_1_1) 
 	{
 
 		if (mario == NULL) return;

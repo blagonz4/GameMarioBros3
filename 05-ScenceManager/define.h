@@ -123,7 +123,9 @@ enum ObjectType {
 #define MAX_SCENE_LINE					1024
 #define WORLDMAP						0
 #define SCENE_TEST						1
-#define WORLD1_1_1						2
+#define MAP1_1_1						2
+#define	MAP1_3						3
+#define MAP1_3_1						4
 #define TEXID_FONT35					35
 #define GAME_TIME_LIMIT					999999
 //-------------------------------Board-------------------

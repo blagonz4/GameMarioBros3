@@ -395,7 +395,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					if(game->IsKeyDown(DIK_E) && CheckAABB(p))
 						CGame::GetInstance()->SwitchScene(p->GetSceneId());
 				}
-				else if (p->GetSceneId() == WORLD1_1_1) {
+				else if (p->GetSceneId() == MAP1_1_1) {
 					if (e->ny < 0)
 						CGame::GetInstance()->SwitchScene(p->GetSceneId());
 				}

@@ -30,7 +30,7 @@ void Map::DrawMap() {
 		LastColumn = ColumnMap - 1;
 	for (int CurrentRow = 0; CurrentRow < RowMap; CurrentRow++) {
 		for (int CurrentColumn = 0; CurrentColumn <= LastColumn; CurrentColumn++) {	//2 vong lap ve map
-			int index = TileMap[CurrentRow][CurrentColumn] - 1;
+			int index = TileMap[CurrentRow][CurrentColumn]-1;
 			if (index < TotalTile) {	//dem tong so luong tile da ve
 				Tiles.at(index)->Draw(CurrentColumn * TILE_WIDTH, CurrentRow * TILE_HEIGHT);
 			}

@@ -17,6 +17,7 @@
 90	textures\misc2.png	0	117	255
 35	textures\font.png	255	0	255
 11	textures\misc-2.png	0	117	255
+85	textures\world-1-1.png	32	56	236
 # id	left	top	right	bottom	texture_id
 [SPRITES]
 # -------------------BIG MARIO -------------------
@@ -1053,4 +1054,4 @@
 #PORTAL
 52	2256	105	9	2287	110	2
 [TILEMAP]
-Tilemap/Map1-1.txt
+Tilemap/Map1-3-1.txt
