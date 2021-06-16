@@ -37,6 +37,8 @@
 #include "Card.h"
 #include "Start.h"
 #include "Scene.h"
+#include "MusicBrick.h"
+#include "BoomerangBrother.h"
 class CPlayScene: public CScene
 {
 private:

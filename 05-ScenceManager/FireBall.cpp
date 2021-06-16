@@ -72,13 +72,21 @@ void FireBall::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				e->obj->SetState(GOOMBA_STATE_DIE);
 				this->isFinish = true;
 			}
-			else if (e->obj->GetType() == PIPE) {
+			else if (e->obj->GetType() == BOOMERANGBROTHER)
+			{
+				e->obj->nx = this->nx;
+				e->obj->SetState(BOOM_BROTHER_STATE_DIE);
+				this->isFinish = true;
+			}
+			else if (e->obj->GetType() == PIPE ||
+				e->obj->GetType() == GOLDBRICK ||
+				e->obj->GetType() == QUESTIONBRICK||
+				e->obj->GetType() == MUSICBRICK) {
 				if (e->nx != 0) 
 					this->isFinish = true;
 			}
 			
 			else if (e->obj->GetType() == MARIO) {
-				DebugOut(L"dung trung mario \n");
 				if (e->obj->untouchable == 0) {
 					
 					if (e->obj->level > MARIO_LEVEL_SMALL)

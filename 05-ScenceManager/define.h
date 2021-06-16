@@ -44,6 +44,10 @@ enum Type {
 	PSWITCH = 11,
 	MUSHROOM = 12,
 	LEAF = 13,
+	BOOMERANGBROTHER = 24,
+	BOOMERANG = 25,
+	POOP = 26,
+	MUSICBRICK = 27,
 
 	EFFECT_DISAPPEAR = 14,
 	EFFECT_TAIL_HIT	= 15,
@@ -114,6 +118,8 @@ enum ObjectType {
 #define OBJECT_TYPE_MUSHROOM			11
 #define OBJECT_TYPE_LEAF				12
 #define OBJECT_TYPE_BOX					13
+#define OBJECT_TYPE_MUSIC_BRICK			14
+#define OBJECT_TYPE_BOOMERANG_BROTHER	15
 #define OBJECT_TYPE_PORTAL				52
 #define OBJECT_TYPE_BUSH				53
 #define OBJECT_TYPE_START				54
@@ -161,7 +167,7 @@ enum ObjectType {
 
 #define GOOMBA_MODEL_NORMAL						1
 #define GOOMBA_MODEL_WING						2
-
+#define GOOMBA_MODEL_WING_BROWN					3
 
 #define GOOMBA_STATE_DIE						100
 
@@ -172,9 +178,19 @@ enum ObjectType {
 #define GOOMBA_ANI_WING_WALKING					4
 #define GOOMBA_ANI_WING_JUMPING					5
 #define GOOMBA_ANI_WING_FALLING					6
+#define GOOMBA_ANI_WING_BROWN_JUMPING			7
+#define GOOMBA_ANI_WING_BROWN_FALLING			8
 
 #define GOOMBA_JUMPING_SPEED					0.25f
 #define TIME_TO_DIE								500
+
+//-----------poop-------------
+#define POOP_ANI					0
+#define LOAD_POOP_FROM_TXT			26
+#define POOP_BBOX					8
+
+
+
 //-----------------------------Koopas----------------------------
 #define KOOPAS_DEFEND_TIME			100000
 #define KOOPAS_DEFEND_HITBOX		16
@@ -211,6 +227,25 @@ enum ObjectType {
 #define KOOPAS_ANI_GREEN_FLY_LEFT			9
 #define KOOPAS_ANI_RED_DIE					10
 #define KOOPAS_ANI_GREEN_DIE				11
+//--------------------------BOOMERANG BROTHER---------------------------
+#define BOOM_BROTHER_STATE_WALKING					100
+#define BOOM_BROTHER_STATE_ATTACK					200
+#define	BOOM_BROTHER_STATE_DIE						300
+#define BOOM_BROTHER_ANI_RIGHT						0
+#define BOOM_BROTHER_ANI_LEFT						1
+#define BOOM_BROTHER_SPEED_X						0.003f
+#define BOOM_BROTHER_BBOX_WIDTH						16
+#define BOOM_BROTHER_BBOX_HEIGHT					24
+#define TIME_BB_WALKING								2000
+#define TIME_BB_ATTACK								500
+//------------------------BOOMERANG-------------------------
+#define BOOMERANG_ANI								0
+#define BOOMERANG_BBOX_WIDTH						15
+#define BOOMERANG_BBOX_HEIGHT						16
+#define LOAD_BOOMERANG_FROM_TXT						25
+#define BOOMERANG_FLY_MIN_HEIGHT					40
+#define BOOMERANG_SPEED_X							0.01f
+#define BOOMERANG_SPEED_Y							0.0045f
 //-----------------------------FIRE PLANT----------------------------
 #define DISTANCE_SAFE_ZONE				25
 
@@ -286,8 +321,8 @@ enum ObjectType {
 #define QUESTION_BRICK_ANI_EMPTY			1
 #define	QUESTION_BRICK_ANI_POWER_UP			2
 
-#define QUESTION_BRICK_MIN_Y				15
-#define QUESTION_BRICK_SPEED_UP				0.01f
+#define QUESTION_BRICK_MIN_Y				20
+#define QUESTION_BRICK_SPEED_UP				0.07f
 
 #define QUESTION_BRICK_MODEL_COIN			1
 #define QUESTION_BRICK_MODEL_POWER_UP		2
@@ -306,6 +341,8 @@ enum ObjectType {
 #define GOLD_BRICK_MODEL_MUSHROOM_1_UP			3
 #define GOLD_BRICK_MODEL_MODEL_MANY_COIN		4
 #define GOLD_BRICK_MODEL_POWER_UP				5
+
+#define MUSIC_BRICK_MODEL_HIDDEN				2
 //---------------------PSwitch
 #define PSWITCH_BBOX_HEIGHT					16
 #define PSWITCH_BBOX_USED_HEIGHT			7
@@ -516,14 +553,14 @@ enum ObjectType {
 
 
 //----------------------FIRE BALL-------------------
-#define FIRE_SPEED 0.008f
-#define FIRE_GRAVITY 0.0006f
-#define FIRE_BOUNCE_SPEED_Y  0.15f
-#define FIRE_BBOX_WIDTH 8
-#define FIRE_BBOX_HEIGHT 8
-#define SHOOT_FIRE_RIGHT 0
-#define SHOOT_FIRE_LEFT 1
-#define LOAD_FIRE_FROM_FILE 5
+#define FIRE_SPEED						0.008f
+#define FIRE_GRAVITY					0.0006f
+#define FIRE_BOUNCE_SPEED_Y				0.15f
+#define FIRE_BBOX_WIDTH					8
+#define FIRE_BBOX_HEIGHT				8
+#define SHOOT_FIRE_RIGHT				0
+#define SHOOT_FIRE_LEFT					1
+#define LOAD_FIRE_FROM_FILE				5
 
 //------------------------COIN----------------------
 #define COIN_ANI 0

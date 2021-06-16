@@ -16,6 +16,9 @@
 #include "EffectBrokenBrick.h"
 #include "Portal.h"
 #include "Box.h"
+#include "MusicBrick.h"
+#include "BoomerangBrother.h"
+#include "Boomerang.h"
 CMario::CMario(float x, float y) 
 {
 	level = MARIO_LEVEL_BIG;
@@ -354,6 +357,29 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					}
 				}			
 			}
+			else if (e->obj->GetType() == MUSICBRICK) {
+				MusicBrick* mb = dynamic_cast<MusicBrick*>(e->obj);
+				if (e->ny > 0)
+				{
+					if (mb->GetModel() == MUSIC_BRICK_MODEL_HIDDEN)
+						mb->isHidden = false;
+					mb->vy = -QUESTION_BRICK_SPEED_UP;
+
+				}
+				else if (e->ny < 0) {
+					if (mb->GetModel() == MUSIC_BRICK_MODEL_HIDDEN) {
+						if (mb->isHidden) { x += dx; y += dy; }
+						else if (game->IsKeyDown(DIK_SPACE)) {
+							this->vy -= QUESTION_BRICK_SPEED_UP * 2 * dt;
+							mb->vy = QUESTION_BRICK_SPEED_UP;
+						}
+					}
+					else {
+						mb->vy = QUESTION_BRICK_SPEED_UP;
+						this->vy -= QUESTION_BRICK_SPEED_UP*4;
+					}
+				}
+			}
 			else if (e->obj->GetType() == COIN) { 
 				//Coin* coin = dynamic_cast<Coin*>(e->obj);
 				e->obj->isFinish = true;
@@ -426,6 +452,69 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				}
 				box->x += 2;
 				box->vy = -MARIO_GRAVITY*2 * dt;
+			}
+			else if (e->obj->GetType() == BOOMERANGBROTHER) {
+			BoomerangBrother *bb = dynamic_cast<BoomerangBrother *>(e->obj);
+			if (e->ny < 0)
+			{
+				if (bb->GetState() != BOOM_BROTHER_STATE_DIE)
+				{
+					bb->SetState(BOOM_BROTHER_STATE_DIE);
+				}
+			}
+			else if (nx != 0)
+			{
+				if (state == MARIO_STATE_SPIN && level == MARIO_LEVEL_RACOON) {
+					bb->vx += this->nx * MARIO_DIE_DEFLECT_SPEED * 2;
+					bb->vy = -MARIO_DIE_DEFLECT_SPEED;
+					bb->SetState(BOOM_BROTHER_STATE_DIE);
+					EffectTailHit* effectTailHit = new EffectTailHit(bb->x, bb->y);
+					listEffect.push_back(effectTailHit);
+				}
+				else if (untouchable == 0)
+				{
+					if (bb->GetState() != BOOM_BROTHER_STATE_DIE)
+					{
+						if (level > MARIO_LEVEL_SMALL)
+						{
+							if (level > MARIO_LEVEL_BIG) {
+								level = MARIO_LEVEL_BIG;
+								EffectDisappear* effectDisappear = new EffectDisappear(this->x, this->y);
+								listEffect.push_back(effectDisappear);
+								StartUntouchable(TIME_UNTOUCHABLE_SHORT);
+							}
+							else
+							{
+								level = MARIO_LEVEL_SMALL;
+								StartUntouchable(TIME_UNTOUCHABLE_LONG);
+							}
+						}
+						else
+							SetState(MARIO_STATE_DIE);
+					}
+				}
+			}
+			}
+			else if (e->obj->GetType() == BOOMERANG) {
+				//Boomerang *boomerang = dynamic_cast<Boomerang *>(e->obj);
+				if (untouchable == 0)
+				{
+					if (level > MARIO_LEVEL_SMALL)
+					{
+						if (level > MARIO_LEVEL_BIG) {
+							level = MARIO_LEVEL_BIG;
+							EffectDisappear* effectDisappear = new EffectDisappear(this->x, this->y);
+							listEffect.push_back(effectDisappear);
+							StartUntouchable(TIME_UNTOUCHABLE_SHORT);
+						}
+						else
+						{
+							level = MARIO_LEVEL_SMALL;
+							StartUntouchable(TIME_UNTOUCHABLE_LONG);
+						}
+					}
+					else SetState(MARIO_STATE_DIE);
+				}
 			}
 		}
 	}

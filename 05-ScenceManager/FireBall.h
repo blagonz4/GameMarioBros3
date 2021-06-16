@@ -4,6 +4,7 @@
 #include "Koopas.h"
 #include "Goomba.h"
 #include "Pipe.h"
+#include "BoomerangBrother.h"
 class FireBall : public CGameObject
 {
 	float defineVx, defineVy;

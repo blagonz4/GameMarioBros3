@@ -127,6 +127,8 @@
   <ItemGroup>
     <ClCompile Include="Animations.cpp" />
     <ClCompile Include="Board.cpp" />
+    <ClCompile Include="Boomerang.cpp" />
+    <ClCompile Include="BoomerangBrother.cpp" />
     <ClCompile Include="Box.cpp" />
     <ClCompile Include="Brick.cpp" />
     <ClCompile Include="Bush.cpp" />
@@ -148,6 +150,7 @@
     <ClCompile Include="Leaf.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="Mushroom.cpp" />
+    <ClCompile Include="MusicBrick.cpp" />
     <ClCompile Include="Pipe.cpp" />
     <ClCompile Include="Platform.cpp" />
     <ClCompile Include="Portal.cpp" />
@@ -169,6 +172,8 @@
   <ItemGroup>
     <ClInclude Include="Animations.h" />
     <ClInclude Include="Board.h" />
+    <ClInclude Include="Boomerang.h" />
+    <ClInclude Include="BoomerangBrother.h" />
     <ClInclude Include="Box.h" />
     <ClInclude Include="Brick.h" />
     <ClInclude Include="Bush.h" />
@@ -191,6 +196,7 @@
     <ClInclude Include="Leaf.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="Mushroom.h" />
+    <ClInclude Include="MusicBrick.h" />
     <ClInclude Include="Pipe.h" />
     <ClInclude Include="Platform.h" />
     <ClInclude Include="Portal.h" />

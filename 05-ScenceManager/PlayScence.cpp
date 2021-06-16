@@ -200,6 +200,16 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj = new Scene(model);
 		break;
 	}
+	case OBJECT_TYPE_MUSIC_BRICK: {
+		float model = (float)atof(tokens[4].c_str());
+		obj = new MusicBrick(x, y, model);
+		break; 
+	}
+	case OBJECT_TYPE_BOOMERANG_BROTHER: {
+		float dir = (float)atof(tokens[4].c_str());
+		obj = new BoomerangBrother(player,dir);
+		break;
+	}
 	default:
 		DebugOut(L"[ERR] Invalid object type: %d\n", object_type);
 		return;
@@ -387,6 +397,13 @@ void CPlayScene::Update(DWORD dt)
 				player->PlusScore(100);
 				ShowEffectPoint(koopa, POINT_EFFECT_MODEL_100);
 			}				
+		}
+		if (e->GetType() == BOOMERANGBROTHER) {
+			BoomerangBrother* bb = dynamic_cast<BoomerangBrother*>(e);
+			if (bb->isFinish) {
+				player->PlusScore(200);
+				ShowEffectPoint(bb, POINT_EFFECT_MODEL_200);
+			}
 		}
 		if (e->GetType() == BOX) {
 			Box* box = dynamic_cast<Box*>(e);

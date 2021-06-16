@@ -154,6 +154,15 @@
     <Filter Include="Game Object\ObjetWorldMap\Card">
       <UniqueIdentifier>{3592e7d0-efe8-4f03-8cd3-bf473c51faa6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game Object\Brick\MusicBrick">
+      <UniqueIdentifier>{7c38db65-4a4f-45e3-8713-dcea1475d935}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Object\Enemy\BoomerangBrother">
+      <UniqueIdentifier>{dfcdecae-8ed2-431d-b881-b7cfcb68e4a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Object\Enemy\BoomerangBrother\Boomerang">
+      <UniqueIdentifier>{764accb5-b4e5-454a-8eff-03390ee74fac}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animations.cpp">
@@ -275,6 +284,15 @@
     </ClCompile>
     <ClCompile Include="Scene.cpp">
       <Filter>Game Object\ObjetWorldMap\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="MusicBrick.cpp">
+      <Filter>Game Object\Brick\MusicBrick</Filter>
+    </ClCompile>
+    <ClCompile Include="Boomerang.cpp">
+      <Filter>Game Object\Enemy\BoomerangBrother\Boomerang</Filter>
+    </ClCompile>
+    <ClCompile Include="BoomerangBrother.cpp">
+      <Filter>Game Object\Enemy\BoomerangBrother</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -400,6 +418,15 @@
     </ClInclude>
     <ClInclude Include="Scene.h">
       <Filter>Game Object\ObjetWorldMap\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="MusicBrick.h">
+      <Filter>Game Object\Brick\MusicBrick</Filter>
+    </ClInclude>
+    <ClInclude Include="Boomerang.h">
+      <Filter>Game Object\Enemy\BoomerangBrother\Boomerang</Filter>
+    </ClInclude>
+    <ClInclude Include="BoomerangBrother.h">
+      <Filter>Game Object\Enemy\BoomerangBrother</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
