@@ -188,7 +188,7 @@ enum ObjectType {
 #define POOP_ANI					0
 #define LOAD_POOP_FROM_TXT			26
 #define POOP_BBOX					8
-
+#define POOP_MAX_RIGHT_X			8
 
 
 //-----------------------------Koopas----------------------------

@@ -130,7 +130,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_GOOMBA: {
 		float model = (float)atof(tokens[4].c_str());
 		float direction = (float)atof(tokens[5].c_str());
-		obj = new CGoomba(model,direction); break;
+		obj = new CGoomba(player,model,direction); break;
 	} 
 	case OBJECT_TYPE_KOOPAS: {
 		float model = (float)atof(tokens[4].c_str());

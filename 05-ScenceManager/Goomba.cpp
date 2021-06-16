@@ -1,11 +1,14 @@
 #include "Goomba.h"
 #include "Platform.h"
 #include "Pipe.h"
-CGoomba::CGoomba(float model, float direction)
+CGoomba::CGoomba(CMario* mario, float model, float direction)
 {	
 	this->model = model;
 	nx = direction;
-	Health = (this->model == GOOMBA_MODEL_NORMAL) ? 1 : 2;
+	this->mario = mario;
+	if (this->model == 1)	this->Health = 1;
+	else this->Health = 2;
+
 	eType = Type::GOOMBA;
 	objType = ObjectType::ENEMY;
 }
@@ -16,7 +19,35 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	if (state != GOOMBA_STATE_DIE) {
 		vx = nx * GOOMBA_WALKING_SPEED * dt;
 	}
-	vy += MARIO_GRAVITY * dt;
+
+	if (model == GOOMBA_MODEL_WING_BROWN) {
+
+		if ( y >= DISTANCE_MARIO_FLY_THROUGH_SKY_Y)
+			vy = -MARIO_GRAVITY * 5 * dt;
+		else vy += MARIO_GRAVITY * dt;
+
+		if (listPoop.size() < 4) {
+			timeDropDelay += dt;
+			if (timeDropDelay >= 600) {
+				Poop* poop = new Poop(x, y + 10);
+				listPoop.push_back(poop);
+				timeDropDelay = 0;
+			}	
+		}
+		else {
+			TurnAround();
+			vy = MARIO_GRAVITY * 5 * dt;
+		}
+	}
+	else vy += MARIO_GRAVITY * dt;
+
+	for (size_t i = 0; i < listPoop.size(); i++)
+	{
+		listPoop[i]->Update(dt, coObjects);
+		if (!CheckObjectInCamera(listPoop.at(i)) || listPoop.at(i)->isFinish == true) {
+			listPoop.erase(listPoop.begin() + i);
+		}
+	}
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
 	coEvents.clear();
@@ -41,11 +72,7 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		x += min_tx * dx + nx * 0.4f;
 		y += min_ty * dy + ny * 0.4f;
 
-		if (nx != 0 ) x+=dx;
-		/*if (ny < 0 && Health == 2) {
-			vy = -GOOMBA_JUMPING_SPEED;
-		}
-		else if (ny != 0) vy = 0;*/
+		//if (nx != 0 ) x+=dx;
 
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{
@@ -89,16 +116,19 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					e->obj->GetType() == QUESTIONBRICK ||
 					e->obj->GetType() == GOLDBRICK) {
 					this->nx *= -1;
+					this->vy = 0;
+					this->vx = 0;
 					this->vx = nx * GOOMBA_WALKING_SPEED * dt;
 				}
 			}
 			if (ny != 0 ) {
-				if (Health == 2) {
+				if (model == GOOMBA_MODEL_WING_BROWN)	vy = 0;
+				else if (Health == 2) {
 					vy = -GOOMBA_JUMPING_SPEED;
 					y += dy;
 				}
-					
 				else vy = 0;
+						
 			}	
 		}
 	}
@@ -110,7 +140,7 @@ void CGoomba::Render()
 {
 	int ani = -1;
 	if (state == GOOMBA_STATE_DIE) {
-		if (model == GOOMBA_MODEL_NORMAL)
+		if (model == GOOMBA_MODEL_NORMAL || model == GOOMBA_MODEL_WING_BROWN)
 			ani = GOOMBA_ANI_DIE;
 		else ani = GOOMBA_ANI_WING_DIE;
 	}
@@ -125,12 +155,24 @@ void CGoomba::Render()
 			}			
 			else ani = GOOMBA_ANI_WING_WALKING_WITH_OUT_WING;
 		}
+		else if (model == GOOMBA_MODEL_WING_BROWN) {
+			if (Health == 2) {
+				if (vy > 0)
+					ani = GOOMBA_ANI_WING_BROWN_FALLING;
+				else if (vy < 0)
+					ani = GOOMBA_ANI_WING_BROWN_JUMPING;
+				else ani = GOOMBA_ANI_WING_BROWN_FALLING;
+			}
+			else ani = GOOMBA_ANI_WALKING;
+		}
 		else ani = GOOMBA_ANI_WALKING;
 	}
-
+	for (size_t i = 0; i < listPoop.size(); i++) {
+		listPoop.at(i)->Render();
+	}
 	animation_set->at(ani)->Render(x,y);
 
-	//RenderBoundingBox();
+	RenderBoundingBox();
 }
 
 void CGoomba::SetState(int state)
@@ -158,4 +200,13 @@ void CGoomba::GetBoundingBox(float &left, float &top, float &right, float &botto
 		bottom = y + GOOMBA_BBOX_HEIGHT;
 	else bottom = y + GOOMBA_WING_BBOX_HEIGHT;
 
+}
+
+void CGoomba::TurnAround() {
+	float px, py;
+	mario->GetPosition(px, py);
+	if (px - this->x >20)
+		this->nx = 1;
+	if (this->x - px  > 150)
+		this->nx = -1;
 }

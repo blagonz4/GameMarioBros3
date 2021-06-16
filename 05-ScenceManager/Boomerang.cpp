@@ -1,7 +1,6 @@
 #include "Boomerang.h"
 
 
-
 Boomerang::Boomerang(float X, float Y, int dir)
 {
 	this->x = X; this->y = Y;
@@ -15,15 +14,15 @@ void Boomerang::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	CGameObject::Update(dt, coObjects);
 
-	if (startY - y < 40 && !isTurning) {
-		vx = nx * 0.01f * dt;
-		vy = -0.0045f*dt;
+	if (startY - y < BOOMERANG_FLY_MIN_HEIGHT && !isTurning) {
+		vx = nx * BOOMERANG_SPEED_X * dt;
+		vy = -BOOMERANG_SPEED_Y *dt;
 		isTurning = true;
 	}
-	if (startY - y > 40)
+	if (startY - y > BOOMERANG_FLY_MIN_HEIGHT)
 	{
-		vx = nx * 0.01f * dt;
-		vy = 0.0045f*dt;
+		vx = nx * BOOMERANG_SPEED_X * dt;
+		vy = BOOMERANG_SPEED_Y *dt;
 	}
 	if (isComingBack)
 		vx = nx * 0.01f *dt;

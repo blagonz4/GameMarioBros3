@@ -153,6 +153,7 @@
     <ClCompile Include="MusicBrick.cpp" />
     <ClCompile Include="Pipe.cpp" />
     <ClCompile Include="Platform.cpp" />
+    <ClCompile Include="Poop.cpp" />
     <ClCompile Include="Portal.cpp" />
     <ClCompile Include="PSwitch.cpp" />
     <ClCompile Include="QuestionBrick.cpp" />
@@ -199,6 +200,7 @@
     <ClInclude Include="MusicBrick.h" />
     <ClInclude Include="Pipe.h" />
     <ClInclude Include="Platform.h" />
+    <ClInclude Include="Poop.h" />
     <ClInclude Include="Portal.h" />
     <ClInclude Include="PSwitch.h" />
     <ClInclude Include="QuestionBrick.h" />

@@ -19,6 +19,7 @@
 #include "MusicBrick.h"
 #include "BoomerangBrother.h"
 #include "Boomerang.h"
+#include "Poop.h"
 CMario::CMario(float x, float y) 
 {
 	level = MARIO_LEVEL_BIG;
@@ -169,6 +170,8 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						{
 							if (goomba->Health == 2) {
 								goomba->Health = 1;
+								if (goomba->model == GOOMBA_MODEL_WING_BROWN)
+									goomba->model = 1;
 								ShowEffectPoint(goomba, POINT_EFFECT_MODEL_100);
 								PlusScore(100);
 							}
@@ -516,6 +519,11 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					else SetState(MARIO_STATE_DIE);
 				}
 			}
+			else if (e->obj->GetType() == POOP) {
+				DebugOut(L"dung poop \n");
+				Poop* poop = dynamic_cast<Poop *>(e->obj);
+				this->vy += MARIO_GRAVITY*5 * dt;
+}
 		}
 	}
 

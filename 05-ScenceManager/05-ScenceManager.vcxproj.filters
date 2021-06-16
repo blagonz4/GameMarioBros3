@@ -163,6 +163,9 @@
     <Filter Include="Game Object\Enemy\BoomerangBrother\Boomerang">
       <UniqueIdentifier>{764accb5-b4e5-454a-8eff-03390ee74fac}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game Object\Enemy\Goomba\Poop">
+      <UniqueIdentifier>{e0053570-667d-471e-8e0b-728f17900c5b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animations.cpp">
@@ -293,6 +296,9 @@
     </ClCompile>
     <ClCompile Include="BoomerangBrother.cpp">
       <Filter>Game Object\Enemy\BoomerangBrother</Filter>
+    </ClCompile>
+    <ClCompile Include="Poop.cpp">
+      <Filter>Game Object\Enemy\Goomba\Poop</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -427,6 +433,9 @@
     </ClInclude>
     <ClInclude Include="BoomerangBrother.h">
       <Filter>Game Object\Enemy\BoomerangBrother</Filter>
+    </ClInclude>
+    <ClInclude Include="Poop.h">
+      <Filter>Game Object\Enemy\Goomba\Poop</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
