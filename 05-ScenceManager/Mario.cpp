@@ -46,6 +46,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	{
 		vy += MARIO_GRAVITY * dt;
 	}
+	else SetState(MARIO_STATE_WORLD_MAP);
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
 
@@ -418,16 +419,17 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			else if (e->obj->GetType() == PORTAL) {
 				
 				CPortal* p = dynamic_cast<CPortal*>(e->obj);
+				CGame::GetInstance()->SwitchScene(p->GetSceneId());
 				x += dx; y += dy;
-				if (p->GetSceneId() == SCENE_TEST) {
-					CGame *game = CGame::GetInstance();
-					if(game->IsKeyDown(DIK_E) && CheckAABB(p))
-						CGame::GetInstance()->SwitchScene(p->GetSceneId());
-				}
-				else if (p->GetSceneId() == MAP1_1_1) {
-					if (e->ny < 0)
-						CGame::GetInstance()->SwitchScene(p->GetSceneId());
-				}
+				//if (p->GetSceneId() == SCENE_TEST  || p->GetSceneId() == MAP1_3) {
+				//	CGame *game = CGame::GetInstance();
+				//	if(game->IsKeyDown(DIK_E) && CheckAABB(p))
+				//		CGame::GetInstance()->SwitchScene(p->GetSceneId());
+				//}
+				//else {
+				//	CGame::GetInstance()->SwitchScene(p->GetSceneId());
+				//}
+				
 			}
 			else if (e->obj->GetType() == BOX) {
 			Box* box = dynamic_cast<Box*>(e->obj);
@@ -453,7 +455,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					box->SetState(BOX_STATE_MUSHROOM_UP);
 					break;
 				}
-				box->x += 2;
+				box->x += 2; //nhich box qua 1 xiu bay len cho dep
 				box->vy = -MARIO_GRAVITY*2 * dt;
 			}
 			else if (e->obj->GetType() == BOOMERANGBROTHER) {

@@ -408,8 +408,8 @@ void CPlayScene::Update(DWORD dt)
 		if (e->GetType() == BOX) {
 			Box* box = dynamic_cast<Box*>(e);
 			if (box->isUnbox) {
-				player->SetState(MARIO_STATE_WALK_RIGHT);
-				player->x++;
+				//player->SetState(MARIO_STATE_WALK_RIGHT);
+				//player->x++;
 			}
 		}
 	}
@@ -417,11 +417,6 @@ void CPlayScene::Update(DWORD dt)
 	for (size_t i = 0; i < objects.size(); i++) {
 		if (objects.at(i)->isFinish)
 			objects.erase(objects.begin() + i);
-	}
-	if (CGame::GetInstance()->GetScene() == WORLDMAP)
-	{
-		//CGame::GetInstance()->SetCamPos(0, 0);
-		player->SetState(MARIO_STATE_WORLD_MAP);
 	}
 
 

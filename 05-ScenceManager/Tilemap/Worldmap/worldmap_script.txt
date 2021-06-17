@@ -655,6 +655,6 @@
 0	50	45	1
 #portal
 52	65	17	0	81	33	1
-#52	179	72	0	180	89	4
+52	160	17	0	176	35	3
 [TILEMAP]
 Tilemap\Worldmap\worldmap_map.txt

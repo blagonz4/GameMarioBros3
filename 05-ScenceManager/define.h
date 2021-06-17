@@ -20,7 +20,7 @@ using namespace std;
 #define WINDOW_CLASS_NAME L"Super Mario Bros 3"
 #define MAIN_WINDOW_TITLE L"Super Mario Bros 3"
 
-#define BACKGROUND_COLOR D3DCOLOR_XRGB(255, 255, 200)
+#define BACKGROUND_COLOR D3DCOLOR_XRGB(0, 0, 0)
 #define SCREEN_WIDTH 300  
 #define SCREEN_HEIGHT 300
 
