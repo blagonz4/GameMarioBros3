@@ -66,18 +66,19 @@ void Camera::Update(DWORD dt) {
 
 		mario->GetPosition(px, py);
 
-		if (__cx <= px - DISTANCE_TO_MARIO_X)
-			__cx = px - DISTANCE_TO_MARIO_X;
-		__cy = py - 200;
+		//if (__cx <= px - DISTANCE_TO_MARIO_X)
+		//	__cx = px - DISTANCE_TO_MARIO_X;
+		__cy = -20;
+		__cx = -15;
 		//if (py < DISTANCE_MARIO_FLY_THROUGH_SKY_Y)
 		//	__cy = py - DISTANCE_TO_MARIO_Y;
 		//if (py > DISTANCE_MARIO_FLY_THROUGH_SKY_Y && py < CAMERA_COORDINATE_Y)
 		//	__cy = py + DISTANCE_TO_MARIO_Y;
 
-		if (__cy <= 0)
-			__cy = 0;//khong cho len cao qua chieu cao game
-		if (__cx < cxMin)
-			__cx = cxMin;//khong cho qua ben trai dau map
+		//if (__cy <= 0)
+		//	__cy = 0;//khong cho len cao qua chieu cao game
+		//if (__cx < cxMin)
+		//	__cx = cxMin;//khong cho qua ben trai dau map
 
 		game->SetCamPos((int)__cx, (int)__cy);
 		map->SetCamPos((int)__cx, (int)__cy);

@@ -137,6 +137,10 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		float direction = (float)atof(tokens[5].c_str());
 		obj = new CKoopas(model,direction,player); break;
 	} 
+	case OBJECT_TYPE_BRICK: {
+		obj = new CBrick();
+		break;
+	}
 	case OBJECT_TYPE_PLATFORM: {
 		float w = (float)atof(tokens[4].c_str());
 		float h = (float)atof(tokens[5].c_str());
@@ -208,6 +212,11 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_BOOMERANG_BROTHER: {
 		float dir = (float)atof(tokens[4].c_str());
 		obj = new BoomerangBrother(player,dir);
+		break;
+	}
+	case OBJECT_TYPE_MUSHROOM: {
+		float model = (float)atof(tokens[4].c_str());
+		obj = new Mushroom(x,y,model);
 		break;
 	}
 	default:
@@ -312,6 +321,7 @@ void CPlayScene::Update(DWORD dt)
 
 	for (size_t i = 0; i < objects.size(); i++)
 	{
+
 		LPGAMEOBJECT e = objects[i];
 		if (objects[i]->CheckObjectInCamera(objects[i]))
 			objects[i]->Update(dt, &coObjects);
@@ -328,6 +338,16 @@ void CPlayScene::Update(DWORD dt)
 				}
 				QuestionBrickDropItem(qb->GetModel(), qb->x, qb->y);
 				qb->isUnbox = false;
+			}
+		}
+		if (e->GetType() == BRICK)
+		{
+			CBrick* brick = dynamic_cast<CBrick*>(e);
+			if (brick->isUnbox == 1)
+			{
+				brick->isUnbox = 2;
+				objects.push_back(new Leaf(brick->x, brick->y - 10));			
+				return;
 			}
 		}
 		if (e->GetType() == GOLDBRICK)
@@ -412,6 +432,7 @@ void CPlayScene::Update(DWORD dt)
 				//player->x++;
 			}
 		}
+
 	}
 
 	for (size_t i = 0; i < objects.size(); i++) {
@@ -433,7 +454,8 @@ void CPlayScene::Render()
 	map->DrawMap();
 	for (size_t i = 0; i < objects.size(); i++) {
 
-		objects[i]->Render();
+		if (objects[i]->CheckObjectInCamera(objects[i]))
+			 objects[i]->Render();
 
 		if (objects[i]->GetType() == BOX) {
 			Box* box = dynamic_cast<Box*>(objects[i]);
@@ -442,8 +464,8 @@ void CPlayScene::Render()
 			}
 		}
 	}
-	Board* board = new Board(CGame::GetInstance()->GetCamX(), CGame::GetInstance()->GetCamY() + SCREEN_HEIGHT - DISTANCE_FROM_BOTTOM_CAM_TO_TOP_BOARD);
-	board->Render(player, playTime);
+	//Board* board = new Board(CGame::GetInstance()->GetCamX(), CGame::GetInstance()->GetCamY() + SCREEN_HEIGHT - DISTANCE_FROM_BOTTOM_CAM_TO_TOP_BOARD);
+	//board->Render(player, playTime);
 }
 
 /*

@@ -26,19 +26,24 @@ void Mushroom::GetBoundingBox(float& left, float& top, float& right, float& bott
 void Mushroom::Update(DWORD dt, vector<LPGAMEOBJECT>* listObject)
 {
 	CGameObject::Update(dt);
-	if (!CheckObjectInCamera(this))
-	{
-		this->isFinish = true;
+	//if (!CheckObjectInCamera(this))
+	//{
+	//	this->isFinish = true;
+	//}
+	if (model == 1) {
+		if (state == MUSHROOM_STATE_APPEAR)
+			vy = -MUSHROOM_SPEED_APPEAR_Y;
+		if (y <= minY)
+		{
+			isMoving = true;
+		}
+		if (isMoving)
+		{
+			vx = nx * MUSHROOM_SPEED * dt;
+			vy = MUSHROOM_GRAVITY * dt;
+		}
 	}
-	if (y <= minY)
-	{
-		isMoving = true;
-	}
-	if (isMoving)
-	{
-		vx = nx * MUSHROOM_SPEED * dt;
-		vy = MUSHROOM_GRAVITY * dt;
-	}
+
 
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
@@ -100,12 +105,6 @@ void Mushroom::Update(DWORD dt, vector<LPGAMEOBJECT>* listObject)
 void Mushroom::SetState(int state)
 {
 	CGameObject::SetState(state);
-	switch (state)
-	{
-	case MUSHROOM_STATE_APPEAR:
-		vy = -MUSHROOM_SPEED_APPEAR_Y;
-		break;
-	}
 }
 
 void Mushroom::Render()

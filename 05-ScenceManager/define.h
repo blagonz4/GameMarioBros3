@@ -64,6 +64,7 @@ enum Type {
 	MUSHROOM_POWER = 50,
 	MUSHROOM_1_UP = 51,
 	PORTAL = 52,
+	BRICK = 57,
 };
 
 enum ObjectType {
@@ -125,6 +126,7 @@ enum ObjectType {
 #define OBJECT_TYPE_START				54
 #define OBJECT_TYPE_SCENE				55
 #define OBJECT_TYPE_CARD				56
+#define OBJECT_TYPE_BRICK				57
 
 #define MAX_SCENE_LINE					1024
 #define WORLDMAP						0

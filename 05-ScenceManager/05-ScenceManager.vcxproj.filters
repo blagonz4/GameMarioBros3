@@ -166,13 +166,16 @@
     <Filter Include="Game Object\Enemy\Goomba\Poop">
       <UniqueIdentifier>{e0053570-667d-471e-8e0b-728f17900c5b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="FrameWork\SceneManager\IntroScene">
+      <UniqueIdentifier>{6b03f5d7-d23d-431e-9624-2d12899a1d70}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Object\Brick\Brick">
+      <UniqueIdentifier>{5b007fe4-be6d-430c-9f07-2bca2d1271c4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animations.cpp">
       <Filter>FrameWork\Animations</Filter>
-    </ClCompile>
-    <ClCompile Include="Brick.cpp">
-      <Filter>Game Object\Brick</Filter>
     </ClCompile>
     <ClCompile Include="Game.cpp">
       <Filter>FrameWork\Game</Filter>
@@ -197,9 +200,6 @@
     </ClCompile>
     <ClCompile Include="Portal.cpp">
       <Filter>Game Object\Portal</Filter>
-    </ClCompile>
-    <ClCompile Include="Scence.cpp">
-      <Filter>FrameWork\SceneManager\PlayScene</Filter>
     </ClCompile>
     <ClCompile Include="Sprites.cpp">
       <Filter>FrameWork\Sprites</Filter>
@@ -300,13 +300,19 @@
     <ClCompile Include="Poop.cpp">
       <Filter>Game Object\Enemy\Goomba\Poop</Filter>
     </ClCompile>
+    <ClCompile Include="Scence.cpp">
+      <Filter>FrameWork\SceneManager</Filter>
+    </ClCompile>
+    <ClCompile Include="IntroScene.cpp">
+      <Filter>FrameWork\SceneManager\IntroScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Brick.cpp">
+      <Filter>Game Object\Brick\Brick</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animations.h">
       <Filter>FrameWork\Animations</Filter>
-    </ClInclude>
-    <ClInclude Include="Brick.h">
-      <Filter>Game Object\Brick</Filter>
     </ClInclude>
     <ClInclude Include="Game.h">
       <Filter>FrameWork\Game</Filter>
@@ -331,9 +337,6 @@
     </ClInclude>
     <ClInclude Include="Portal.h">
       <Filter>Game Object\Portal</Filter>
-    </ClInclude>
-    <ClInclude Include="Scence.h">
-      <Filter>FrameWork\SceneManager\PlayScene</Filter>
     </ClInclude>
     <ClInclude Include="Sprites.h">
       <Filter>FrameWork\Sprites</Filter>
@@ -436,6 +439,15 @@
     </ClInclude>
     <ClInclude Include="Poop.h">
       <Filter>Game Object\Enemy\Goomba\Poop</Filter>
+    </ClInclude>
+    <ClInclude Include="Scence.h">
+      <Filter>FrameWork\SceneManager</Filter>
+    </ClInclude>
+    <ClInclude Include="IntroScene.h">
+      <Filter>FrameWork\SceneManager\IntroScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Brick.h">
+      <Filter>Game Object\Brick\Brick</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

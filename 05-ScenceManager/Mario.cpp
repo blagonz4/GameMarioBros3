@@ -1,5 +1,6 @@
 #include"Mario.h"
 #include "Game.h"
+#include "Brick.h"
 #include "FireBall.h"
 #include "Goomba.h"
 #include "Platform.h"
@@ -20,6 +21,7 @@
 #include "BoomerangBrother.h"
 #include "Boomerang.h"
 #include "Poop.h"
+
 CMario::CMario(float x, float y) 
 {
 	level = MARIO_LEVEL_BIG;
@@ -289,6 +291,17 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					y += dy;
 				}
 			}
+			else if (e->obj->GetType() == BRICK)
+			{
+				CBrick* brick = dynamic_cast<CBrick*>(e->obj);
+				if (e->ny > 0) {
+					if (brick->isUnbox == 0)
+						brick->isUnbox = 1;
+					y += dy; x -= dx;
+					x -= this->nx * 8 ;// day mario ra xiu
+					//vx -= this->nx * MARIO_DIE_DEFLECT_SPEED * dt;
+				}
+			}
 			else if (e->obj->GetType() == PLATFORM){
 				isOnGround = true;
 			}
@@ -388,6 +401,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				//Coin* coin = dynamic_cast<Coin*>(e->obj);
 				e->obj->isFinish = true;
 				PlusCoinCollect(1);
+				PlusScore(50);
 			}
 			else if (e->obj->GetType() == PSWITCH)
 			{
@@ -398,14 +412,17 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					pswitch->SetPosition(pswitch->x, pswitch->y + PSWITCH_SMALLER);
 				}
 			}
-			else if (e->obj->GetType() == MUSHROOM_POWER)
+			else if (e->obj->GetType() == MUSHROOM_POWER || e->obj->GetType() == MUSHROOM_1_UP)
 			{
 				Mushroom* mushroom = dynamic_cast<Mushroom*>(e->obj);
 				mushroom->isFinish = true;
 				ShowEffectPoint(this, POINT_EFFECT_MODEL_1K);
 				PlusScore(1000);
-				this->y -= 20;
-				this->SetLevel(MARIO_LEVEL_BIG);			
+				if (e->obj->GetType() == MUSHROOM_POWER) {
+					this->y -= 20;
+					this->SetLevel(MARIO_LEVEL_BIG);
+				}
+				this->x += dx; this->y += dy;
 			}
 			else if (e->obj->GetType() == LEAF)
 			{
