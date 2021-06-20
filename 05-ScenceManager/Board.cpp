@@ -5,7 +5,7 @@ using namespace std;
 
 Board::Board(float X, float Y)
 {
-	this->x = X;
+	this->x = X+10;
 	this->y = Y;
 	Tex = CTextures::GetInstance()->Get(TEXID_BOARD);
 	Sprite = new CSprite(0, 0, 0, 320, 120, Tex);
@@ -20,28 +20,31 @@ string Board::FillNumber(string s, UINT amountOfNumber) {
 
 
 void Board::Render(CMario * mario, int RemainingTime) {
-	Sprite->Draw(x, y);
+	Sprite->Draw(x+155, y);
 	//Map
-	if (CGame::GetInstance()->GetScene() == SCENE_TEST) {
-		font.Draw(x + 55, y + 12, FillNumber(std::to_string(1), 1));
+	if (CGame::GetInstance()->GetScene() == SCENE_TEST || CGame::GetInstance()->GetScene() == MAP1_1_1) {
+		font.Draw(x + 53, y + 12, FillNumber(std::to_string(1), 1));
+	}
+	else if (CGame::GetInstance()->GetScene() == MAP1_3 || CGame::GetInstance()->GetScene() == MAP1_3_1) {
+		font.Draw(x + 53, y + 12, FillNumber(std::to_string(3), 1));
 	}
 	//score
 	font.Draw(x + 70, y + 20, FillNumber(std::to_string(mario->GetScore()), 7));
 	//coin
 	font.Draw(x + 150, y + 12, FillNumber(std::to_string(mario->GetCoinCollect()), 2));
 	//Time
-	font.Draw(x + 141, y + 20, FillNumber(std::to_string(RemainingTime), 3));
+	font.Draw(x + 140, y + 20, FillNumber(std::to_string(RemainingTime), 3));
 	//Live
 	font.Draw(x + 47, y + 20, FillNumber(std::to_string(3), 1));
 	//Logo
 	LPDIRECT3DTEXTURE9 TexPatch = CTextures::GetInstance()->Get(TEXID_FONT35);
 	if (mario->GetLevel() == MARIO_LEVEL_SMALL) {
 		LPSPRITE SpriteTileLogo = new CSprite(0, 8, 43, 24, 50, TexPatch);
-		SpriteTileLogo->Draw(x + 22, y + 20);
+		SpriteTileLogo->Draw(x + 25, y + 20);
 	}
 	else {
 		LPSPRITE SpriteTileLogo = new CSprite(0, 8, 50, 24, 57, TexPatch);
-		SpriteTileLogo->Draw(x + 22, y + 20);
+		SpriteTileLogo->Draw(x + 25, y + 20);
 	}
 	//Power
 	if (mario->GetState() == MARIO_STATE_RUN_RIGHT ||
@@ -78,7 +81,7 @@ void Board::Render(CMario * mario, int RemainingTime) {
 		{
 			//DrawPowerBar(x + 118, y + 12);
 			LPSPRITE SpriteTilePower = new CSprite(0, 12, 33, 27, 40, TexPatch);
-			SpriteTilePower->Draw(x + 118, y + 12);
+			SpriteTilePower->Draw(x + 121, y + 12);
 		}
 	}
 	//Card
@@ -103,7 +106,7 @@ void Board::Render(CMario * mario, int RemainingTime) {
 void Board::DrawPowerBar(float X, float Y) {
 	LPDIRECT3DTEXTURE9 TexPatch = CTextures::GetInstance()->Get(TEXID_FONT35);
 	LPSPRITE SpriteTile = new CSprite(0, 3, 33, 11, 40, TexPatch);
-	SpriteTile->Draw(X, Y);
+	SpriteTile->Draw(X-1, Y);
 }
 
 Board::~Board()

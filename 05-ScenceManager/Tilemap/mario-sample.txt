@@ -1,11 +1,11 @@
 [SETTINGS]
-start	3
+start	1
 #scene list
 [SCENES]
 #0	Tilemap/Worldmap/worldmap_script.txt
-#1	Tilemap/Map1_1/map1_1_script.txt
+1	Tilemap/Map1_1/map1_1_script.txt
 #2	Tilemap/Map1_1_1/map1_1_1_script.txt
-3	Tilemap/Map1_3/map1_3_script.txt
+#3	Tilemap/Map1_3/map1_3_script.txt
 #4	Tilemap/Map1_3_1/map1_3_1_script.txt
 #5	Tilemap/Introscene/introscene_script.txt
 

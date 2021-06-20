@@ -163,14 +163,14 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	}
 	case OBJECT_TYPE_PIPE: {
 		float model = (float)atof(tokens[4].c_str());
-		obj = new Pipe(model);
+		obj = new Pipe(x,y,model);
 		break;
 	}
-	case OBJECT_TYPE_FIRE_PLANT: {
-		float model = (float)atof(tokens[4].c_str());
-		obj = new FirePlant(player,model);
-		break;
-	}
+	//case OBJECT_TYPE_FIRE_PLANT: {
+	//	float model = (float)atof(tokens[4].c_str());
+	//	obj = new FirePlant(player,model);
+	//	break;
+	//}
 	case OBJECT_TYPE_QUESTION_BRICK: {
 		float model = (float) atof(tokens[4].c_str());
 		obj = new QuestionBrick(x,y,model);
@@ -464,8 +464,8 @@ void CPlayScene::Render()
 			}
 		}
 	}
-	//Board* board = new Board(CGame::GetInstance()->GetCamX(), CGame::GetInstance()->GetCamY() + SCREEN_HEIGHT - DISTANCE_FROM_BOTTOM_CAM_TO_TOP_BOARD);
-	//board->Render(player, playTime);
+	Board* board = new Board(CGame::GetInstance()->GetCamX(), CGame::GetInstance()->GetCamY() + SCREEN_HEIGHT - DISTANCE_FROM_BOTTOM_CAM_TO_TOP_BOARD);
+	board->Render(player, playTime);
 }
 
 /*
