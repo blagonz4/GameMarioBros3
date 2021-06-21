@@ -50,9 +50,9 @@ enum Type {
 	MUSICBRICK = 27,
 
 	EFFECT_DISAPPEAR = 14,
-	EFFECT_TAIL_HIT	= 15,
+	EFFECT_TAIL_HIT = 15,
 	EFFECT_BROKEN_BRICK = 16,
-	EFFECT_COIN	= 17,
+	EFFECT_COIN = 17,
 	EFFECT_POINT = 18,
 	EFFECT_1UP = 19,
 
@@ -60,11 +60,17 @@ enum Type {
 	FLOWER = 21,
 	STAR = 22,
 	BOX = 23,
-	
+
 	MUSHROOM_POWER = 50,
 	MUSHROOM_1_UP = 51,
 	PORTAL = 52,
 	BRICK = 57,
+
+//----------INTRO---------------
+	GROUND = 58,
+	CURTAIN = 59,
+	ARROW = 60,
+	SHININGTHREE = 61,
 };
 
 enum ObjectType {
@@ -127,6 +133,10 @@ enum ObjectType {
 #define OBJECT_TYPE_SCENE				55
 #define OBJECT_TYPE_CARD				56
 #define OBJECT_TYPE_BRICK				57
+#define OBJECT_TYPE_INTRO_GROUND		58
+#define OBJECT_TYPE_INTRO_CURTAIN		59
+#define OBJECT_TYPE_INTRO_ARROW			60
+#define OBJECT_TYPE_INTRO_SHININGTHREE	61
 
 #define MAX_SCENE_LINE					1024
 #define WORLDMAP						0

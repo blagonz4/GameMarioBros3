@@ -207,6 +207,10 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				x += dx;
 				this->vx = this->nx * KOOPAS_BALL_SPEED * dt;
 			}
+			else if (e->obj->GetType() == MUSHROOM_1_UP || e->obj->GetType() == MUSHROOM_POWER) {
+				x += dx;
+				this->vx = this->nx * KOOPAS_BALL_SPEED * dt;
+			}
 		}
 	}
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];

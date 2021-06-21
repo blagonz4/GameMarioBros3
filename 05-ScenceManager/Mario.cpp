@@ -420,9 +420,10 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				PlusScore(1000);
 				if (e->obj->GetType() == MUSHROOM_POWER) {
 					this->y -= 20;
-					this->SetLevel(MARIO_LEVEL_BIG);
+					if (this->level < MARIO_LEVEL_BIG)
+						this->SetLevel(MARIO_LEVEL_BIG);
 				}
-				this->x += dx; this->y += dy;
+				this->x += dx; //this->y += dy;
 			}
 			else if (e->obj->GetType() == LEAF)
 			{
@@ -811,7 +812,7 @@ void CMario::Render()
 		{
 			listEffect[i]->Render();
 		}
-		RenderBoundingBox();
+		//RenderBoundingBox();
 }
 
 void CMario::SetState(int state)

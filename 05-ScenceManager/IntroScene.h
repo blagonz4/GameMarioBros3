@@ -13,14 +13,21 @@
 #include "Koopas.h"
 #include "Camera.h"
 #include "Goomba.h"
+#include "Ground.h"
+#include "Curtain.h"
+#include "Mushroom.h"
+#include "Leaf.h"
+#include "Arrow.h"
+#include "ShiningThree.h"
 class IntroScene : public CScene
 {
 private:
 	float CamX = 0, CamY = 0;
 protected:
-	CMario* player;					// A play scene has to have player, right? 
+	CMario* player;	// A play scene has to have player, right? 
+
 	CGame* game = CGame::GetInstance();
-	DWORD playTime = GAME_TIME_LIMIT;
+	DWORD introTime = 0;
 	vector<LPGAMEOBJECT> objects;
 	void _ParseSection_TEXTURES(string line);
 	void _ParseSection_SPRITES(string line);
@@ -31,7 +38,7 @@ protected:
 public:
 	int section;
 	IntroScene(int id, LPCWSTR filePath);
-
+	Arrow* mainArrow;
 	virtual void Load();
 	virtual void Update(DWORD dt);
 	virtual void Render();

@@ -6,10 +6,6 @@
 class CGoomba : public CGameObject
 {;
 	DWORD timeDropDelay;
-
-	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
-	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects);
-	virtual void Render();
 	DWORD timeToDie;
 public: 	
 	CMario* mario;
@@ -20,4 +16,7 @@ public:
 	virtual void SetState(int state);
 	void TurnAround();
 	float GetModel() { return model; }
+	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
+	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects);
+	virtual void Render();
 };

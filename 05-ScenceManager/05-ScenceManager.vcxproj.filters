@@ -172,6 +172,24 @@
     <Filter Include="Game Object\Brick\Brick">
       <UniqueIdentifier>{5b007fe4-be6d-430c-9f07-2bca2d1271c4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="FrameWork\SceneManager\Scence">
+      <UniqueIdentifier>{72d7000a-ff27-4e82-bbf6-c11da498387b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Object\ObjectIntro">
+      <UniqueIdentifier>{51c637db-199f-4353-b31d-5d9fc6415257}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Object\ObjectIntro\Ground">
+      <UniqueIdentifier>{9a4dfa1b-84b8-4613-8d43-610b224077e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Object\ObjectIntro\Curtain">
+      <UniqueIdentifier>{2346fbb4-2934-457a-a9fd-8b6ada5bec66}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Object\ObjectIntro\Arrow">
+      <UniqueIdentifier>{ce2c05b0-34b2-4216-9e25-bd8ec645e418}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Object\ObjectIntro\ShiningThree">
+      <UniqueIdentifier>{201928d8-2040-4096-91db-66f871dde6b9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animations.cpp">
@@ -300,14 +318,26 @@
     <ClCompile Include="Poop.cpp">
       <Filter>Game Object\Enemy\Goomba\Poop</Filter>
     </ClCompile>
-    <ClCompile Include="Scence.cpp">
-      <Filter>FrameWork\SceneManager</Filter>
-    </ClCompile>
     <ClCompile Include="IntroScene.cpp">
       <Filter>FrameWork\SceneManager\IntroScene</Filter>
     </ClCompile>
     <ClCompile Include="Brick.cpp">
       <Filter>Game Object\Brick\Brick</Filter>
+    </ClCompile>
+    <ClCompile Include="Scence.cpp">
+      <Filter>FrameWork\SceneManager\Scence</Filter>
+    </ClCompile>
+    <ClCompile Include="Ground.cpp">
+      <Filter>Game Object\ObjectIntro\Ground</Filter>
+    </ClCompile>
+    <ClCompile Include="Curtain.cpp">
+      <Filter>Game Object\ObjectIntro\Curtain</Filter>
+    </ClCompile>
+    <ClCompile Include="Arrow.cpp">
+      <Filter>Game Object\ObjectIntro\Arrow</Filter>
+    </ClCompile>
+    <ClCompile Include="ShiningThree.cpp">
+      <Filter>Game Object\ObjectIntro\ShiningThree</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -440,14 +470,26 @@
     <ClInclude Include="Poop.h">
       <Filter>Game Object\Enemy\Goomba\Poop</Filter>
     </ClInclude>
-    <ClInclude Include="Scence.h">
-      <Filter>FrameWork\SceneManager</Filter>
-    </ClInclude>
     <ClInclude Include="IntroScene.h">
       <Filter>FrameWork\SceneManager\IntroScene</Filter>
     </ClInclude>
     <ClInclude Include="Brick.h">
       <Filter>Game Object\Brick\Brick</Filter>
+    </ClInclude>
+    <ClInclude Include="Scence.h">
+      <Filter>FrameWork\SceneManager\Scence</Filter>
+    </ClInclude>
+    <ClInclude Include="Ground.h">
+      <Filter>Game Object\ObjectIntro\Ground</Filter>
+    </ClInclude>
+    <ClInclude Include="Curtain.h">
+      <Filter>Game Object\ObjectIntro\Curtain</Filter>
+    </ClInclude>
+    <ClInclude Include="Arrow.h">
+      <Filter>Game Object\ObjectIntro\Arrow</Filter>
+    </ClInclude>
+    <ClInclude Include="ShiningThree.h">
+      <Filter>Game Object\ObjectIntro\ShiningThree</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

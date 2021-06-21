@@ -143,8 +143,35 @@ void IntroScene::_ParseSection_OBJECTS(string line)
 		obj = new Platform(w, h);
 		break;
 	}
+	case OBJECT_TYPE_INTRO_GROUND: {
+		obj = new Ground(x,y);
+		break;
+	}
+	case OBJECT_TYPE_INTRO_CURTAIN: {
+		obj = new Curtain(x, y);
+		break;
+	}
+	case OBJECT_TYPE_MUSHROOM: {
+		float model = (float)atof(tokens[4].c_str());
+		obj = new Mushroom(x, y, model);
+		break;
+	}
+	case OBJECT_TYPE_LEAF: {
+		obj = new Leaf(x, y);
+		break;
+	}
+	case OBJECT_TYPE_INTRO_ARROW: 
+	{
+		obj = new Arrow(x, y);
+		mainArrow = (Arrow*)obj;
+		break;
+	}
+	case OBJECT_TYPE_INTRO_SHININGTHREE: 
+	{
+		obj = new ShiningThree(x, y);
 
-
+		break;
+	}
 	default:
 		DebugOut(L"[ERR] Invalid object type: %d\n", object_type);
 		return;
@@ -221,25 +248,112 @@ void IntroScene::Update(DWORD dt)
 
 	vector<LPGAMEOBJECT> coObjects;
 
-	playTime -= dt;
-
-	for (size_t i = 1; i < objects.size(); i++)
-	{
-		coObjects.push_back(objects[i]);
-	}
+	introTime += dt;
 
 	for (size_t i = 0; i < objects.size(); i++)
 	{
-
-		LPGAMEOBJECT e = objects[i];
-		if (objects[i]->CheckObjectInCamera(objects[i]))
-			objects[i]->Update(dt, &coObjects);
-
+		coObjects.push_back(objects[i]);
 	}
-	for (size_t i = 0; i < objects.size(); i++) {
+	for (size_t i = 0; i < objects.size(); i++)
+	{
+		LPGAMEOBJECT e = objects[i];
+		
+		if (introTime > 0 && introTime < 5000) {
+			if (e->GetType() == CURTAIN)
+			{
+				Curtain* curtain = dynamic_cast<Curtain*>(e);
+				curtain->Update(dt, &coObjects);
+			}
+		}
+		else if (introTime > 5500 && introTime < 8000) {		
+			if (e->GetType() == MARIO)
+			{
+				CMario* mario = dynamic_cast<CMario*>(e);
+				mario->Update(dt, &coObjects);			
+				if (introTime > 6900 && introTime < 7400) {
+					mario->SetState(MARIO_STATE_JUMP);
+					mario->vy = -MARIO_JUMP_SPEED * dt;
+				}
+				else if (introTime > 7400) {
+					mario->vx = 0;
+					mario->SetState(MARIO_STATE_IDLE);
+				}
+				else mario->SetState(MARIO_STATE_WALK_LEFT);
+			}
+			if (e->GetType() == GOOMBA) {
+				CGoomba* goomba = dynamic_cast<CGoomba*>(e);
+				goomba->Update(dt, &coObjects);
+			}
+			if (e->GetType() == CURTAIN)
+			{
+				Curtain* curtain = dynamic_cast<Curtain*>(e);
+				curtain->Update(dt, &coObjects);
+			}
+		}
+		else if (introTime > 8000){
+			objects[i]->Update(dt, &coObjects);
+			if (e->GetType() == KOOPAS) {
+				CKoopas* koopa = dynamic_cast<CKoopas*>(e);
+				koopa->SetState(KOOPAS_STATE_DEFEND);
+			}
+			if (e->GetType() == MUSHROOM_1_UP) {
+				Mushroom* mushroom = dynamic_cast<Mushroom*>(e);
+				mushroom->vy += 0.001 * dt;
+			}
+			if (e->GetType() == MUSHROOM_POWER) {	//red
+				Mushroom* mushroom = dynamic_cast<Mushroom*>(e);
+				mushroom->vy += 0.07 * dt;
+			}
+			if (e->GetType() == LEAF) {
+				Leaf* leaf = dynamic_cast<Leaf*>(e);
+				if (leaf->x <= leaf->limitLeft)
+				{
+					leaf->vx = LEAF_SPEED_X * dt;
+				}
+				if (leaf->x >= leaf->limitRight)
+				{
+					leaf->vx = -LEAF_SPEED_X * dt;
+				}
+				leaf->vy = 0.005 * dt;
+			}
+			if (e->GetType() == MARIO)
+			{
+				CMario* mario = dynamic_cast<CMario*>(e);
+				if (introTime < 9700) {
+					mario->vx = 0;
+					mario->SetState(MARIO_STATE_IDLE);
+					if (introTime > 9200) {
+						mario->SetState(MARIO_STATE_JUMP);
+						mario->vy = -MARIO_JUMP_SPEED * dt;
+					}				
+				}
+				if (introTime > 9700 && introTime < 10500) {
+					mario->vy += MARIO_GRAVITY * dt;
+					mario->SetState(MARIO_STATE_WALK_LEFT);
+				}
+				if (introTime > 11500 && introTime < 13000) {
+					mario->SetState(MARIO_STATE_WALK_RIGHT);
+					mario->vx += MARIO_WALKING_SPEED * dt;
+				}
+				if (introTime > 13000 && introTime < 13800)
+					mario->SetState(MARIO_STATE_WALK_LEFT);
+				if (introTime > 13800)
+					mario->SetState(MARIO_STATE_IDLE);
+			}
+			if (e->GetType() == KOOPAS) {
+				CKoopas* koopa = dynamic_cast<CKoopas*>(e);
+				if (introTime > 10500 && introTime < 12000) {
+					koopa->vx = -KOOPAS_BALL_SPEED * dt;
+					koopa->SetState(KOOPAS_STATE_BALL);
+				}	
+			}
+			
+		}
+			
 		if (objects.at(i)->isFinish)
 			objects.erase(objects.begin() + i);
 	}
+
 	//skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
 	if (player == NULL) return;
 
@@ -249,9 +363,36 @@ void IntroScene::Update(DWORD dt)
 void IntroScene::Render()
 {
 	for (size_t i = 0; i < objects.size(); i++) {
+		//objects[i]->Render();
+		LPGAMEOBJECT e = objects[i];
+		if (introTime > 0 && introTime < 8000) {
+			if (e->GetType() == CURTAIN)
+			{
+				Curtain* curtain = dynamic_cast<Curtain*>(e);
+				curtain->Render();
+			}
+			if (e->GetType() == GROUND)
+			{
+				Ground* ground = dynamic_cast<Ground*>(e);
+				ground->Render();
+			}
+			if (e->GetType() == MARIO)
+			{
+				CMario* mario = dynamic_cast<CMario*>(e);
+				mario->Render();
+			}
+			if (e->GetType() == GOOMBA) {
+				CGoomba* goomba = dynamic_cast<CGoomba*>(e);
+				goomba->Render();
+			}
+		}
+		else if (introTime > 8000 && introTime < 14000) {
+			if (e->GetType() != ARROW && e->GetType() != SHININGTHREE)
+				objects[i]->Render();
+		}
+		else if (introTime > 14000)
 			objects[i]->Render();
 	}
-
 }
 
 /*
@@ -270,41 +411,20 @@ void IntroScene::Unload()
 
 void IntroSceneKeyHandler::OnKeyDown(int KeyCode)
 {
-	//DebugOut(L"[INFO] KeyDown: %d\n", KeyCode);
 	CGame *game = CGame::GetInstance();
-	CMario *mario = ((IntroScene*)scence)->GetPlayer();
+	Arrow *arrow = ((IntroScene*)scence)->mainArrow;
 	if (CGame::GetInstance()->GetScene() != WORLDMAP) {
 		switch (KeyCode)
 		{
-		case DIK_SPACE:
-			mario->StartLimitJump();
+		case DIK_DOWN:
+			arrow->y = 180;
 			break;
-		case DIK_A:
-			mario->Reset();
-			break;
-		case DIK_F1:
-			mario->y -= 20;
-			mario->SetLevel(MARIO_LEVEL_BIG);
-			break;
-		case DIK_F2:
-			mario->SetLevel(MARIO_LEVEL_SMALL);
-			break;
-		case DIK_F3:
-			mario->y -= 20;
-			mario->SetLevel(MARIO_LEVEL_FIRE);
-			break;
-		case DIK_F4:
-			mario->y -= 20;
-			mario->SetLevel(MARIO_LEVEL_RACOON);
-			break;
-		case DIK_Q://-----------------------SHOOT FIRE--------------------------
-			if (mario->level == MARIO_LEVEL_FIRE)
-				mario->SetState(MARIO_STATE_SHOOT_FIRE);
+		case DIK_UP:
+			arrow->y = 160;
 			break;
 		case DIK_E:
-			if (game->IsKeyDown(DIK_Q)) {
-				mario->StartLimitFly();
-			}
+			if (arrow->y == 160)
+				CGame::GetInstance()->SwitchScene(0);
 			break;
 		}
 	}

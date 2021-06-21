@@ -89,15 +89,15 @@ void Board::Render(CMario * mario, int RemainingTime) {
 		LPDIRECT3DTEXTURE9 Tex = CTextures::GetInstance()->Get(TEXID_FONT35);
 		if (mario->gotCard == BOX_STATE_MUSHROOM) {
 			LPSPRITE SpriteTile = new CSprite(64, 187, 33, 211, 61, Tex);
-			SpriteTile->Draw(x+178, y + 5);
+			SpriteTile->Draw(x+185, y + 5);
 		}
 		else if (mario->gotCard == BOX_STATE_FLOWER) {
 			LPSPRITE SpriteTile = new CSprite(65, 211, 33, 235, 61, Tex);
-			SpriteTile->Draw(x + 178, y+5);
+			SpriteTile->Draw(x + 185, y+5);
 		}
 		else if (mario->gotCard == BOX_STATE_STAR) {
 			LPSPRITE SpriteTile = new CSprite(66, 235, 33, 259, 61, Tex);
-			SpriteTile->Draw(x + 178, y + 5);
+			SpriteTile->Draw(x + 185, y + 5);
 		}
 	}
 }

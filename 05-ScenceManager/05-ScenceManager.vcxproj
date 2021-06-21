@@ -126,6 +126,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Animations.cpp" />
+    <ClCompile Include="Arrow.cpp" />
     <ClCompile Include="Board.cpp" />
     <ClCompile Include="Boomerang.cpp" />
     <ClCompile Include="BoomerangBrother.cpp" />
@@ -136,6 +137,7 @@
     <ClCompile Include="Card.cpp" />
     <ClCompile Include="Coin.cpp" />
     <ClCompile Include="ColorBlock.cpp" />
+    <ClCompile Include="Curtain.cpp" />
     <ClCompile Include="Effect1Up.cpp" />
     <ClCompile Include="EffectBrokenBrick.cpp" />
     <ClCompile Include="EffectCoin.cpp" />
@@ -146,6 +148,7 @@
     <ClCompile Include="FirePlant.cpp" />
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="GoldBrick.cpp" />
+    <ClCompile Include="Ground.cpp" />
     <ClCompile Include="IntroScene.cpp" />
     <ClCompile Include="Koopas.cpp" />
     <ClCompile Include="Leaf.cpp" />
@@ -159,6 +162,7 @@
     <ClCompile Include="PSwitch.cpp" />
     <ClCompile Include="QuestionBrick.cpp" />
     <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="ShiningThree.cpp" />
     <ClCompile Include="Start.cpp" />
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="Game.cpp" />
@@ -173,6 +177,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animations.h" />
+    <ClInclude Include="Arrow.h" />
     <ClInclude Include="Board.h" />
     <ClInclude Include="Boomerang.h" />
     <ClInclude Include="BoomerangBrother.h" />
@@ -183,6 +188,7 @@
     <ClInclude Include="Card.h" />
     <ClInclude Include="Coin.h" />
     <ClInclude Include="ColorBlock.h" />
+    <ClInclude Include="Curtain.h" />
     <ClInclude Include="define.h" />
     <ClInclude Include="Effect1Up.h" />
     <ClInclude Include="EffectBrokenBrick.h" />
@@ -194,6 +200,7 @@
     <ClInclude Include="FirePlant.h" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="GoldBrick.h" />
+    <ClInclude Include="Ground.h" />
     <ClInclude Include="IntroScene.h" />
     <ClInclude Include="Koopas.h" />
     <ClInclude Include="Leaf.h" />
@@ -207,6 +214,7 @@
     <ClInclude Include="PSwitch.h" />
     <ClInclude Include="QuestionBrick.h" />
     <ClInclude Include="Scene.h" />
+    <ClInclude Include="ShiningThree.h" />
     <ClInclude Include="Start.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="Game.h" />
