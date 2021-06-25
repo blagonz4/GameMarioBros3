@@ -36,7 +36,7 @@ void BoomerangBrother::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	for (size_t i = 0; i < ListBoomerang.size(); i++)
 	{
 		ListBoomerang[i]->Update(dt, coObjects);
-		if (!CheckObjectInCamera(ListBoomerang.at(i)) || ListBoomerang.at(i)->isFinish == true) {
+		if (!CheckObjectInCamera(ListBoomerang.at(i)) || ListBoomerang.at(i)->isFinish) {
 			ListBoomerang.erase(ListBoomerang.begin() + i);
 		}
 	}

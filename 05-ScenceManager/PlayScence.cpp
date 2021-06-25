@@ -166,11 +166,11 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj = new Pipe(x,y,model);
 		break;
 	}
-	//case OBJECT_TYPE_FIRE_PLANT: {
-	//	float model = (float)atof(tokens[4].c_str());
-	//	obj = new FirePlant(player,model);
-	//	break;
-	//}
+	case OBJECT_TYPE_FIRE_PLANT: {
+		float model = (float)atof(tokens[4].c_str());
+		obj = new FirePlant(player,model);
+		break;
+	}
 	case OBJECT_TYPE_QUESTION_BRICK: {
 		float model = (float) atof(tokens[4].c_str());
 		obj = new QuestionBrick(x,y,model);

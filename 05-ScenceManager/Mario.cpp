@@ -65,19 +65,18 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			fire->nx = nx;
 			listFire.push_back(fire);
 		}
-
 	}
 	for (size_t i = 0; i < listFire.size(); i++)
 	{
 		listFire[i]->Update(dt, coObjects);
-		if (!CheckObjectInCamera(listFire.at(i)) || listFire.at(i)->isFinish == true) {
+		if (!CheckObjectInCamera(listFire.at(i)) || listFire.at(i)->isFinish) {
 			listFire.erase(listFire.begin() + i);
 		}
 	}
 	for (size_t i = 0; i < listEffect.size(); i++)
 	{
 		listEffect[i]->Update(dt, coObjects);
-		if (!CheckObjectInCamera(listEffect.at(i)) || listEffect.at(i)->isFinish == true) {
+		if (!CheckObjectInCamera(listEffect.at(i)) || listEffect.at(i)->isFinish) {
 			listEffect.erase(listEffect.begin() + i);
 		}
 	}
@@ -311,6 +310,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					if (level > MARIO_LEVEL_SMALL)
 					{
 						level = MARIO_LEVEL_SMALL;
+						StartUntouchable(TIME_UNTOUCHABLE_LONG);
 					}
 					else
 						SetState(MARIO_STATE_DIE);

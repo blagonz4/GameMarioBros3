@@ -274,10 +274,10 @@ enum ObjectType {
 #define LEFT_SIDE						 9
 #define RIGHT_SIDE						10
 
-#define FIRE_ENEMY_SPEED_Y_FAR			0.003f
-#define FIRE_ENEMY_SPEED_Y_NEAR			0.0025f
-#define FIRE_ENEMY_SPEED_X_NEAR			0.003f
-#define FIRE_ENEMY_SPEED_X_FAR			0.003f
+#define FIRE_ENEMY_SPEED_Y_FAR			0.00018f
+#define FIRE_ENEMY_SPEED_Y_NEAR			0.00017f
+#define FIRE_ENEMY_SPEED_X_NEAR			0.0002f
+#define FIRE_ENEMY_SPEED_X_FAR			0.00035f
 
 #define FIRE_PLANT_BBOX_WIDTH			16
 #define FIRE_PLANT_RED_BBOX_HEIGHT		32
@@ -304,7 +304,7 @@ enum ObjectType {
 #define TIME_DELAY_GROW_UP				1500
 #define TIME_ATTACK_DELAY				1000
 #define TIME_ATTACK						1500
-#define DISTANCE_FROM_MARIO_TO_PLANT	75
+#define DISTANCE_FROM_MARIO_TO_PLANT	60
 
 #define FIRE_PLANT_STATE_GROW_UP		1
 #define FIRE_PLANT_STATE_ATTACK			2
@@ -314,13 +314,13 @@ enum ObjectType {
 #define FIRE_PLANT_GREEN				2
 #define BITE_PLANT						3
 //-------------------------Pipe-----------
-#define SHORT_PIPE 1
-#define MEDIUM_PIPE 2
-#define ANI_SHORT_PIPE 0
-#define ANI_MEDIUM_PIPE 1
-#define PIPE_BBOX_WIDTH 32
-#define PIPE_SHORT_BBOX_HEIGHT 32 
-#define PIPE_MEDIUM_BBOX_HEIGHT 48
+#define SHORT_PIPE						1
+#define MEDIUM_PIPE						2
+#define ANI_SHORT_PIPE					0
+#define ANI_MEDIUM_PIPE					1
+#define PIPE_BBOX_WIDTH					32
+#define PIPE_SHORT_BBOX_HEIGHT			32 
+#define PIPE_MEDIUM_BBOX_HEIGHT			48
 
 //--------------------Brick------------------------
 #define BRICK_BBOX_WIDTH					16

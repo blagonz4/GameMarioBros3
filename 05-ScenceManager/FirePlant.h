@@ -6,7 +6,6 @@
 class FirePlant : public CGameObject
 {
 	CMario *mario;
-	vector<LPGAMEOBJECT> listFire;
 
 	DWORD timeDelayAttack;
 	DWORD timeHidding;
@@ -20,6 +19,7 @@ class FirePlant : public CGameObject
 	bool isSafe;
 
 public:
+	vector<LPGAMEOBJECT> listFire;
 	float model;
 	int marioRange;
 	float vxFire, vyFire;

@@ -79,9 +79,6 @@
     <Filter Include="Game Object\Pipe">
       <UniqueIdentifier>{aef8aea9-e278-40bd-a750-041b86b0aabd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game Object\Plant">
-      <UniqueIdentifier>{692880a8-b3bb-4e2d-abcc-e42fff4a0947}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Game Object\Brick\QuestionBrick">
       <UniqueIdentifier>{82c450aa-edd4-4830-82a0-6459e7aa1615}</UniqueIdentifier>
     </Filter>
@@ -190,6 +187,9 @@
     <Filter Include="Game Object\ObjectIntro\ShiningThree">
       <UniqueIdentifier>{201928d8-2040-4096-91db-66f871dde6b9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game Object\Enemy\Plant">
+      <UniqueIdentifier>{692880a8-b3bb-4e2d-abcc-e42fff4a0947}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animations.cpp">
@@ -247,7 +247,7 @@
       <Filter>Game Object\Pipe</Filter>
     </ClCompile>
     <ClCompile Include="FirePlant.cpp">
-      <Filter>Game Object\Plant</Filter>
+      <Filter>Game Object\Enemy\Plant</Filter>
     </ClCompile>
     <ClCompile Include="QuestionBrick.cpp">
       <Filter>Game Object\Brick\QuestionBrick</Filter>
@@ -399,7 +399,7 @@
       <Filter>Game Object\Pipe</Filter>
     </ClInclude>
     <ClInclude Include="FirePlant.h">
-      <Filter>Game Object\Plant</Filter>
+      <Filter>Game Object\Enemy\Plant</Filter>
     </ClInclude>
     <ClInclude Include="QuestionBrick.h">
       <Filter>Game Object\Brick\QuestionBrick</Filter>

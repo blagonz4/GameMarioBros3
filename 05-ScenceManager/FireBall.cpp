@@ -79,28 +79,28 @@ void FireBall::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				this->isFinish = true;
 			}
 			else if (e->obj->GetType() == PIPE ||
-				e->obj->GetType() == GOLDBRICK ||
-				e->obj->GetType() == QUESTIONBRICK||
-				e->obj->GetType() == MUSICBRICK) {
-				if (e->nx != 0) 
-					this->isFinish = true;
-			}
-			
+					e->obj->GetType() == GOLDBRICK ||
+					e->obj->GetType() == QUESTIONBRICK||
+					e->obj->GetType() == MUSICBRICK) {
+						if (e->nx != 0) 
+						this->isFinish = true;
+			}			
 			else if (e->obj->GetType() == MARIO) {
+				DebugOut(L"col mario\n");
 				if (e->obj->untouchable == 0) {
 					
 					if (e->obj->level > MARIO_LEVEL_SMALL)
 					{
 						
 						e->obj->level = MARIO_LEVEL_SMALL;
-						e->obj->StartUntouchable(5000);
+						e->obj->StartUntouchable(TIME_UNTOUCHABLE_LONG);
 					}
 					else
 						e->obj->SetState(MARIO_STATE_DIE);
 				}
 			}
-
 			else if (e->obj->GetType() == PLATFORM || e->obj->GetType() == COLORBLOCK) {
+				DebugOut(L"col \n");
 				if (defineVy != FIRE_GRAVITY) {
 					if ( e->nx != 0 )	this->isFinish = true;
 					else { x += dx;	y += dy; }

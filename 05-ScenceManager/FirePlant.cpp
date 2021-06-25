@@ -27,19 +27,81 @@ void FirePlant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	coEvents.clear();
 	CalcPotentialCollisions(coObjects, coEvents);
 
-	if (CheckObjectInCamera(this))//TRONG CAMERA THI CHUI LEN
-		if (!isGrowUp && isHiding) {
-			SetState(FIRE_PLANT_STATE_GROW_UP);
-		}
+	//if (CheckObjectInCamera(this))//TRONG CAMERA THI CHUI LEN
+	//	if (!isGrowUp && isHiding) {
+	//		SetState(FIRE_PLANT_STATE_GROW_UP);
+	//	}
+	//
+	//if (!CheckObjectInCamera(this)) {
+	//	SetState(FIRE_PLANT_STATE_HIDING);
+	//	timeAttack = 0;
+	//	timeDelayAttack = 0;
+	//	timeToHide = 0;
+	//	vy = 0;
+	//}
+	//	
+	//
+	//if (isGrowUp) {//DANG CHUI LEN SE SET TIMER
+	//	vy = -MARIO_GRAVITY * dt;
+	//	if (y < 338 && model == FIRE_PLANT_RED) {
+	//		vy = 0;
+	//		SetState(FIRE_PLANT_STATE_ATTACK);
+	//	}
+	//	if (y < 344 && model == FIRE_PLANT_GREEN) {
+	//		vy = 0;
+	//		SetState(FIRE_PLANT_STATE_ATTACK);
+	//	}
+	//	if (y < 361 && model == BITE_PLANT) {
+	//		vy = 0;
+	//		SetState(FIRE_PLANT_STATE_ATTACK);
+	//	}
+	//}
+	//
+	//if (isAttacking) {
+	//	if (listFire.size() < 1 && model != BITE_PLANT) {
+	//		FireBall *fire = new FireBall(this->x,
+	//										this->y,
+	//										this->vxFire,
+	//										this->vyFire);
+	//		fire->nx = this->nx;
+	//		listFire.push_back(fire);
+	//	}
+	//	timeAttack += dt;
+	//}
+	//
+	//
+	//if (timeAttack >= 1000) {//KHAC LUA XONG HOLD 1 XIU		
+	//	SetState(FIRE_PLANT_STATE_HIDING);	
+	//	timeAttack = 0;
+	//}
+	//
+	//if (listFire.size() == 1 )
+	//	if (CheckObjectInCamera(this)) {
+	//		timeToHide += dt;
+	//		timeDelayAttack += dt;
+	//	}
+	//
+	//
+	//if (timeToHide > 1000) {//HOLD XONG CHUI XUONG LAI
+	//	vy = MARIO_GRAVITY * dt;
+	//	if (y > 380 && model == FIRE_PLANT_RED) {
+	//		vy = 0;			
+	//	}
+	//	if (y >368 && model == FIRE_PLANT_GREEN) {
+	//		vy = 0;
+	//	}
+	//	if (y < 384 && model == BITE_PLANT) {
+	//		vy = 0;
+	//	}
+	//	if (timeToHide > 3000) {
+	//		SetState(FIRE_PLANT_STATE_HIDING);
+	//		timeToHide = 0;
+	//	}
+	//}
 
-	if (!CheckObjectInCamera(this)) {
-		SetState(FIRE_PLANT_STATE_HIDING);
-		timeAttack = 0;
-		timeDelayAttack = 0;
-		timeToHide = 0;
-		vy = 0;
+	if (isHiding) {
+		SetState(FIRE_PLANT_STATE_GROW_UP);
 	}
-		
 
 	if (isGrowUp) {//DANG CHUI LEN SE SET TIMER
 		vy = -MARIO_GRAVITY * dt;
@@ -56,7 +118,6 @@ void FirePlant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			SetState(FIRE_PLANT_STATE_ATTACK);
 		}
 	}
-
 	if (isAttacking) {
 		if (listFire.size() < 1 && model != BITE_PLANT) {
 			FireBall *fire = new FireBall(this->x,
@@ -68,36 +129,40 @@ void FirePlant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		}
 		timeAttack += dt;
 	}
-
-
+	
+	
 	if (timeAttack >= 1000) {//KHAC LUA XONG HOLD 1 XIU		
 		SetState(FIRE_PLANT_STATE_HIDING);	
 		timeAttack = 0;
 	}
-
-	if (listFire.size() == 1 )
-		if (CheckObjectInCamera(this)) {
-			timeToHide += dt;
-			timeDelayAttack += dt;
-		}
 	
-
-	if (timeToHide > 1000) {//HOLD XONG CHUI XUONG LAI
+	if (listFire.size() == 1 ){
+		timeToHide += dt;
+		//timeDelayAttack += dt;
+	}
+	
+	
+	if (timeToHide > 3000) {//HOLD XONG CHUI XUONG LAI
 		vy = MARIO_GRAVITY * dt;
 		if (y > 380 && model == FIRE_PLANT_RED) {
 			vy = 0;			
+			SetState(FIRE_PLANT_STATE_HIDING); timeToHide = 0;
+
 		}
 		if (y >368 && model == FIRE_PLANT_GREEN) {
 			vy = 0;
+			SetState(FIRE_PLANT_STATE_HIDING); timeToHide = 0;
 		}
 		if (y < 384 && model == BITE_PLANT) {
 			vy = 0;
+			SetState(FIRE_PLANT_STATE_HIDING); timeToHide = 0;
 		}
-		if (timeToHide > 3000) {
-			SetState(FIRE_PLANT_STATE_HIDING);
-			timeToHide = 0;
-		}
-	}		
+		//if (timeToHide > 3000) {
+		//	SetState(FIRE_PLANT_STATE_HIDING);
+		//	timeToHide = 0;
+		//}
+	}
+
 
 	for (size_t i = 0; i < listFire.size(); i++) {
 		listFire[i]->Update(dt, coObjects);
@@ -136,43 +201,43 @@ void FirePlant::ShootFire(int marioRange)
 	switch (marioRange)
 	{
 	case LEFT_TOP_SIDE_NEAR:
-		vyFire = -FIRE_ENEMY_SPEED_Y_NEAR;
-		vxFire = FIRE_ENEMY_SPEED_X_NEAR;
+		vyFire = -FIRE_ENEMY_SPEED_Y_NEAR * dt;
+		vxFire = FIRE_ENEMY_SPEED_X_NEAR * dt;
 		this->nx = -1;
 		break;
 	case LEFT_TOP_SIDE_FAR:
-		vyFire = -FIRE_ENEMY_SPEED_Y_FAR;
-		vxFire = FIRE_ENEMY_SPEED_X_FAR;
+		vyFire = -FIRE_ENEMY_SPEED_Y_FAR * dt;
+		vxFire = FIRE_ENEMY_SPEED_X_FAR * dt;
 		this->nx = -1;
 		break;
 	case LEFT_BOTTOM_SIDE_NEAR:
-		vyFire = FIRE_ENEMY_SPEED_Y_NEAR;
-		vxFire = FIRE_ENEMY_SPEED_X_NEAR;
+		vyFire = FIRE_ENEMY_SPEED_Y_NEAR * dt;
+		vxFire = FIRE_ENEMY_SPEED_X_NEAR * dt;
 		this->nx = -1;
 		break;
 	case LEFT_BOTTOM_SIDE_FAR:
-		vyFire = FIRE_ENEMY_SPEED_Y_FAR;
-		vxFire = FIRE_ENEMY_SPEED_X_FAR;
+		vyFire = FIRE_ENEMY_SPEED_Y_FAR * dt;
+		vxFire = FIRE_ENEMY_SPEED_X_FAR * dt;
 		this->nx = -1;
 		break;
 	case RIGHT_TOP_SIDE_NEAR:
-		vyFire = -FIRE_ENEMY_SPEED_Y_NEAR;
-		vxFire = FIRE_ENEMY_SPEED_X_NEAR;
+		vyFire = -FIRE_ENEMY_SPEED_Y_NEAR * dt;
+		vxFire = FIRE_ENEMY_SPEED_X_NEAR * dt;
 		this->nx = 1;
 		break;
 	case RIGHT_TOP_SIDE_FAR:
-		vyFire = -FIRE_ENEMY_SPEED_Y_FAR;
-		vxFire = FIRE_ENEMY_SPEED_X_FAR;
+		vyFire = -FIRE_ENEMY_SPEED_Y_FAR * dt;
+		vxFire = FIRE_ENEMY_SPEED_X_FAR  * dt;
 		this->nx = 1;
 		break;
 	case RIGHT_BOTTOM_SIDE_NEAR:
-		vyFire = FIRE_ENEMY_SPEED_Y_NEAR;
-		vxFire = FIRE_ENEMY_SPEED_X_NEAR;
+		vyFire = FIRE_ENEMY_SPEED_Y_NEAR * dt;
+		vxFire = FIRE_ENEMY_SPEED_X_NEAR * dt;
 		this->nx = 1;
 		break;
 	case RIGHT_BOTTOM_SIDE_FAR:
-		vyFire = FIRE_ENEMY_SPEED_Y_FAR;
-		vxFire = FIRE_ENEMY_SPEED_X_FAR;
+		vyFire = FIRE_ENEMY_SPEED_Y_FAR * dt;
+		vxFire = FIRE_ENEMY_SPEED_X_FAR * dt;
 		this->nx = 1;
 		break;
 	}
@@ -243,6 +308,7 @@ void FirePlant::SetState(int state)
 	{
 	case FIRE_PLANT_STATE_HIDING:
 	{
+		isGrowUp = false;
 		isAttacking = false;
 		isHiding = true;
 		break;
@@ -251,6 +317,7 @@ void FirePlant::SetState(int state)
 	{		
 		isGrowUp = true;
 		isHiding = false;
+		isAttacking = false;
 		break;
 	}
 	case FIRE_PLANT_STATE_ATTACK:
@@ -258,6 +325,7 @@ void FirePlant::SetState(int state)
 		ShootFire(marioRange);
 		isGrowUp = false;
 		isAttacking = true;
+		isHiding = false;
 		break;
 	}
 	}
