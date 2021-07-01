@@ -39,6 +39,7 @@
 #include "Scene.h"
 #include "MusicBrick.h"
 #include "BoomerangBrother.h"
+#include "Grid.h"
 class CPlayScene: public CScene
 {
 private:
@@ -51,13 +52,14 @@ protected:
 	Map* map;
 	DWORD playTime = GAME_TIME_LIMIT;
 	vector<LPGAMEOBJECT> objects;
+	vector<Unit*> units;
 	void _ParseSection_TEXTURES(string line);
 	void _ParseSection_SPRITES(string line);
 	void _ParseSection_ANIMATIONS(string line);
 	void _ParseSection_ANIMATION_SETS(string line);
 	void _ParseSection_OBJECTS(string line);
 	void _ParseSection_TILEMAP(string line);
-	
+	Grid* grid;
 public: 
 	int section;
 	CPlayScene(int id, LPCWSTR filePath);
@@ -72,6 +74,9 @@ public:
 	void AnnounceSceneEnd(int boxState);
 	CMario * GetPlayer() { return player; } 
 
+	Grid* GetGrid() { return grid; }
+	void GetObjectFromGrid();
+	void UpdateGrid();
 	//friend class CPlayScenceKeyHandler;
 };
 

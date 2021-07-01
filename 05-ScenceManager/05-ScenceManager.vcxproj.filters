@@ -190,6 +190,9 @@
     <Filter Include="Game Object\Enemy\Plant">
       <UniqueIdentifier>{692880a8-b3bb-4e2d-abcc-e42fff4a0947}</UniqueIdentifier>
     </Filter>
+    <Filter Include="FrameWork\SceneManager\Grid">
+      <UniqueIdentifier>{266eecc4-eed7-436e-b092-804a75bca55e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animations.cpp">
@@ -338,6 +341,9 @@
     </ClCompile>
     <ClCompile Include="ShiningThree.cpp">
       <Filter>Game Object\ObjectIntro\ShiningThree</Filter>
+    </ClCompile>
+    <ClCompile Include="Grid.cpp">
+      <Filter>FrameWork\SceneManager\Grid</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -490,6 +496,9 @@
     </ClInclude>
     <ClInclude Include="ShiningThree.h">
       <Filter>Game Object\ObjectIntro\ShiningThree</Filter>
+    </ClInclude>
+    <ClInclude Include="Grid.h">
+      <Filter>FrameWork\SceneManager\Grid</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -351,7 +351,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			}
 			else if (e->obj->GetType() == GOLDBRICK) { // if e->obj is fireball 
 				GoldBrick* gb = dynamic_cast<GoldBrick*>(e->obj);
-				int model = gb->model;
+				int model = (int)gb->model;
 
 				if (this->CheckAABB(gb) && this->GetState() == MARIO_STATE_SPIN) {
 					gb->isFinish = true;

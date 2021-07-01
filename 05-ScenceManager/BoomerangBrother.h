@@ -14,7 +14,7 @@ public:
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void Render();
 	void CreateBoomerang();
-	int GetMarioRangeCurrent();
+	float GetMarioRangeCurrent();
 	BoomerangBrother(CMario* mario,float direction);
 	~BoomerangBrother();
 	void SetState(int state);

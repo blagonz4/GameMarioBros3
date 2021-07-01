@@ -298,11 +298,11 @@ void IntroScene::Update(DWORD dt)
 			}
 			if (e->GetType() == MUSHROOM_1_UP) {
 				Mushroom* mushroom = dynamic_cast<Mushroom*>(e);
-				mushroom->vy += 0.001 * dt;
+				mushroom->vy += 0.001f * dt;
 			}
 			if (e->GetType() == MUSHROOM_POWER) {	//red
 				Mushroom* mushroom = dynamic_cast<Mushroom*>(e);
-				mushroom->vy += 0.07 * dt;
+				mushroom->vy += 0.07f * dt;
 			}
 			if (e->GetType() == LEAF) {
 				Leaf* leaf = dynamic_cast<Leaf*>(e);
@@ -314,7 +314,7 @@ void IntroScene::Update(DWORD dt)
 				{
 					leaf->vx = -LEAF_SPEED_X * dt;
 				}
-				leaf->vy = 0.005 * dt;
+				leaf->vy = 0.005f * dt;
 			}
 			if (e->GetType() == MARIO)
 			{

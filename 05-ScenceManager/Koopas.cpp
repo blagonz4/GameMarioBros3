@@ -174,7 +174,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					this->vx = this->nx * KOOPAS_WALKING_SPEED * dt;
 					if (state == KOOPAS_STATE_BALL) {
 						this->vx = this->nx * KOOPAS_BALL_SPEED * dt;
-						int model = gb->model;
+						int model = (int)gb->model;
 						switch (model)
 						{
 						case GOLD_BRICK_MODEL_COIN:

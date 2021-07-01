@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27004.2005
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "05-ScenceManager", "05-ScenceManager\05-ScenceManager.vcxproj", "{C83A385D-5992-4E1B-B783-AB1D446414D5}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GameMarioBros3", "05-ScenceManager\05-ScenceManager.vcxproj", "{C83A385D-5992-4E1B-B783-AB1D446414D5}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GridGenerator", "GridGenerator\GridGenerator.vcxproj", "{B99AB501-14C4-4FC3-AB01-37DD2CE9DF8E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,6 +33,20 @@ Global
 		{C83A385D-5992-4E1B-B783-AB1D446414D5}.Release|Win32.Build.0 = Release|Win32
 		{C83A385D-5992-4E1B-B783-AB1D446414D5}.Release|x64.ActiveCfg = Release|x64
 		{C83A385D-5992-4E1B-B783-AB1D446414D5}.Release|x64.Build.0 = Release|x64
+		{B99AB501-14C4-4FC3-AB01-37DD2CE9DF8E}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{B99AB501-14C4-4FC3-AB01-37DD2CE9DF8E}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{B99AB501-14C4-4FC3-AB01-37DD2CE9DF8E}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{B99AB501-14C4-4FC3-AB01-37DD2CE9DF8E}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B99AB501-14C4-4FC3-AB01-37DD2CE9DF8E}.Debug|Win32.Build.0 = Debug|Win32
+		{B99AB501-14C4-4FC3-AB01-37DD2CE9DF8E}.Debug|x64.ActiveCfg = Debug|x64
+		{B99AB501-14C4-4FC3-AB01-37DD2CE9DF8E}.Debug|x64.Build.0 = Debug|x64
+		{B99AB501-14C4-4FC3-AB01-37DD2CE9DF8E}.Release|Any CPU.ActiveCfg = Release|Win32
+		{B99AB501-14C4-4FC3-AB01-37DD2CE9DF8E}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{B99AB501-14C4-4FC3-AB01-37DD2CE9DF8E}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{B99AB501-14C4-4FC3-AB01-37DD2CE9DF8E}.Release|Win32.ActiveCfg = Release|Win32
+		{B99AB501-14C4-4FC3-AB01-37DD2CE9DF8E}.Release|Win32.Build.0 = Release|Win32
+		{B99AB501-14C4-4FC3-AB01-37DD2CE9DF8E}.Release|x64.ActiveCfg = Release|x64
+		{B99AB501-14C4-4FC3-AB01-37DD2CE9DF8E}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

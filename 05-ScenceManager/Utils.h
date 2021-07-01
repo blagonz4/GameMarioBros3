@@ -2,6 +2,7 @@
 
 #include <Windows.h>
 
+#include <string>
 #include <signal.h>
 #include <string.h>
 #include <stdio.h>

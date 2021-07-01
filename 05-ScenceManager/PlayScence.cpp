@@ -99,136 +99,165 @@ void CPlayScene::_ParseSection_ANIMATION_SETS(string line)
 */
 void CPlayScene::_ParseSection_OBJECTS(string line)
 {
-	vector<string> tokens = split(line);
+	LPCWSTR path = ToLPCWSTR(line);
+	ifstream f; f.open(path);
+	if (!f)	
+		DebugOut(L"\nFailed to open object file!");
 
-	//DebugOut(L"--> %s\n",ToWSTR(line).c_str());
+	char str[MAX_SCENE_LINE];
+	while (f.getline(str, MAX_SCENE_LINE)) {
 
-	if (tokens.size() < 3) return; // skip invalid lines - an object set must have at least id, x, y
+		string line(str);
+		vector<string> tokens = split(line);
 
-	int object_type = atoi(tokens[0].c_str());
-	float x = (float)atof(tokens[1].c_str());
-	float y = (float)atof(tokens[2].c_str());
-	int ani_set_id = atoi(tokens[3].c_str());
+		DebugOut(L"--> %s\n",ToWSTR(line).c_str());
 
-	CAnimationSets * animation_sets = CAnimationSets::GetInstance();
+		if (line[0] == '#') continue;
+		//if (tokens.size() < 3) continue; // skip invalid lines - an object set must have at least id, x, y
 
-	CGameObject *obj = NULL;
+		int object_type = atoi(tokens[0].c_str());
+		float x = (float)atof(tokens[1].c_str());
+		float y = (float)atof(tokens[2].c_str());
+		int ani_set_id = atoi(tokens[3].c_str());
 
-	switch (object_type)
-	{
-	case OBJECT_TYPE_MARIO:
-		if (player!=NULL) 
+		CAnimationSets * animation_sets = CAnimationSets::GetInstance();
+
+		CGameObject *obj = NULL;
+
+		switch (object_type)
 		{
-			DebugOut(L"[ERROR] MARIO object was created before!\n");
+		case OBJECT_TYPE_MARIO:
+			if (player != NULL)
+			{
+				DebugOut(L"[ERROR] MARIO object was created before!\n");
+				return;
+			}
+			obj = new CMario(x, y);
+			player = (CMario*)obj;
+
+			DebugOut(L"[INFO] Player object created!\n");
+			break;
+		case GRID: {
+			//DebugOut(L"object: %d \n", atoi(tokens[0].c_str()));
+			int gridRows = atoi(tokens[1].c_str());
+			int gridCols = atoi(tokens[2].c_str());
+			grid = new Grid(gridCols, gridRows);
+			break;
+		}
+		case OBJECT_TYPE_GOOMBA: {
+			float model = (float)atof(tokens[4].c_str());
+			float direction = (float)atof(tokens[5].c_str());
+			obj = new CGoomba(player, model, direction); break;
+		}
+		case OBJECT_TYPE_KOOPAS: {
+			float model = (float)atof(tokens[4].c_str());
+			float direction = (float)atof(tokens[5].c_str());
+			obj = new CKoopas(model, direction, player); break;
+		}
+		case OBJECT_TYPE_BRICK: {
+			obj = new CBrick();
+			break;
+		}
+		case OBJECT_TYPE_PLATFORM: {
+			float w = (float)atof(tokens[4].c_str());
+			float h = (float)atof(tokens[5].c_str());
+			obj = new Platform(w, h);
+			break;
+		}
+		case OBJECT_TYPE_COLOR_BLOCK: {
+			float w = (float)atof(tokens[4].c_str());
+			float h = (float)atof(tokens[5].c_str());
+			obj = new ColorBlock(w, h, player);
+			break;
+		}
+		case OBJECT_TYPE_PORTAL:
+		{
+			float r = (float)atof(tokens[4].c_str());
+			float b = (float)atof(tokens[5].c_str());
+			float scene_id = (float)atoi(tokens[6].c_str());
+			obj = new CPortal(x, y, r, b, scene_id);
+			break;
+		}
+		case OBJECT_TYPE_PIPE: {
+			float model = (float)atof(tokens[4].c_str());
+			obj = new Pipe(x, y, model);
+			break;
+		}
+		case OBJECT_TYPE_FIRE_PLANT: {
+			float model = (float)atof(tokens[4].c_str());
+			obj = new FirePlant(player, model);
+			break;
+		}
+		case OBJECT_TYPE_QUESTION_BRICK: {
+			float model = (float)atof(tokens[4].c_str());
+			obj = new QuestionBrick(x, y, model);
+			break;
+		}
+		case OBJECT_TYPE_GOLD_BRICK: {
+			float model = (float)atof(tokens[4].c_str());
+			obj = new GoldBrick(x, y, model);
+			break;
+		}
+		case OBJECT_TYPE_COIN: {
+			obj = new Coin();
+			break;
+		}
+		case OBJECT_TYPE_BOX:
+		{
+			obj = new Box();
+			break;
+		}
+		case OBJECT_TYPE_BUSH:
+			obj = new Bush();
+			break;
+		case OBJECT_TYPE_CARD:
+			obj = new Card();
+			break;
+		case OBJECT_TYPE_START:
+			obj = new Start();
+			break;
+		case OBJECT_TYPE_SCENE: {
+			float model = (float)atof(tokens[4].c_str());
+			obj = new Scene(model);
+			break;
+		}
+		case OBJECT_TYPE_MUSIC_BRICK: {
+			float model = (float)atof(tokens[4].c_str());
+			obj = new MusicBrick(x, y, model);
+			break;
+		}
+		case OBJECT_TYPE_BOOMERANG_BROTHER: {
+			float dir = (float)atof(tokens[4].c_str());
+			obj = new BoomerangBrother(player, dir);
+			break;
+		}
+		case OBJECT_TYPE_MUSHROOM: {
+			float model = (float)atof(tokens[4].c_str());
+			obj = new Mushroom(x, y, model);
+			break;
+		}
+		default:
+			DebugOut(L"[ERR] Invalid object type: %d\n", object_type);
 			return;
 		}
-		obj = new CMario(x,y); 
-		player = (CMario*)obj;  
+		if (object_type != GRID) {// General object setup
+			LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);
+			obj->SetPosition(x, y);
+			obj->SetAnimationSet(ani_set);
 
-		DebugOut(L"[INFO] Player object created!\n");
-		break;
-	case OBJECT_TYPE_GOOMBA: {
-		float model = (float)atof(tokens[4].c_str());
-		float direction = (float)atof(tokens[5].c_str());
-		obj = new CGoomba(player,model,direction); break;
-	} 
-	case OBJECT_TYPE_KOOPAS: {
-		float model = (float)atof(tokens[4].c_str());
-		float direction = (float)atof(tokens[5].c_str());
-		obj = new CKoopas(model,direction,player); break;
-	} 
-	case OBJECT_TYPE_BRICK: {
-		obj = new CBrick();
-		break;
-	}
-	case OBJECT_TYPE_PLATFORM: {
-		float w = (float)atof(tokens[4].c_str());
-		float h = (float)atof(tokens[5].c_str());
-		obj = new Platform(w, h);
-		break;
-	}
-	case OBJECT_TYPE_COLOR_BLOCK: {
-		float w = (float)atof(tokens[4].c_str());
-		float h = (float)atof(tokens[5].c_str());
-		obj = new ColorBlock(w, h,player);
-		break;
-	}
-	case OBJECT_TYPE_PORTAL:
-	{
-		float r = (float)atof(tokens[4].c_str());
-		float b = (float)atof(tokens[5].c_str());
-		float scene_id = (float)atoi(tokens[6].c_str());
-		obj = new CPortal(x,y,r, b, scene_id);
-		break;
-	}
-	case OBJECT_TYPE_PIPE: {
-		float model = (float)atof(tokens[4].c_str());
-		obj = new Pipe(x,y,model);
-		break;
-	}
-	case OBJECT_TYPE_FIRE_PLANT: {
-		float model = (float)atof(tokens[4].c_str());
-		obj = new FirePlant(player,model);
-		break;
-	}
-	case OBJECT_TYPE_QUESTION_BRICK: {
-		float model = (float) atof(tokens[4].c_str());
-		obj = new QuestionBrick(x,y,model);
-		break;
-	}
-	case OBJECT_TYPE_GOLD_BRICK: {
-		float model = (float)atof(tokens[4].c_str());
-		obj = new GoldBrick(x, y, model);
-		break;
-	}
-	case OBJECT_TYPE_COIN: {
-		obj = new Coin();
-		break;
-	}
-	case OBJECT_TYPE_BOX:
-	{
-		obj = new Box();
-		break;
-	}
-	case OBJECT_TYPE_BUSH:
-		obj = new Bush();
-		break;
-	case OBJECT_TYPE_CARD:
-		obj = new Card();
-		break;
-	case OBJECT_TYPE_START:
-		obj = new Start();
-		break;
-	case OBJECT_TYPE_SCENE: {
-		float model = (float)atof(tokens[4].c_str());
-		obj = new Scene(model);
-		break;
-	}
-	case OBJECT_TYPE_MUSIC_BRICK: {
-		float model = (float)atof(tokens[4].c_str());
-		obj = new MusicBrick(x, y, model);
-		break; 
-	}
-	case OBJECT_TYPE_BOOMERANG_BROTHER: {
-		float dir = (float)atof(tokens[4].c_str());
-		obj = new BoomerangBrother(player,dir);
-		break;
-	}
-	case OBJECT_TYPE_MUSHROOM: {
-		float model = (float)atof(tokens[4].c_str());
-		obj = new Mushroom(x,y,model);
-		break;
-	}
-	default:
-		DebugOut(L"[ERR] Invalid object type: %d\n", object_type);
-		return;
-	}
-	LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);
-	// General object setup
-	obj->SetPosition(x, y);
+			if (object_type == OBJECT_TYPE_MARIO || object_type == OBJECT_TYPE_PLATFORM)
+				objects.push_back(obj);
 
-	obj->SetAnimationSet(ani_set);
-	objects.push_back(obj);
+		}
+		if (object_type != OBJECT_TYPE_MARIO && object_type != GRID && object_type != OBJECT_TYPE_PLATFORM) {
+			int gridCol = (int)atoi(tokens[tokens.size() - 1].c_str());
+			int gridRow = (int)atoi(tokens[tokens.size() - 2].c_str());
+			Unit* unit = new Unit(grid, obj, gridRow, gridCol);
+		}
+	}
+
+	f.close();
+	grid->Out();
 }
 
 void CPlayScene::_ParseSection_TILEMAP(string line) {	//doc map tu file txt
@@ -311,6 +340,7 @@ void CPlayScene::Update(DWORD dt)
 	CGameObject* obj = NULL;
 
 	vector<LPGAMEOBJECT> coObjects;
+	GetObjectFromGrid();
 
 	playTime -= dt;
 
@@ -321,7 +351,6 @@ void CPlayScene::Update(DWORD dt)
 
 	for (size_t i = 0; i < objects.size(); i++)
 	{
-
 		LPGAMEOBJECT e = objects[i];
 		if (objects[i]->CheckObjectInCamera(objects[i]))
 			objects[i]->Update(dt, &coObjects);
@@ -440,14 +469,44 @@ void CPlayScene::Update(DWORD dt)
 			objects.erase(objects.begin() + i);
 	}
 
-
 	Camera* camera = new Camera(player, game, map);
 	camera->Update(dt);
+	UpdateGrid();
+
 	 //skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
 	if (player == NULL) return; 
-
 }
 
+void CPlayScene::GetObjectFromGrid() {
+	units.clear();
+	for (size_t i = 0; i < objects.size(); i++) {
+		LPGAMEOBJECT e = objects[i];
+		if (e->GetType() != PLATFORM && e->GetType() != MARIO)
+			objects.erase(objects.begin() + i);
+	}
+	//objects.clear();
+
+	CGame* game = CGame::GetInstance();
+	float camX, camY;
+	
+	camX = game->GetCamX();
+	camY = game->GetCamY();
+
+	grid->Get(camX, camY, units);
+
+	for (UINT i = 0; i < units.size(); i++) {
+		LPGAMEOBJECT obj = units[i]->GetObj();
+		objects.push_back(obj);
+	}
+}
+void CPlayScene::UpdateGrid() {
+	for (int i = 0; i < units.size(); i++) {
+		LPGAMEOBJECT obj = units[i]->GetObj();
+		float newPosX, newPosY;
+		obj->GetPosition(newPosX, newPosY);
+		units[i]->Move(newPosX, newPosY);
+	}
+}
 
 void CPlayScene::Render()
 {
@@ -476,7 +535,10 @@ void CPlayScene::Unload()
 	for (size_t i = 0; i < objects.size(); i++)
 		delete objects[i];
 
+	if (grid != NULL)
+		grid->ClearAll();
 	objects.clear();
+	units.clear();
 	player = NULL;
 
 	DebugOut(L"[INFO] Scene %s unloaded! \n", sceneFilePath);

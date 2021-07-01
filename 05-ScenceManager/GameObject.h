@@ -66,7 +66,7 @@ public:
 	float Health;
 	bool isFinish = false;
 	int untouchable;
-	int timeUntouchable;
+	DWORD timeUntouchable;
 	float model;
 	DWORD dt; 
 	DWORD untouchable_start;

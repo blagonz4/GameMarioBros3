@@ -5,7 +5,7 @@
 #define BACKGROUND_STATE_CURTAIN	0
 #define BACKGROUND_STATE_BLACK		1
 #define BACKGROUND_STATE_COLOR		2
-#define BACKGROUND_SPEED_Y			0.005
+#define BACKGROUND_SPEED_Y			0.005f
 class Curtain : public CGameObject
 {
 	DWORD timeChange;

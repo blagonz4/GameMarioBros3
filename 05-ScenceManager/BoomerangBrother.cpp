@@ -86,7 +86,7 @@ void BoomerangBrother::Render()
 {
 	if (isFinish)
 		return;
-	int marioRange = GetMarioRangeCurrent();
+	float marioRange = GetMarioRangeCurrent();
 	int ani = -1;
 
 	if (marioRange >0)
@@ -98,7 +98,7 @@ void BoomerangBrother::Render()
 	}
 	RenderBoundingBox();
 }
-int BoomerangBrother::GetMarioRangeCurrent()
+float BoomerangBrother::GetMarioRangeCurrent()
 {
 	if (mario->x < this->x)
 	{
@@ -121,8 +121,8 @@ void BoomerangBrother::GetBoundingBox(float& left, float& top, float& right, flo
 }
 void BoomerangBrother::CreateBoomerang()
 {
-	int marioRange = GetMarioRangeCurrent();
-	Boomerang* boomerang = new Boomerang(x + (marioRange*20), y-20, marioRange);
+	float marioRange = GetMarioRangeCurrent();
+	Boomerang* boomerang = new Boomerang(x + (marioRange*20.f), y-20.f, marioRange);
 	ListBoomerang.push_back(boomerang);
 }
 BoomerangBrother::~BoomerangBrother()

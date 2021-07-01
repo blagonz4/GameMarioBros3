@@ -20,10 +20,9 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{C83A385D-5992-4E1B-B783-AB1D446414D5}</ProjectGuid>
-    <RootNamespace>My05ScenceManager</RootNamespace>
+    <ProjectGuid>{B99AB501-14C4-4FC3-AB01-37DD2CE9DF8E}</ProjectGuid>
+    <RootNamespace>GridGenerator</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
-    <ProjectName>GameMarioBros3</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -70,30 +69,21 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;$(LibraryPath)</LibraryPath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;$(LibraryPath)</LibraryPath>
-  </PropertyGroup>
+  <PropertyGroup />
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <LanguageStandard>stdcpp14</LanguageStandard>
+      <ConformanceMode>true</ConformanceMode>
     </ClCompile>
-    <Link>
-      <AdditionalDependencies>d3dx9.lib;d3d9.lib;dxguid.lib;dxerr.lib;dinput8.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -103,12 +93,11 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <LanguageStandard>stdcpp14</LanguageStandard>
+      <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>d3dx9.lib;d3d9.lib;dxguid.lib;dxerr.lib;dinput8.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -118,6 +107,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -125,109 +115,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Animations.cpp" />
-    <ClCompile Include="Arrow.cpp" />
-    <ClCompile Include="Board.cpp" />
-    <ClCompile Include="Boomerang.cpp" />
-    <ClCompile Include="BoomerangBrother.cpp" />
-    <ClCompile Include="Box.cpp" />
-    <ClCompile Include="Brick.cpp" />
-    <ClCompile Include="Bush.cpp" />
-    <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="Card.cpp" />
-    <ClCompile Include="Coin.cpp" />
-    <ClCompile Include="ColorBlock.cpp" />
-    <ClCompile Include="Curtain.cpp" />
-    <ClCompile Include="Effect1Up.cpp" />
-    <ClCompile Include="EffectBrokenBrick.cpp" />
-    <ClCompile Include="EffectCoin.cpp" />
-    <ClCompile Include="EffectDisappear.cpp" />
-    <ClCompile Include="EffectPoint.cpp" />
-    <ClCompile Include="EffectTailHit.cpp" />
-    <ClCompile Include="FireBall.cpp" />
-    <ClCompile Include="FirePlant.cpp" />
-    <ClCompile Include="Font.cpp" />
-    <ClCompile Include="GoldBrick.cpp" />
-    <ClCompile Include="Grid.cpp" />
-    <ClCompile Include="Ground.cpp" />
-    <ClCompile Include="IntroScene.cpp" />
-    <ClCompile Include="Koopas.cpp" />
-    <ClCompile Include="Leaf.cpp" />
-    <ClCompile Include="Map.cpp" />
-    <ClCompile Include="Mushroom.cpp" />
-    <ClCompile Include="MusicBrick.cpp" />
-    <ClCompile Include="Pipe.cpp" />
-    <ClCompile Include="Platform.cpp" />
-    <ClCompile Include="Poop.cpp" />
-    <ClCompile Include="Portal.cpp" />
-    <ClCompile Include="PSwitch.cpp" />
-    <ClCompile Include="QuestionBrick.cpp" />
-    <ClCompile Include="Scene.cpp" />
-    <ClCompile Include="ShiningThree.cpp" />
-    <ClCompile Include="Start.cpp" />
-    <ClCompile Include="Utils.cpp" />
-    <ClCompile Include="Game.cpp" />
-    <ClCompile Include="GameObject.cpp" />
-    <ClCompile Include="Goomba.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="Mario.cpp" />
-    <ClCompile Include="PlayScence.cpp" />
-    <ClCompile Include="Scence.cpp" />
-    <ClCompile Include="Sprites.cpp" />
-    <ClCompile Include="Textures.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Animations.h" />
-    <ClInclude Include="Arrow.h" />
-    <ClInclude Include="Board.h" />
-    <ClInclude Include="Boomerang.h" />
-    <ClInclude Include="BoomerangBrother.h" />
-    <ClInclude Include="Box.h" />
-    <ClInclude Include="Brick.h" />
-    <ClInclude Include="Bush.h" />
-    <ClInclude Include="Camera.h" />
-    <ClInclude Include="Card.h" />
-    <ClInclude Include="Coin.h" />
-    <ClInclude Include="ColorBlock.h" />
-    <ClInclude Include="Curtain.h" />
-    <ClInclude Include="define.h" />
-    <ClInclude Include="Effect1Up.h" />
-    <ClInclude Include="EffectBrokenBrick.h" />
-    <ClInclude Include="EffectCoin.h" />
-    <ClInclude Include="EffectDisappear.h" />
-    <ClInclude Include="EffectPoint.h" />
-    <ClInclude Include="EffectTailHit.h" />
-    <ClInclude Include="FireBall.h" />
-    <ClInclude Include="FirePlant.h" />
-    <ClInclude Include="Font.h" />
-    <ClInclude Include="GoldBrick.h" />
-    <ClInclude Include="Grid.h" />
-    <ClInclude Include="Ground.h" />
-    <ClInclude Include="IntroScene.h" />
-    <ClInclude Include="Koopas.h" />
-    <ClInclude Include="Leaf.h" />
-    <ClInclude Include="Map.h" />
-    <ClInclude Include="Mushroom.h" />
-    <ClInclude Include="MusicBrick.h" />
-    <ClInclude Include="Pipe.h" />
-    <ClInclude Include="Platform.h" />
-    <ClInclude Include="Poop.h" />
-    <ClInclude Include="Portal.h" />
-    <ClInclude Include="PSwitch.h" />
-    <ClInclude Include="QuestionBrick.h" />
-    <ClInclude Include="Scene.h" />
-    <ClInclude Include="ShiningThree.h" />
-    <ClInclude Include="Start.h" />
-    <ClInclude Include="Utils.h" />
-    <ClInclude Include="Game.h" />
-    <ClInclude Include="GameObject.h" />
-    <ClInclude Include="Goomba.h" />
-    <ClInclude Include="KeyEventHandler.h" />
-    <ClInclude Include="Mario.h" />
-    <ClInclude Include="PlayScence.h" />
-    <ClInclude Include="Scence.h" />
-    <ClInclude Include="Sprites.h" />
-    <ClInclude Include="Textures.h" />
+    <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

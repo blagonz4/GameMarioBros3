@@ -1,10 +1,10 @@
 #include "Boomerang.h"
 
 
-Boomerang::Boomerang(float X, float Y, int dir)
+Boomerang::Boomerang(float X, float Y, float dir)
 {
 	this->x = X; this->y = Y;
-	this->startY = y;
+	this->startY = Y;
 	eType = Type::BOOMERANG;
 	this->nx = dir;
 	SetAnimationSet(CAnimationSets::GetInstance()->Get(LOAD_BOOMERANG_FROM_TXT));

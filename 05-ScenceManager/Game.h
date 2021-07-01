@@ -84,8 +84,8 @@ public:
 	bool CGame::checkAABB(float b1left, float b1top, float b1right, float b1bottom,
 							float b2left, float b2top, float b2right, float b2bottom);
 	void SetCamPos(float x, float y) { cam_x = x; cam_y = y; }
-	float GetCamX();
-	float GetCamY();
+	float GetCamX() { return cam_x; }
+	float GetCamY() { return cam_y; }
 	//bool checkAABB(float b1left, float b1top, float b1right, float b1bottom, float b2left, float b2top, float b2right, float b2bottom);
 	static CGame * GetInstance();
 
