@@ -48,7 +48,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	// Simple fall down
 	if (CGame::GetInstance()->GetScene() != WORLDMAP)
 	{
-		vy += MARIO_GRAVITY * dt;
+		vy += MARIO_GRAVITY * dt;		
 	}
 	else SetState(MARIO_STATE_WORLD_MAP);
 	vector<LPCOLLISIONEVENT> coEvents;
@@ -159,351 +159,376 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		//
 		// Collision logic with other objects
 		//
-		for (UINT i = 0; i < coEventsResult.size(); i++)
-		{
-			CPlayScene* scene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
-			LPCOLLISIONEVENT e = coEventsResult[i];
-			if (e->obj->GetType() == GOOMBA) // if e->obj is Goomba 
+		if (CGame::GetInstance()->GetScene() != INTRO) {
+			for (UINT i = 0; i < coEventsResult.size(); i++)
 			{
-				CGoomba *goomba = dynamic_cast<CGoomba *>(e->obj);
+				CPlayScene* scene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
+				LPCOLLISIONEVENT e = coEventsResult[i];
+				if (e->obj->GetType() == GOOMBA) // if e->obj is Goomba 
+				{
+					CGoomba *goomba = dynamic_cast<CGoomba *>(e->obj);
 
-				if (e->ny < 0)
-				{
-					if (untouchable == 0) {
-						if (goomba->GetState() != GOOMBA_STATE_DIE)
-						{
-							if (goomba->Health == 2) {
-								goomba->Health = 1;
-								if (goomba->model == GOOMBA_MODEL_WING_BROWN)
-									goomba->model = 1;
-								ShowEffectPoint(goomba, POINT_EFFECT_MODEL_100);
-								PlusScore(100);
-							}
-							else 
-							{
-								goomba->SetState(GOOMBA_STATE_DIE);
-							}
-							this->vy = -MARIO_JUMP_DEFLECT_SPEED;
-						}
-					}				
-				}
-				else if (e->nx != 0 || e->ny >0)
-				{
-					
-					if (state == MARIO_STATE_SPIN && level == MARIO_LEVEL_RACOON) {
-						goomba->nx = this->nx;
-						goomba->SetState(GOOMBA_STATE_DIE);
-						EffectTailHit* effectTailHit = new EffectTailHit(goomba->x, goomba->y);
-						scene->TurnIntoUnit(effectTailHit);
-						//listEffect.push_back(effectTailHit);
-					}
-					if (untouchable==0)
+					if (e->ny < 0)
 					{
-						if (goomba->GetState()!=GOOMBA_STATE_DIE)
-						{
-							if (level > MARIO_LEVEL_SMALL)
+						if (untouchable == 0) {
+							if (goomba->GetState() != GOOMBA_STATE_DIE)
 							{
-								if (level > MARIO_LEVEL_BIG) {
-									level = MARIO_LEVEL_BIG;
-									EffectDisappear* effectDisappear = new EffectDisappear(this->x, this->y);
-									scene->TurnIntoUnit(effectDisappear);
-									//listEffect.push_back(effectDisappear);
-									StartUntouchable(TIME_UNTOUCHABLE_SHORT);
+								if (goomba->Health == 2) {
+									goomba->Health = 1;
+									if (goomba->model == GOOMBA_MODEL_WING_BROWN)
+										goomba->model = 1;
+									ShowEffectPoint(goomba, POINT_EFFECT_MODEL_100);
+									PlusScore(100);
 								}
 								else
 								{
-									level = MARIO_LEVEL_SMALL;
-									StartUntouchable(TIME_UNTOUCHABLE_LONG);
+									goomba->SetState(GOOMBA_STATE_DIE);
 								}
+								this->vy = -MARIO_JUMP_DEFLECT_SPEED;
 							}
-							else
-								SetState(MARIO_STATE_DIE);
 						}
 					}
-				}
-			}
-			else if (e->obj->GetType() == KOOPAS)
-			{
-				CKoopas *koopa = dynamic_cast<CKoopas *>(e->obj);
-				if (e->ny < 0)
-				{
-					if (koopa->model == KOOPAS_MODEL_GREEN_WING) {
-						koopa->model = 1;
-						ShowEffectPoint(koopa, POINT_EFFECT_MODEL_100);
-						PlusScore(100);
-						if(koopa->GetState() == KOOPAS_STATE_FLY)
-							koopa->SetState(KOOPAS_STATE_WALKING);
-					}						
-					if (koopa->GetState() == KOOPAS_STATE_DEFEND) {
-						vy = -MARIO_JUMP_DEFLECT_SPEED;
-						koopa->SetState(KOOPAS_STATE_BALL);
-					}
-					else if (koopa->GetState() != KOOPAS_STATE_DIE)
+					else if (e->nx != 0 || e->ny > 0)
 					{
-						ShowEffectPoint(koopa, POINT_EFFECT_MODEL_100);
-						PlusScore(100);
-						koopa->SetState(KOOPAS_STATE_DEFEND);
-					}	
-				}
-				else if (nx != 0)
-				{
-					if (game->IsKeyDown(DIK_Q) && koopa->state == KOOPAS_STATE_DEFEND) {
-						this->isHolding = true;
-						koopa->isBeingHeld = true;
-					}
-					else if (koopa->GetState() == KOOPAS_STATE_DEFEND)
-					{
-						this->SetState(MARIO_STATE_KICK);
-						koopa->nx = this->nx;
-						koopa->SetState(KOOPAS_STATE_BALL);
-					}
-					else if (state == MARIO_STATE_SPIN && level == MARIO_LEVEL_RACOON) {
-						koopa->vx += this->nx * MARIO_DIE_DEFLECT_SPEED*2;
-						koopa->vy = -MARIO_DIE_DEFLECT_SPEED;
-						koopa->SetState(KOOPAS_STATE_DEFEND);
-						EffectTailHit* effectTailHit = new EffectTailHit(koopa->x, koopa->y);
-						scene->TurnIntoUnit(effectTailHit);
-						//listEffect.push_back(effectTailHit);
-					}				
-					else if (untouchable == 0)
-					{
-						if (koopa->GetState() != KOOPAS_STATE_DIE)
+
+						if (state == MARIO_STATE_SPIN && level == MARIO_LEVEL_RACOON) {
+							goomba->nx = this->nx;
+							goomba->SetState(GOOMBA_STATE_DIE);
+							EffectTailHit* effectTailHit = new EffectTailHit(goomba->x, goomba->y);
+							scene->TurnIntoUnit(effectTailHit);
+							//listEffect.push_back(effectTailHit);
+						}
+						if (untouchable == 0)
 						{
-							if (level > MARIO_LEVEL_SMALL)
+							if (goomba->GetState() != GOOMBA_STATE_DIE)
 							{
-								if (level > MARIO_LEVEL_BIG) {
-									level = MARIO_LEVEL_BIG;
-									EffectDisappear* effectDisappear = new EffectDisappear(this->x, this->y);
-									scene->TurnIntoUnit(effectDisappear);
-									listEffect.push_back(effectDisappear);
-									StartUntouchable(TIME_UNTOUCHABLE_SHORT);
+								if (level > MARIO_LEVEL_SMALL)
+								{
+									if (level > MARIO_LEVEL_BIG) {
+										level = MARIO_LEVEL_BIG;
+										EffectDisappear* effectDisappear = new EffectDisappear(this->x, this->y);
+										scene->TurnIntoUnit(effectDisappear);
+										//listEffect.push_back(effectDisappear);
+										StartUntouchable(TIME_UNTOUCHABLE_SHORT);
+									}
+									else
+									{
+										level = MARIO_LEVEL_SMALL;
+										StartUntouchable(TIME_UNTOUCHABLE_LONG);
+									}
 								}
 								else
-								{
-									level = MARIO_LEVEL_SMALL;
-									StartUntouchable(TIME_UNTOUCHABLE_LONG);
-								}
+									SetState(MARIO_STATE_DIE);
 							}
-							else
-								SetState(MARIO_STATE_DIE);
 						}
 					}
 				}
-			}
-			else if (e->obj->GetType() == COLORBLOCK)
-			{
-				if (e->ny > 0) {
-					y += dy;
-				}
-			}
-			else if (e->obj->GetType() == BRICK)
-			{
-				CBrick* brick = dynamic_cast<CBrick*>(e->obj);
-				if (e->ny > 0) {
-					if (brick->isUnbox == 0)
-						brick->isUnbox = 1;
-					y += dy; x -= dx;
-					x -= this->nx * 8 ;// day mario ra xiu
-					//vx -= this->nx * MARIO_DIE_DEFLECT_SPEED * dt;
-				}
-			}
-			else if (e->obj->GetType() == PLATFORM){
-				isOnGround = true;
-			}
-			else if (e->obj->GetType() == FIRE){ // if e->obj is fireball 
-				if (untouchable == 0)
-				{					
-					if (level > MARIO_LEVEL_SMALL)
-					{
-						level = MARIO_LEVEL_SMALL;
-						StartUntouchable(TIME_UNTOUCHABLE_LONG);
-					}
-					else
-						SetState(MARIO_STATE_DIE);
-				}
-			}
-			else if (e->obj->GetType() == FIREPLANT) { // if e->obj is fireball 
-				if (untouchable == 0)
+				else if (e->obj->GetType() == KOOPAS)
 				{
-					if (level > MARIO_LEVEL_SMALL)
+					CKoopas *koopa = dynamic_cast<CKoopas *>(e->obj);
+					if (e->ny < 0)
 					{
-						if (level > MARIO_LEVEL_BIG) {
-							level = MARIO_LEVEL_BIG;
-							EffectDisappear* effectDisappear = new EffectDisappear(this->x, this->y);
-							scene->TurnIntoUnit(effectDisappear);
-							listEffect.push_back(effectDisappear);
-							StartUntouchable(TIME_UNTOUCHABLE_SHORT);
+						if (koopa->model == KOOPAS_MODEL_GREEN_WING) {
+							koopa->model = 1;
+							ShowEffectPoint(koopa, POINT_EFFECT_MODEL_100);
+							PlusScore(100);
+							if (koopa->GetState() == KOOPAS_STATE_FLY)
+								koopa->SetState(KOOPAS_STATE_WALKING);
 						}
-						else
+						if (koopa->GetState() == KOOPAS_STATE_DEFEND) {
+							vy = -MARIO_JUMP_DEFLECT_SPEED;
+							koopa->SetState(KOOPAS_STATE_BALL);
+						}
+						else if (koopa->GetState() != KOOPAS_STATE_DIE)
+						{
+							ShowEffectPoint(koopa, POINT_EFFECT_MODEL_100);
+							PlusScore(100);
+							koopa->SetState(KOOPAS_STATE_DEFEND);
+						}
+					}
+					else if (nx != 0)
+					{
+						if (game->IsKeyDown(DIK_Q) && koopa->state == KOOPAS_STATE_DEFEND) {
+							this->isHolding = true;
+							koopa->isBeingHeld = true;
+						}
+						else if (koopa->GetState() == KOOPAS_STATE_DEFEND)
+						{
+							this->SetState(MARIO_STATE_KICK);
+							koopa->nx = this->nx;
+							koopa->SetState(KOOPAS_STATE_BALL);
+						}
+						else if (state == MARIO_STATE_SPIN && level == MARIO_LEVEL_RACOON) {
+							koopa->vx += this->nx * MARIO_DIE_DEFLECT_SPEED * 2;
+							koopa->vy = -MARIO_DIE_DEFLECT_SPEED;
+							koopa->SetState(KOOPAS_STATE_DEFEND);
+							EffectTailHit* effectTailHit = new EffectTailHit(koopa->x, koopa->y);
+							scene->TurnIntoUnit(effectTailHit);
+							//listEffect.push_back(effectTailHit);
+						}
+						else if (untouchable == 0)
+						{
+							if (koopa->GetState() != KOOPAS_STATE_DIE)
+							{
+								if (level > MARIO_LEVEL_SMALL)
+								{
+									if (level > MARIO_LEVEL_BIG) {
+										level = MARIO_LEVEL_BIG;
+										EffectDisappear* effectDisappear = new EffectDisappear(this->x, this->y);
+										scene->TurnIntoUnit(effectDisappear);
+										listEffect.push_back(effectDisappear);
+										StartUntouchable(TIME_UNTOUCHABLE_SHORT);
+									}
+									else
+									{
+										level = MARIO_LEVEL_SMALL;
+										StartUntouchable(TIME_UNTOUCHABLE_LONG);
+									}
+								}
+								else
+									SetState(MARIO_STATE_DIE);
+							}
+						}
+					}
+				}
+				else if (e->obj->GetType() == COLORBLOCK)
+				{
+					if (e->ny > 0) {
+						y += dy;
+					}
+				}
+				else if (e->obj->GetType() == BRICK)
+				{
+					CBrick* brick = dynamic_cast<CBrick*>(e->obj);
+					if (e->ny > 0) {
+						if (brick->isUnbox == 0)
+							brick->isUnbox = 1;
+						y += dy; x -= dx;
+						x -= this->nx * 8;// day mario ra xiu
+						//vx -= this->nx * MARIO_DIE_DEFLECT_SPEED * dt;
+					}
+				}
+				else if (e->obj->GetType() == PLATFORM) {
+					isOnGround = true;
+				}
+				else if (e->obj->GetType() == FIRE) { // if e->obj is fireball 
+					if (untouchable == 0)
+					{
+						if (level > MARIO_LEVEL_SMALL)
 						{
 							level = MARIO_LEVEL_SMALL;
 							StartUntouchable(TIME_UNTOUCHABLE_LONG);
 						}
+						else
+							SetState(MARIO_STATE_DIE);
 					}
-					else
-						SetState(MARIO_STATE_DIE);
 				}
-			}
-			else if (e->obj->GetType() == QUESTIONBRICK) { // if e->obj is fireball 
-				QuestionBrick* qb = dynamic_cast<QuestionBrick*>(e->obj);
-				if (e->ny > 0)
-				{
-					if (qb->Health == 1)
+				else if (e->obj->GetType() == FIREPLANT) { // if e->obj is fireball 
+					if (untouchable == 0)
 					{
-						qb->vy = -QUESTION_BRICK_SPEED_UP *dt;
-						qb->Health = 0;
-						qb->isUnbox = true;						
+						if (level > MARIO_LEVEL_SMALL)
+						{
+							if (level > MARIO_LEVEL_BIG) {
+								level = MARIO_LEVEL_BIG;
+								EffectDisappear* effectDisappear = new EffectDisappear(this->x, this->y);
+								scene->TurnIntoUnit(effectDisappear);
+								listEffect.push_back(effectDisappear);
+								StartUntouchable(TIME_UNTOUCHABLE_SHORT);
+							}
+							else
+							{
+								level = MARIO_LEVEL_SMALL;
+								StartUntouchable(TIME_UNTOUCHABLE_LONG);
+							}
+						}
+						else
+							SetState(MARIO_STATE_DIE);
 					}
 				}
-			}
-			else if (e->obj->GetType() == GOLDBRICK) { // if e->obj is fireball 
-				GoldBrick* gb = dynamic_cast<GoldBrick*>(e->obj);
-				int model = (int)gb->model;
-
-				if (this->CheckAABB(gb) && this->GetState() == MARIO_STATE_SPIN) {
-					gb->isFinish = true;
-					listEffect.push_back(new EffectBrokenBrick(gb->x, gb->y, 2));
-					listEffect.push_back(new EffectBrokenBrick(gb->x, gb->y, 5));
-					listEffect.push_back(new EffectBrokenBrick(gb->x, gb->y, -2));
-					listEffect.push_back(new EffectBrokenBrick(gb->x, gb->y, -5));
-				}
-				if (e->ny > 0)
-				{
-					switch (model) {
-					case GOLD_BRICK_MODEL_COIN:
-						if (gb->y >= gb->minY) {
-							gb->vy = -QUESTION_BRICK_SPEED_UP * dt;
-						}							
-						break;
-					case GOLD_BRICK_MODEL_PSWITCH:
-						gb->SetState(GOLD_BRICK_STATE_UNBOX);
-						break;
-					}
-				}			
-			}
-			else if (e->obj->GetType() == MUSICBRICK) {
-				MusicBrick* mb = dynamic_cast<MusicBrick*>(e->obj);
-				if (e->ny > 0)
-				{
-					if (mb->GetModel() == MUSIC_BRICK_MODEL_HIDDEN)
-						mb->isHidden = false;
-					mb->vy = -QUESTION_BRICK_SPEED_UP;
-
-				}
-				else if (e->ny < 0) {
-					if (mb->GetModel() == MUSIC_BRICK_MODEL_HIDDEN) {
-						if (mb->isHidden) { x += dx; y += dy; }
-						else if (game->IsKeyDown(DIK_SPACE)) {
-							this->vy -= QUESTION_BRICK_SPEED_UP * 2 * dt;
-							mb->vy = QUESTION_BRICK_SPEED_UP;
+				else if (e->obj->GetType() == QUESTIONBRICK) { // if e->obj is fireball 
+					QuestionBrick* qb = dynamic_cast<QuestionBrick*>(e->obj);
+					if (e->ny > 0)
+					{
+						if (qb->Health == 1)
+						{
+							qb->vy = -QUESTION_BRICK_SPEED_UP * dt;
+							qb->Health = 0;
+							qb->isUnbox = true;
 						}
 					}
-					else {
-						mb->vy = QUESTION_BRICK_SPEED_UP;
-						this->vy -= QUESTION_BRICK_SPEED_UP*4;
+				}
+				else if (e->obj->GetType() == GOLDBRICK) { // if e->obj is fireball 
+					GoldBrick* gb = dynamic_cast<GoldBrick*>(e->obj);
+					int model = (int)gb->model;
+
+					if (this->CheckAABB(gb) && this->GetState() == MARIO_STATE_SPIN) {
+						gb->isFinish = true;
+						listEffect.push_back(new EffectBrokenBrick(gb->x, gb->y, 2));
+						listEffect.push_back(new EffectBrokenBrick(gb->x, gb->y, 5));
+						listEffect.push_back(new EffectBrokenBrick(gb->x, gb->y, -2));
+						listEffect.push_back(new EffectBrokenBrick(gb->x, gb->y, -5));
+					}
+					if (e->ny > 0)
+					{
+						switch (model) {
+						case GOLD_BRICK_MODEL_COIN:
+							if (gb->y >= gb->minY) {
+								gb->vy = -QUESTION_BRICK_SPEED_UP * dt;
+							}
+							break;
+						case GOLD_BRICK_MODEL_PSWITCH:
+							gb->SetState(GOLD_BRICK_STATE_UNBOX);
+							break;
+						}
 					}
 				}
-			}
-			else if (e->obj->GetType() == COIN) { 
-				//Coin* coin = dynamic_cast<Coin*>(e->obj);
-				e->obj->isFinish = true;
-				PlusCoinCollect(1);
-				PlusScore(50);
-			}
-			else if (e->obj->GetType() == PSWITCH)
-			{
-				PSwitch* pswitch = dynamic_cast<PSwitch*>(e->obj);
-				if (e->ny < 0)
+				else if (e->obj->GetType() == MUSICBRICK) {
+					MusicBrick* mb = dynamic_cast<MusicBrick*>(e->obj);
+					if (e->ny > 0)
+					{
+						if (mb->GetModel() == MUSIC_BRICK_MODEL_HIDDEN)
+							mb->isHidden = false;
+						mb->vy = -QUESTION_BRICK_SPEED_UP;
+
+					}
+					else if (e->ny < 0) {
+						if (mb->GetModel() == MUSIC_BRICK_MODEL_HIDDEN) {
+							if (mb->isHidden) { x += dx; y += dy; }
+							else if (game->IsKeyDown(DIK_SPACE)) {
+								this->vy -= QUESTION_BRICK_SPEED_UP * 2 * dt;
+								mb->vy = QUESTION_BRICK_SPEED_UP;
+							}
+						}
+						else {
+							mb->vy = QUESTION_BRICK_SPEED_UP;
+							this->vy -= QUESTION_BRICK_SPEED_UP * 4;
+						}
+					}
+				}
+				else if (e->obj->GetType() == COIN) {
+					//Coin* coin = dynamic_cast<Coin*>(e->obj);
+					e->obj->isFinish = true;
+					PlusCoinCollect(1);
+					PlusScore(50);
+				}
+				else if (e->obj->GetType() == PSWITCH)
 				{
-					pswitch->SetState(PSWITCH_STATE_USED);
-					pswitch->SetPosition(pswitch->x, pswitch->y + PSWITCH_SMALLER);
+					PSwitch* pswitch = dynamic_cast<PSwitch*>(e->obj);
+					if (e->ny < 0)
+					{
+						pswitch->SetState(PSWITCH_STATE_USED);
+						pswitch->SetPosition(pswitch->x, pswitch->y + PSWITCH_SMALLER);
+					}
 				}
-			}
-			else if (e->obj->GetType() == MUSHROOM_POWER || e->obj->GetType() == MUSHROOM_1_UP)
-			{
-				Mushroom* mushroom = dynamic_cast<Mushroom*>(e->obj);
-				mushroom->isFinish = true;
-				ShowEffectPoint(this, POINT_EFFECT_MODEL_1K);
-				PlusScore(1000);
-				if (e->obj->GetType() == MUSHROOM_POWER) {
-					this->y -= 20;
-					if (this->level < MARIO_LEVEL_BIG)
-						this->SetLevel(MARIO_LEVEL_BIG);
-				}
-				//this->x += dx; //this->y += dy;
-			}
-			else if (e->obj->GetType() == LEAF)
-			{
-				Leaf* leaf = dynamic_cast<Leaf*>(e->obj);
-				leaf->isFinish = true; this->y -= 5;
-				ShowEffectPoint(this, POINT_EFFECT_MODEL_1K);
-				PlusScore(1000);
-				this->isTransformToRacoon = true;
-				this->SetLevel(MARIO_LEVEL_RACOON);
-			}
-			else if (e->obj->GetType() == PORTAL) {
-				
-				CPortal* p = dynamic_cast<CPortal*>(e->obj);
-				CGame::GetInstance()->SwitchScene(p->GetSceneId());
-				x += dx; y += dy;
-				//if (p->GetSceneId() == SCENE_TEST  || p->GetSceneId() == MAP1_3) {
-				//	CGame *game = CGame::GetInstance();
-				//	if(game->IsKeyDown(DIK_E) && CheckAABB(p))
-				//		CGame::GetInstance()->SwitchScene(p->GetSceneId());
-				//}
-				//else {
-				//	CGame::GetInstance()->SwitchScene(p->GetSceneId());
-				//}
-				
-			}
-			else if (e->obj->GetType() == BOX) {
-			Box* box = dynamic_cast<Box*>(e->obj);
-				this->x += dx;this->y += dy;
-				switch (box->GetState())
+				else if (e->obj->GetType() == MUSHROOM_POWER || e->obj->GetType() == MUSHROOM_1_UP)
 				{
-				case BOX_STATE_FLOWER:
-					box->stateUnbox = box->GetState();
-					this->gotCard = box->stateUnbox;
-					box->isUnbox = true;
-					box->SetState(BOX_STATE_FLOWER_UP);
-					break;
-				case BOX_STATE_MUSHROOM:
-					box->stateUnbox = box->GetState();
-					this->gotCard = box->stateUnbox;
-					box->isUnbox = true;
-					box->SetState(BOX_STATE_MUSHROOM_UP);
-					break;
-				case BOX_STATE_STAR:
-					box->stateUnbox = box->GetState();
-					this->gotCard = box->stateUnbox;
-					box->isUnbox = true;
-					box->SetState(BOX_STATE_MUSHROOM_UP);
-					break;
+					Mushroom* mushroom = dynamic_cast<Mushroom*>(e->obj);
+					mushroom->isFinish = true;
+					ShowEffectPoint(this, POINT_EFFECT_MODEL_1K);
+					PlusScore(1000);
+					if (e->obj->GetType() == MUSHROOM_POWER) {
+						this->y -= 20;
+						if (this->level < MARIO_LEVEL_BIG)
+							this->SetLevel(MARIO_LEVEL_BIG);
+					}
+					//this->x += dx; //this->y += dy;
 				}
-				box->x += 2; //nhich box qua 1 xiu bay len cho dep
-				box->vy = -MARIO_GRAVITY*2 * dt;
-			}
-			else if (e->obj->GetType() == BOOMERANGBROTHER) {
-			BoomerangBrother *bb = dynamic_cast<BoomerangBrother *>(e->obj);
-			if (e->ny < 0)
-			{
-				if (bb->GetState() != BOOM_BROTHER_STATE_DIE)
+				else if (e->obj->GetType() == LEAF)
 				{
-					bb->SetState(BOOM_BROTHER_STATE_DIE);
+					Leaf* leaf = dynamic_cast<Leaf*>(e->obj);
+					leaf->isFinish = true; this->y -= 5;
+					ShowEffectPoint(this, POINT_EFFECT_MODEL_1K);
+					PlusScore(1000);
+					this->isTransformToRacoon = true;
+					this->SetLevel(MARIO_LEVEL_RACOON);
 				}
-			}
-			else if (nx != 0)
-			{
-				if (state == MARIO_STATE_SPIN && level == MARIO_LEVEL_RACOON) {
-					bb->vx += this->nx * MARIO_DIE_DEFLECT_SPEED * 2;
-					bb->vy = -MARIO_DIE_DEFLECT_SPEED;
-					bb->SetState(BOOM_BROTHER_STATE_DIE);
-					EffectTailHit* effectTailHit = new EffectTailHit(bb->x, bb->y);
-					listEffect.push_back(effectTailHit);
+				else if (e->obj->GetType() == PORTAL) {
+
+					CPortal* p = dynamic_cast<CPortal*>(e->obj);
+					CGame::GetInstance()->SwitchScene(p->GetSceneId());
+					x += dx; y += dy;
+					//if (p->GetSceneId() == SCENE_TEST  || p->GetSceneId() == MAP1_3) {
+					//	CGame *game = CGame::GetInstance();
+					//	if(game->IsKeyDown(DIK_E) && CheckAABB(p))
+					//		CGame::GetInstance()->SwitchScene(p->GetSceneId());
+					//}
+					//else {
+					//	CGame::GetInstance()->SwitchScene(p->GetSceneId());
+					//}
+
 				}
-				else if (untouchable == 0)
-				{
-					if (bb->GetState() != BOOM_BROTHER_STATE_DIE)
+				else if (e->obj->GetType() == BOX) {
+					Box* box = dynamic_cast<Box*>(e->obj);
+					this->x += dx; this->y += dy;
+					switch (box->GetState())
+					{
+					case BOX_STATE_FLOWER:
+						box->stateUnbox = box->GetState();
+						this->gotCard = box->stateUnbox;
+						box->isUnbox = true;
+						box->SetState(BOX_STATE_FLOWER_UP);
+						break;
+					case BOX_STATE_MUSHROOM:
+						box->stateUnbox = box->GetState();
+						this->gotCard = box->stateUnbox;
+						box->isUnbox = true;
+						box->SetState(BOX_STATE_MUSHROOM_UP);
+						break;
+					case BOX_STATE_STAR:
+						box->stateUnbox = box->GetState();
+						this->gotCard = box->stateUnbox;
+						box->isUnbox = true;
+						box->SetState(BOX_STATE_MUSHROOM_UP);
+						break;
+					}
+					box->x += 2; //nhich box qua 1 xiu bay len cho dep
+					box->vy = -MARIO_GRAVITY * 2 * dt;
+				}
+				else if (e->obj->GetType() == BOOMERANGBROTHER) {
+					BoomerangBrother *bb = dynamic_cast<BoomerangBrother *>(e->obj);
+					if (e->ny < 0)
+					{
+						if (bb->GetState() != BOOM_BROTHER_STATE_DIE)
+						{
+							bb->SetState(BOOM_BROTHER_STATE_DIE);
+						}
+					}
+					else if (nx != 0)
+					{
+						if (state == MARIO_STATE_SPIN && level == MARIO_LEVEL_RACOON) {
+							bb->vx += this->nx * MARIO_DIE_DEFLECT_SPEED * 2;
+							bb->vy = -MARIO_DIE_DEFLECT_SPEED;
+							bb->SetState(BOOM_BROTHER_STATE_DIE);
+							EffectTailHit* effectTailHit = new EffectTailHit(bb->x, bb->y);
+							listEffect.push_back(effectTailHit);
+						}
+						else if (untouchable == 0)
+						{
+							if (bb->GetState() != BOOM_BROTHER_STATE_DIE)
+							{
+								if (level > MARIO_LEVEL_SMALL)
+								{
+									if (level > MARIO_LEVEL_BIG) {
+										level = MARIO_LEVEL_BIG;
+										EffectDisappear* effectDisappear = new EffectDisappear(this->x, this->y);
+										listEffect.push_back(effectDisappear);
+										StartUntouchable(TIME_UNTOUCHABLE_SHORT);
+									}
+									else
+									{
+										level = MARIO_LEVEL_SMALL;
+										StartUntouchable(TIME_UNTOUCHABLE_LONG);
+									}
+								}
+								else
+									SetState(MARIO_STATE_DIE);
+							}
+						}
+					}
+				}
+				else if (e->obj->GetType() == BOOMERANG) {
+					//Boomerang *boomerang = dynamic_cast<Boomerang *>(e->obj);
+					if (untouchable == 0)
 					{
 						if (level > MARIO_LEVEL_SMALL)
 						{
@@ -519,39 +544,99 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 								StartUntouchable(TIME_UNTOUCHABLE_LONG);
 							}
 						}
-						else
-							SetState(MARIO_STATE_DIE);
+						else SetState(MARIO_STATE_DIE);
 					}
 				}
-			}
-			}
-			else if (e->obj->GetType() == BOOMERANG) {
-				//Boomerang *boomerang = dynamic_cast<Boomerang *>(e->obj);
-				if (untouchable == 0)
-				{
-					if (level > MARIO_LEVEL_SMALL)
-					{
-						if (level > MARIO_LEVEL_BIG) {
-							level = MARIO_LEVEL_BIG;
-							EffectDisappear* effectDisappear = new EffectDisappear(this->x, this->y);
-							listEffect.push_back(effectDisappear);
-							StartUntouchable(TIME_UNTOUCHABLE_SHORT);
-						}
-						else
-						{
-							level = MARIO_LEVEL_SMALL;
-							StartUntouchable(TIME_UNTOUCHABLE_LONG);
-						}
-					}
-					else SetState(MARIO_STATE_DIE);
+				else if (e->obj->GetType() == POOP) {
+					Poop* poop = dynamic_cast<Poop *>(e->obj);
+					poop->isAttach = true;
+					this->marioLimitJumpTime = 100;
 				}
 			}
-			else if (e->obj->GetType() == POOP) {
-				Poop* poop = dynamic_cast<Poop *>(e->obj);
-				poop->isAttach = true;
-				this->marioLimitJumpTime = 100;
-}
 		}
+		else {
+			for (UINT i = 0; i < coEventsResult.size(); i++)
+			{
+				LPCOLLISIONEVENT e = coEventsResult[i];
+				if (e->obj->GetType() == GOOMBA) // if e->obj is Goomba 
+			{
+				CGoomba *goomba = dynamic_cast<CGoomba *>(e->obj);
+				if (e->ny < 0)
+				{
+					if (untouchable == 0) {
+						if (goomba->GetState() != GOOMBA_STATE_DIE)
+						{
+							if (goomba->Health == 2) {
+								goomba->Health = 1;
+								if (goomba->model == GOOMBA_MODEL_WING_BROWN)
+									goomba->model = 1;
+							}
+							else
+							{
+								goomba->SetState(GOOMBA_STATE_DIE);
+							}
+							this->vy = -MARIO_JUMP_DEFLECT_SPEED;
+						}
+					}
+				}
+				else if (e->nx != 0 || e->ny > 0)
+				{
+
+					if (state == MARIO_STATE_SPIN && level == MARIO_LEVEL_RACOON) {
+						goomba->nx = this->nx;
+						goomba->SetState(GOOMBA_STATE_DIE);
+					}
+					if (untouchable == 0)
+					{
+						if (goomba->GetState() != GOOMBA_STATE_DIE)
+						{
+							if (level > MARIO_LEVEL_SMALL)
+							{
+								if (level > MARIO_LEVEL_BIG) {
+									level = MARIO_LEVEL_BIG;
+									StartUntouchable(TIME_UNTOUCHABLE_SHORT);
+								}
+								else
+								{
+									level = MARIO_LEVEL_SMALL;
+									StartUntouchable(TIME_UNTOUCHABLE_LONG);
+								}
+							}
+							else
+								SetState(MARIO_STATE_DIE);
+						}
+					}
+				}
+			}
+				else if (e->obj->GetType() == KOOPAS)
+				{
+					CKoopas *koopa = dynamic_cast<CKoopas *>(e->obj);
+					x += dx;
+				}
+				else if (e->obj->GetType() == PLATFORM) {
+				isOnGround = true;
+			}
+				else if (e->obj->GetType() == MUSHROOM_POWER || e->obj->GetType() == MUSHROOM_1_UP)
+				{
+					DebugOut(L"dung nam \n");
+					Mushroom* mushroom = dynamic_cast<Mushroom*>(e->obj);
+					mushroom->isFinish = true;
+					if (e->obj->GetType() == MUSHROOM_POWER) {
+						this->y -= 20;
+						if (this->level < MARIO_LEVEL_BIG)
+							this->SetLevel(MARIO_LEVEL_BIG);
+					}
+				//this->x += dx; //this->y += dy;
+				}
+				else if (e->obj->GetType() == LEAF)
+				{
+					Leaf* leaf = dynamic_cast<Leaf*>(e->obj);
+					leaf->isFinish = true; this->y -= 5;
+					this->isTransformToRacoon = true;
+					this->SetLevel(MARIO_LEVEL_RACOON);
+				}
+			}
+		}		
 	}
 
 	// clean up collision events

@@ -1,11 +1,11 @@
-#include "IntroScene.h"
+#include "SceneManager.h"
 
 using namespace std;
 
-IntroScene::IntroScene(int id, LPCWSTR filePath) :
+SceneManager::SceneManager(int id, LPCWSTR filePath) :
 	CScene(id, filePath)
 {
-	key_handler = new IntroSceneKeyHandler(this);
+	key_handler = new CPlayScenceKeyHandler(this);
 }
 
 /*
@@ -13,7 +13,7 @@ IntroScene::IntroScene(int id, LPCWSTR filePath) :
 	See scene1.txt, scene2.txt for detail format specification
 */
 
-void IntroScene::_ParseSection_TEXTURES(string line)
+void SceneManager::_ParseSection_TEXTURES(string line)
 {
 	vector<string> tokens = split(line);
 
@@ -28,7 +28,7 @@ void IntroScene::_ParseSection_TEXTURES(string line)
 	CTextures::GetInstance()->Add(texID, path.c_str(), D3DCOLOR_XRGB(R, G, B));
 }
 
-void IntroScene::_ParseSection_SPRITES(string line)
+void SceneManager::_ParseSection_SPRITES(string line)
 {
 	vector<string> tokens = split(line);
 
@@ -51,7 +51,7 @@ void IntroScene::_ParseSection_SPRITES(string line)
 	CSprites::GetInstance()->Add(ID, l, t, r, b, tex);
 }
 
-void IntroScene::_ParseSection_ANIMATIONS(string line)
+void SceneManager::_ParseSection_ANIMATIONS(string line)
 {
 	vector<string> tokens = split(line);
 
@@ -71,7 +71,7 @@ void IntroScene::_ParseSection_ANIMATIONS(string line)
 	CAnimations::GetInstance()->Add(ani_id, ani);
 }
 
-void IntroScene::_ParseSection_ANIMATION_SETS(string line)
+void SceneManager::_ParseSection_ANIMATION_SETS(string line)
 {
 	vector<string> tokens = split(line);
 
@@ -97,7 +97,7 @@ void IntroScene::_ParseSection_ANIMATION_SETS(string line)
 /*
 	Parse a line in section [OBJECTS]
 */
-void IntroScene::_ParseSection_OBJECTS(string line)
+void SceneManager::_ParseSection_OBJECTS(string line)
 {
 	vector<string> tokens = split(line);
 
@@ -127,15 +127,10 @@ void IntroScene::_ParseSection_OBJECTS(string line)
 
 		DebugOut(L"[INFO] Player object created!\n");
 		break;
-	case OBJECT_TYPE_GOOMBA: {
-		float model = (float)atof(tokens[4].c_str());
-		float direction = (float)atof(tokens[5].c_str());
-		obj = new CGoomba(player, model, direction); break;
-	}
-	case OBJECT_TYPE_KOOPAS: {
-		float model = (float)atof(tokens[4].c_str());
-		float direction = (float)atof(tokens[5].c_str());
-		obj = new CKoopas(model, direction, player); break;
+
+	case OBJECT_TYPE_BRICK: {
+		obj = new CBrick();
+		break;
 	}
 	case OBJECT_TYPE_PLATFORM: {
 		float w = (float)atof(tokens[4].c_str());
@@ -143,33 +138,27 @@ void IntroScene::_ParseSection_OBJECTS(string line)
 		obj = new Platform(w, h);
 		break;
 	}
-	case OBJECT_TYPE_INTRO_GROUND: {
-		obj = new Ground(x,y);
-		break;
-	}
-	case OBJECT_TYPE_INTRO_CURTAIN: {
-		obj = new Curtain(x, y);
-		break;
-	}
-	case OBJECT_TYPE_MUSHROOM: {
-		float model = (float)atof(tokens[4].c_str());
-		obj = new Mushroom(x, y, model);
-		break;
-	}
-	case OBJECT_TYPE_LEAF: {
-		obj = new Leaf(x, y);
-		break;
-	}
-	case OBJECT_TYPE_INTRO_ARROW: 
-	{
-		obj = new Arrow(x, y);
-		mainArrow = (Arrow*)obj;
-		break;
-	}
-	case OBJECT_TYPE_INTRO_SHININGTHREE: 
-	{
-		obj = new ShiningThree(x, y);
 
+	case OBJECT_TYPE_PORTAL:
+	{
+		float r = (float)atof(tokens[4].c_str());
+		float b = (float)atof(tokens[5].c_str());
+		float scene_id = (float)atoi(tokens[6].c_str());
+		obj = new CPortal(x, y, r, b, scene_id);
+		break;
+	}
+	case OBJECT_TYPE_BUSH:
+		obj = new Bush();
+		break;
+	case OBJECT_TYPE_CARD:
+		obj = new Card();
+		break;
+	case OBJECT_TYPE_START:
+		obj = new Start();
+		break;
+	case OBJECT_TYPE_SCENE: {
+		float model = (float)atof(tokens[4].c_str());
+		obj = new Scene(model);
 		break;
 	}
 	default:
@@ -184,8 +173,28 @@ void IntroScene::_ParseSection_OBJECTS(string line)
 	objects.push_back(obj);
 }
 
+void SceneManager::_ParseSection_TILEMAP(string line) {	//doc map tu file txt
 
-void IntroScene::Load()
+	int ID, rowMap, columnMap, rowTile, columnTile, totalTile;
+	LPCWSTR path = ToLPCWSTR(line);
+	ifstream f(path, ios::in);
+	f >> ID >> rowMap >> columnMap >> rowTile >> columnTile >> totalTile;
+	int** tileMapData = new int *[rowMap];
+	for (int i = 0; i < rowMap; i++) {
+		tileMapData[i] = new int[columnMap];
+		for (int j = 0; j < columnMap; j++) {
+			f >> tileMapData[i][j];
+		}
+	}
+	f.close();
+	map = new Map(ID, rowMap, columnMap, rowTile, columnTile, totalTile);
+	map->GetSpriteTile();
+	map->SetMap(tileMapData);
+}
+
+
+
+void SceneManager::Load()
 {
 	DebugOut(L"[INFO] Start loading scene resources from : %s \n", sceneFilePath);
 
@@ -230,6 +239,7 @@ void IntroScene::Load()
 		case SCENE_SECTION_ANIMATIONS: _ParseSection_ANIMATIONS(line); break;
 		case SCENE_SECTION_ANIMATION_SETS: _ParseSection_ANIMATION_SETS(line); break;
 		case SCENE_SECTION_OBJECTS: _ParseSection_OBJECTS(line); break;
+		case SCENE_SECTION_DRAWMAP: _ParseSection_TILEMAP(line); break;
 		}
 	}
 
@@ -240,7 +250,7 @@ void IntroScene::Load()
 	DebugOut(L"[INFO] Done loading scene resources %s\n", sceneFilePath);
 }
 
-void IntroScene::Update(DWORD dt)
+void SceneManager::Update(DWORD dt)
 {
 	// We know that Mario is the first object in the list hence we won't add him into the colliable object list
 	// TO-DO: This is a "dirty" way, need a more organized way 
@@ -248,157 +258,53 @@ void IntroScene::Update(DWORD dt)
 
 	vector<LPGAMEOBJECT> coObjects;
 
-	introTime += dt;
+	playTime -= dt;
 
-	for (size_t i = 0; i < objects.size(); i++)
+	for (size_t i = 1; i < objects.size(); i++)
 	{
 		coObjects.push_back(objects[i]);
 	}
+
 	for (size_t i = 0; i < objects.size(); i++)
 	{
+
 		LPGAMEOBJECT e = objects[i];
-		
-		if (introTime > 0 && introTime < 5000) {
-			if (e->GetType() == CURTAIN)
-			{
-				Curtain* curtain = dynamic_cast<Curtain*>(e);
-				curtain->Update(dt, &coObjects);
-			}
-		}
-		else if (introTime > 5500 && introTime < 8000) {		
-			if (e->GetType() == MARIO)
-			{
-				CMario* mario = dynamic_cast<CMario*>(e);
-				mario->Update(dt, &coObjects);			
-				if (introTime > 6900 && introTime < 7400) {
-					mario->SetState(MARIO_STATE_JUMP);
-					mario->vy = -MARIO_JUMP_SPEED * dt;
-				}
-				else if (introTime > 7400) {
-					mario->vx = 0;
-					mario->SetState(MARIO_STATE_IDLE);
-				}
-				else mario->SetState(MARIO_STATE_WALK_LEFT);
-			}
-			if (e->GetType() == GOOMBA) {
-				CGoomba* goomba = dynamic_cast<CGoomba*>(e);
-				goomba->Update(dt, &coObjects);
-			}
-			if (e->GetType() == CURTAIN)
-			{
-				Curtain* curtain = dynamic_cast<Curtain*>(e);
-				curtain->Update(dt, &coObjects);
-			}
-		}
-		else if (introTime > 8000){
+		if (objects[i]->CheckObjectInCamera(objects[i]))
 			objects[i]->Update(dt, &coObjects);
-			if (e->GetType() == KOOPAS) {
-				CKoopas* koopa = dynamic_cast<CKoopas*>(e);
-				koopa->SetState(KOOPAS_STATE_DEFEND);
-			}
-			if (e->GetType() == MUSHROOM_1_UP) {
-				Mushroom* mushroom = dynamic_cast<Mushroom*>(e);
-				mushroom->vy += 0.001f * dt;
-			}
-			if (e->GetType() == MUSHROOM_POWER) {	//red
-				Mushroom* mushroom = dynamic_cast<Mushroom*>(e);
-				mushroom->vy += 0.07f * dt;
-			}
-			if (e->GetType() == LEAF) {
-				Leaf* leaf = dynamic_cast<Leaf*>(e);
-				if (leaf->x <= leaf->limitLeft)
-				{
-					leaf->vx = LEAF_SPEED_X * dt;
-				}
-				if (leaf->x >= leaf->limitRight)
-				{
-					leaf->vx = -LEAF_SPEED_X * dt;
-				}
-				leaf->vy = 0.005f * dt;
-			}
-			if (e->GetType() == MARIO)
-			{
-				CMario* mario = dynamic_cast<CMario*>(e);
-				if (introTime < 9700) {
-					mario->vx = 0;
-					mario->SetState(MARIO_STATE_IDLE);
-					if (introTime > 9200) {
-						mario->SetState(MARIO_STATE_JUMP);
-						mario->vy = -MARIO_JUMP_SPEED * dt;
-					}				
-				}
-				if (introTime > 9700 && introTime < 11500) {
-					mario->vy += MARIO_GRAVITY * dt;
-					mario->SetState(MARIO_STATE_WALK_LEFT);
-				}
-				if (introTime > 11500 && introTime < 13000) {
-					mario->SetState(MARIO_STATE_WALK_RIGHT);
-					mario->vx += MARIO_WALKING_SPEED * dt;
-				}
-				if (introTime > 13000 && introTime < 13800)
-					mario->SetState(MARIO_STATE_WALK_LEFT);
-				if (introTime > 13800)
-					mario->SetState(MARIO_STATE_IDLE);
-			}
-			if (e->GetType() == KOOPAS) {
-				CKoopas* koopa = dynamic_cast<CKoopas*>(e);
-				if (introTime > 10500 && introTime < 12000) {
-					koopa->vx = -KOOPAS_BALL_SPEED * dt;
-					koopa->SetState(KOOPAS_STATE_BALL);
-				}	
-			}
-			
-		}
-			
+
+	}
+
+	for (size_t i = 0; i < objects.size(); i++) {
 		if (objects.at(i)->isFinish)
 			objects.erase(objects.begin() + i);
 	}
 
+
+	Camera* camera = new Camera(player, game, map);
+	camera->Update(dt);
 	//skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
 	if (player == NULL) return;
 
 }
 
 
-void IntroScene::Render()
+void SceneManager::Render()
 {
+	map->DrawMap();
 	for (size_t i = 0; i < objects.size(); i++) {
-		//objects[i]->Render();
-		LPGAMEOBJECT e = objects[i];
-		if (introTime > 0 && introTime < 8000) {
-			if (e->GetType() == CURTAIN)
-			{
-				Curtain* curtain = dynamic_cast<Curtain*>(e);
-				curtain->Render();
-			}
-			if (e->GetType() == GROUND)
-			{
-				Ground* ground = dynamic_cast<Ground*>(e);
-				ground->Render();
-			}
-			if (e->GetType() == MARIO)
-			{
-				CMario* mario = dynamic_cast<CMario*>(e);
-				mario->Render();
-			}
-			if (e->GetType() == GOOMBA) {
-				CGoomba* goomba = dynamic_cast<CGoomba*>(e);
-				goomba->Render();
-			}
-		}
-		else if (introTime > 8000 && introTime < 14000) {
-			if (e->GetType() != ARROW && e->GetType() != SHININGTHREE)
-				objects[i]->Render();
-		}
-		else if (introTime > 14000)
+
+		if (objects[i]->CheckObjectInCamera(objects[i]))
 			objects[i]->Render();
+
 	}
+	Board* board = new Board(CGame::GetInstance()->GetCamX(), CGame::GetInstance()->GetCamY() + SCREEN_HEIGHT - DISTANCE_FROM_BOTTOM_CAM_TO_TOP_BOARD);
+	board->Render(player, playTime);
 }
 
 /*
 	Unload current scene
 */
-void IntroScene::Unload()
+void SceneManager::Unload()
 {
 	for (size_t i = 0; i < objects.size(); i++)
 		delete objects[i];
@@ -409,32 +315,149 @@ void IntroScene::Unload()
 	DebugOut(L"[INFO] Scene %s unloaded! \n", sceneFilePath);
 }
 
-void IntroSceneKeyHandler::OnKeyDown(int KeyCode)
+void SceneManagerKeyHandler::OnKeyDown(int KeyCode)
 {
+	//DebugOut(L"[INFO] KeyDown: %d\n", KeyCode);
 	CGame *game = CGame::GetInstance();
-	Arrow *arrow = ((IntroScene*)scence)->mainArrow;
+	CMario *mario = ((SceneManager*)scence)->GetPlayer();
 	if (CGame::GetInstance()->GetScene() != WORLDMAP) {
 		switch (KeyCode)
 		{
-		case DIK_DOWN:
-			arrow->y = 180;
+		case DIK_SPACE:
+			mario->StartLimitJump();
 			break;
-		case DIK_UP:
-			arrow->y = 160;
+		case DIK_A:
+			mario->Reset();
+			break;
+		case DIK_F1:
+			mario->y -= 20;
+			mario->SetLevel(MARIO_LEVEL_BIG);
+			break;
+		case DIK_F2:
+			mario->SetLevel(MARIO_LEVEL_SMALL);
+			break;
+		case DIK_F3:
+			mario->y -= 20;
+			mario->SetLevel(MARIO_LEVEL_FIRE);
+			break;
+		case DIK_F4:
+			mario->y -= 20;
+			mario->SetLevel(MARIO_LEVEL_RACOON);
+			break;
+		case DIK_Q://-----------------------SHOOT FIRE--------------------------
+			if (mario->level == MARIO_LEVEL_FIRE)
+				mario->SetState(MARIO_STATE_SHOOT_FIRE);
 			break;
 		case DIK_E:
-			if (arrow->y == 160)
-				CGame::GetInstance()->SwitchScene(0);
+			if (game->IsKeyDown(DIK_Q)) {
+				mario->StartLimitFly();
+			}
 			break;
 		}
 	}
 }
 
-void IntroSceneKeyHandler::KeyState(BYTE *states)
+void SceneManagerKeyHandler::KeyState(BYTE *states)
 {
+	CGame *game = CGame::GetInstance();
+	CMario *mario = ((SceneManager*)scence)->GetPlayer();
 
+	// disable control key when Mario die 
+	if (mario->GetState() == MARIO_STATE_DIE) return;
+
+	//--------------------RUN/TURN/FLY/WALK----------------------------
+	if (CGame::GetInstance()->GetScene() != WORLDMAP) {
+		if (game->IsKeyDown(DIK_RIGHT)) {
+			if (game->IsKeyDown(DIK_Q)) {
+				mario->SetState(MARIO_STATE_RUN_RIGHT);
+				if (game->IsKeyDown(DIK_E) && mario->state == MARIO_STATE_RUN_MAXSPEED) {
+					mario->isFlying = true;
+					mario->SetState(MARIO_STATE_FLY_RIGHT);
+				}
+			}
+			else mario->SetState(MARIO_STATE_WALK_RIGHT);
+		}
+		else if (game->IsKeyDown(DIK_LEFT)) {
+			if (game->IsKeyDown(DIK_Q)) {
+				mario->SetState(MARIO_STATE_RUN_LEFT);
+				if (game->IsKeyDown(DIK_E) && mario->state == MARIO_STATE_RUN_MAXSPEED) {
+					mario->isFlying = true;
+					mario->SetState(MARIO_STATE_FLY_LEFT);
+				}
+			}
+			else mario->SetState(MARIO_STATE_WALK_LEFT);
+		}
+		else mario->SetState(MARIO_STATE_IDLE);
+
+		//-------------------------SIT------------------------
+		if (game->IsKeyDown(DIK_DOWN) && !(game->IsKeyDown(DIK_RIGHT) || game->IsKeyDown(DIK_LEFT))) {
+			if (mario->GetLevel() != MARIO_LEVEL_SMALL)
+				mario->SetState(MARIO_STATE_SIT);
+		}
+		//-------------------------JUMP------------------------
+		if (game->IsKeyDown(DIK_SPACE)) {
+			if (mario->vy <= 0) {
+				mario->SetState(MARIO_STATE_JUMP);
+			}
+			else if (mario->level == MARIO_LEVEL_RACOON) {
+				mario->SetState(MARIO_STATE_JUMP);
+			}
+
+		}
+
+		//-----------------------SPIN-------------------------
+		if (mario->level == MARIO_LEVEL_RACOON && game->IsKeyDown(DIK_Q)) {
+			if (!mario->isHolding)
+				if (!(game->IsKeyDown(DIK_RIGHT) || game->IsKeyDown(DIK_LEFT) || game->IsKeyDown(DIK_SPACE)))
+					mario->SetState(MARIO_STATE_SPIN);
+		}
+	}
+	else {
+		if (game->IsKeyDown(DIK_RIGHT)) {
+			mario->vx += MARIO_WALKING_SPEED * mario->dt;
+		}
+		if (game->IsKeyDown(DIK_LEFT)) {
+			mario->vx -= MARIO_WALKING_SPEED * mario->dt;
+		}
+		if (game->IsKeyDown(DIK_UP)) {
+			mario->vy -= MARIO_WALKING_SPEED * mario->dt;
+		}
+		if (game->IsKeyDown(DIK_DOWN)) {
+			mario->vy += MARIO_WALKING_SPEED * mario->dt;
+		}
+	}
 }
 
-void IntroSceneKeyHandler::OnKeyUp(int KeyCode) {
-
+void SceneManagerKeyHandler::OnKeyUp(int KeyCode) {
+	CMario *mario = ((SceneManager*)scence)->GetPlayer();
+	if (CGame::GetInstance()->GetScene() != WORLDMAP) {
+		switch (KeyCode)
+		{
+		case DIK_DOWN:
+			mario->y -= 10;
+			mario->SetState(MARIO_STATE_IDLE);
+			break;
+		case DIK_Q:
+			mario->isHolding = false;
+			mario->SetState(MARIO_STATE_KICK);
+		}
+	}
+	else {
+		switch (KeyCode) {
+		case DIK_RIGHT:
+			mario->vx = 0;
+			break;
+		case DIK_LEFT:
+			mario->vx = 0;
+			break;
+		case DIK_UP:
+			mario->vy = 0;
+			break;
+		case DIK_DOWN:
+			mario->vy = 0;
+			break;
+		}
+	}
 }
+
+

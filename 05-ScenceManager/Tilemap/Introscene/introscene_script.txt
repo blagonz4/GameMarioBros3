@@ -964,14 +964,14 @@
 0	300	190	1
 #========GROUND========	
 58	142	230	24
-1	-30	230	24	600	246
+7	-30	230	24	600	246
 #========GOOBA==========
 #type   x       y    ani_set_id model    direction
 2	-17	210	2	1	1
 #========MUSHROOM==========
 #type   x       y    ani_set_id model    direction
-11	40	-50	12	1	1
-11	200	-50	12	2	1
+11	40	0	12	1	1
+11	200	0	12	2	1
 #==========KOOPAS==========
 #TYPE    X       Y  ANI_SET_ID  MODEL   DIRECTION 1:GOOMBA base 2:GOOMBA RED
 3	90	-50	3	2	-1

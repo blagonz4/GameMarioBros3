@@ -193,6 +193,9 @@
     <Filter Include="FrameWork\SceneManager\Grid">
       <UniqueIdentifier>{266eecc4-eed7-436e-b092-804a75bca55e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="FrameWork\SceneManager\WorldMap">
+      <UniqueIdentifier>{47a92ce8-0ab0-4f8f-be31-89c732658b54}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animations.cpp">
@@ -344,6 +347,9 @@
     </ClCompile>
     <ClCompile Include="Grid.cpp">
       <Filter>FrameWork\SceneManager\Grid</Filter>
+    </ClCompile>
+    <ClCompile Include="WorldMap.cpp">
+      <Filter>FrameWork\SceneManager\WorldMap</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -499,6 +505,9 @@
     </ClInclude>
     <ClInclude Include="Grid.h">
       <Filter>FrameWork\SceneManager\Grid</Filter>
+    </ClInclude>
+    <ClInclude Include="WorldMap.h">
+      <Filter>FrameWork\SceneManager\WorldMap</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

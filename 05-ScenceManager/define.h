@@ -145,6 +145,7 @@ enum ObjectType {
 #define MAP1_1_1						2
 #define	MAP1_3							3
 #define MAP1_3_1						4
+#define INTRO							5
 #define TEXID_FONT35					35
 #define GAME_TIME_LIMIT					999999
 //-------------------------------Board-------------------

@@ -2,7 +2,7 @@
 
 using namespace std;
 
-CPlayScene::CPlayScene(int id, LPCWSTR filePath):
+CPlayScene::CPlayScene(int id, LPCWSTR filePath) :
 	CScene(id, filePath)
 {
 	key_handler = new CPlayScenceKeyHandler(this);
@@ -45,7 +45,7 @@ void CPlayScene::_ParseSection_SPRITES(string line)
 	if (tex == NULL)
 	{
 		DebugOut(L"[ERROR] Texture ID %d not found!\n", texID);
-		return; 
+		return;
 	}
 
 	CSprites::GetInstance()->Add(ID, l, t, r, b, tex);
@@ -65,7 +65,7 @@ void CPlayScene::_ParseSection_ANIMATIONS(string line)
 	for (size_t i = 1; i < tokens.size(); i += 2)	// why i+=2 ?  sprite_id | frame_time  
 	{
 		int sprite_id = atoi(tokens[i].c_str());
-		int frame_time = atoi(tokens[i+1].c_str());
+		int frame_time = atoi(tokens[i + 1].c_str());
 		ani->Add(sprite_id, frame_time);
 	}
 	CAnimations::GetInstance()->Add(ani_id, ani);
@@ -86,7 +86,7 @@ void CPlayScene::_ParseSection_ANIMATION_SETS(string line)
 	for (size_t i = 1; i < tokens.size(); i++)
 	{
 		int ani_id = atoi(tokens[i].c_str());
-		
+
 		LPANIMATION ani = animations->Get(ani_id);
 		s->push_back(ani);
 	}
@@ -95,13 +95,13 @@ void CPlayScene::_ParseSection_ANIMATION_SETS(string line)
 }
 
 /*
-	Parse a line in section [OBJECTS] 
+	Parse a line in section [OBJECTS]
 */
 void CPlayScene::_ParseSection_OBJECTS(string line)
 {
 	LPCWSTR path = ToLPCWSTR(line);
 	ifstream f; f.open(path);
-	if (!f)	
+	if (!f)
 		DebugOut(L"\nFailed to open object file!");
 
 	char str[MAX_SCENE_LINE];
@@ -110,7 +110,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		string line(str);
 		vector<string> tokens = split(line);
 
-		DebugOut(L"--> %s\n",ToWSTR(line).c_str());
+		DebugOut(L"--> %s\n", ToWSTR(line).c_str());
 
 		if (line[0] == '#') continue;
 		//if (tokens.size() < 3) continue; // skip invalid lines - an object set must have at least id, x, y
@@ -289,7 +289,7 @@ void CPlayScene::Load()
 	f.open(sceneFilePath);
 
 	// current resource section flag
-	int section = SCENE_SECTION_UNKNOWN;					
+	int section = SCENE_SECTION_UNKNOWN;
 
 	char str[MAX_SCENE_LINE];
 	while (f.getline(str, MAX_SCENE_LINE))
@@ -299,30 +299,34 @@ void CPlayScene::Load()
 		if (line[0] == '#') continue;	// skip comment lines	
 
 		if (line == "[TEXTURES]") { section = SCENE_SECTION_TEXTURES; continue; }
-		if (line == "[SPRITES]") { 
-			section = SCENE_SECTION_SPRITES; continue; }
-		if (line == "[ANIMATIONS]") { 
-			section = SCENE_SECTION_ANIMATIONS; continue; }
-		if (line == "[ANIMATION_SETS]") { 
-			section = SCENE_SECTION_ANIMATION_SETS; continue; }
-		if (line == "[OBJECTS]") { 
-			section = SCENE_SECTION_OBJECTS; continue; }
+		if (line == "[SPRITES]") {
+			section = SCENE_SECTION_SPRITES; continue;
+		}
+		if (line == "[ANIMATIONS]") {
+			section = SCENE_SECTION_ANIMATIONS; continue;
+		}
+		if (line == "[ANIMATION_SETS]") {
+			section = SCENE_SECTION_ANIMATION_SETS; continue;
+		}
+		if (line == "[OBJECTS]") {
+			section = SCENE_SECTION_OBJECTS; continue;
+		}
 		if (line == "[TILEMAP]") {
 			section = SCENE_SECTION_DRAWMAP; continue;
 		}
-		if (line[0] == '[') { section = SCENE_SECTION_UNKNOWN; continue; }	
-		
+		if (line[0] == '[') { section = SCENE_SECTION_UNKNOWN; continue; }
+
 		//
 		// data section
 		//
 		switch (section)
-		{ 
-			case SCENE_SECTION_TEXTURES: _ParseSection_TEXTURES(line); break;
-			case SCENE_SECTION_SPRITES: _ParseSection_SPRITES(line); break;
-			case SCENE_SECTION_ANIMATIONS: _ParseSection_ANIMATIONS(line); break;
-			case SCENE_SECTION_ANIMATION_SETS: _ParseSection_ANIMATION_SETS(line); break;
-			case SCENE_SECTION_OBJECTS: _ParseSection_OBJECTS(line); break;
-			case SCENE_SECTION_DRAWMAP: _ParseSection_TILEMAP(line); break;
+		{
+		case SCENE_SECTION_TEXTURES: _ParseSection_TEXTURES(line); break;
+		case SCENE_SECTION_SPRITES: _ParseSection_SPRITES(line); break;
+		case SCENE_SECTION_ANIMATIONS: _ParseSection_ANIMATIONS(line); break;
+		case SCENE_SECTION_ANIMATION_SETS: _ParseSection_ANIMATION_SETS(line); break;
+		case SCENE_SECTION_OBJECTS: _ParseSection_OBJECTS(line); break;
+		case SCENE_SECTION_DRAWMAP: _ParseSection_TILEMAP(line); break;
 		}
 	}
 
@@ -358,7 +362,7 @@ void CPlayScene::Update(DWORD dt)
 
 		if (e->GetType() == QUESTIONBRICK)
 		{
-			QuestionBrick* qb = dynamic_cast<QuestionBrick*>(e);	
+			QuestionBrick* qb = dynamic_cast<QuestionBrick*>(e);
 			if (qb->isUnbox)
 			{
 				if (qb->model == QUESTION_BRICK_MODEL_COIN) {
@@ -380,7 +384,7 @@ void CPlayScene::Update(DWORD dt)
 				Leaf* leaf = new Leaf(brick->x, brick->y - 10);
 				TurnIntoUnit(leaf);
 				//objects.push_back(leaf);
-				
+
 				return;
 			}
 		}
@@ -429,8 +433,8 @@ void CPlayScene::Update(DWORD dt)
 			EffectCoin* effectCoin = dynamic_cast<EffectCoin*>(e);
 			if (effectCoin->isFinish) {
 				EffectPoint* effectPoint = new EffectPoint(effectCoin->x,
-															effectCoin->y,
-															POINT_EFFECT_MODEL_100);
+					effectCoin->y,
+					POINT_EFFECT_MODEL_100);
 				TurnIntoUnit(effectPoint);
 				player->PlusScore(100);
 				//objects.push_back(effectPoint);
@@ -442,7 +446,7 @@ void CPlayScene::Update(DWORD dt)
 				if (goomba->GetModel() == GOOMBA_MODEL_NORMAL) {
 					ShowEffectPoint(goomba, POINT_EFFECT_MODEL_100);
 					player->PlusScore(100);
-				}				
+				}
 				else {
 					player->PlusScore(200);
 					ShowEffectPoint(goomba, POINT_EFFECT_MODEL_200);
@@ -453,7 +457,7 @@ void CPlayScene::Update(DWORD dt)
 			if (koopa->isFinish) {
 				player->PlusScore(100);
 				ShowEffectPoint(koopa, POINT_EFFECT_MODEL_100);
-			}				
+			}
 		}
 		if (e->GetType() == BOOMERANGBROTHER) {
 			BoomerangBrother* bb = dynamic_cast<BoomerangBrother*>(e);
@@ -481,8 +485,8 @@ void CPlayScene::Update(DWORD dt)
 	camera->Update(dt);
 	UpdateGrid();
 
-	 //skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
-	if (player == NULL) return; 
+	//skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
+	if (player == NULL) return;
 }
 
 void CPlayScene::GetObjectFromGrid() {
@@ -496,7 +500,7 @@ void CPlayScene::GetObjectFromGrid() {
 
 	CGame* game = CGame::GetInstance();
 	float camX, camY;
-	
+
 	camX = game->GetCamX();
 	camY = game->GetCamY();
 
@@ -522,7 +526,7 @@ void CPlayScene::Render()
 	for (size_t i = 0; i < objects.size(); i++) {
 
 		if (objects[i]->CheckObjectInCamera(objects[i]))
-			 objects[i]->Render();
+			objects[i]->Render();
 
 		if (objects[i]->GetType() == BOX) {
 			Box* box = dynamic_cast<Box*>(objects[i]);
@@ -681,7 +685,7 @@ void CPlayScenceKeyHandler::OnKeyUp(int KeyCode) {
 	}
 	else {
 		switch (KeyCode) {
-		case DIK_RIGHT:		
+		case DIK_RIGHT:
 			mario->vx = 0;
 			break;
 		case DIK_LEFT:
@@ -732,7 +736,7 @@ void CPlayScenceKeyHandler::OnKeyUp(int KeyCode) {
 //}
 
 void CPlayScene::QuestionBrickDropItem(float model, float x, float y) {
-	
+
 	switch ((int)model) {
 	case QUESTION_BRICK_MODEL_COIN:
 		break;
