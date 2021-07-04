@@ -33,6 +33,9 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			vx = -KOOPAS_WALKING_SPEED * dt;
 	}
 
+	if (state == KOOPAS_STATE_FLY) {
+		vy -= KOOPAS_FLY_SPEED;
+	}
 
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;

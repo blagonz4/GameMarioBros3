@@ -73,7 +73,7 @@ public:
 	void ShowEffectPoint(CGameObject* obj, float model);
 	void AnnounceSceneEnd(int boxState);
 	CMario * GetPlayer() { return player; } 
-
+	void TurnIntoUnit(CGameObject* obj);	
 	Grid* GetGrid() { return grid; }
 	void GetObjectFromGrid();
 	void UpdateGrid();

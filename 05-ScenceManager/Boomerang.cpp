@@ -1,18 +1,24 @@
 #include "Boomerang.h"
 
 
-Boomerang::Boomerang(float X, float Y, float dir)
+Boomerang::Boomerang(float X, float Y, float dir, LPGAMEOBJECT bb)
 {
 	this->x = X; this->y = Y;
 	this->startY = Y;
 	eType = Type::BOOMERANG;
 	this->nx = dir;
+	this->boomerangbrother = bb;
 	SetAnimationSet(CAnimationSets::GetInstance()->Get(LOAD_BOOMERANG_FROM_TXT));
 }
 
 void Boomerang::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	CGameObject::Update(dt, coObjects);
+
+	if (this->boomerangbrother->isFinish || !this->CheckObjectInCamera(this)) {
+		this->isFinish = true;
+		return;
+	}
 
 	if (startY - y < BOOMERANG_FLY_MIN_HEIGHT && !isTurning) {
 		vx = nx * BOOMERANG_SPEED_X * dt;
@@ -25,7 +31,7 @@ void Boomerang::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		vy = BOOMERANG_SPEED_Y *dt;
 	}
 	if (isComingBack)
-		vx = nx * 0.01f *dt;
+		vx = nx * BOOMERANG_SPEED_X *dt;
 
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
@@ -60,13 +66,15 @@ void Boomerang::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			else if (e->obj->GetType() == MARIO) {
 				vx = 0; vy = 0;
 			}
-			//else if (e->obj->GetType() == COLORBLOCK || 
-			//				e->obj->GetType() == GOLDBRICK ||
-			//				e->obj->GetType() == QUESTIONBRICK ||
-			//				e->obj->GetType() == MUSICBRICK) {
-			//		this->x += dx; 
-			//		this->y += dy;
-			//}
+			else if (e->obj->GetType() == COLORBLOCK || 
+							e->obj->GetType() == GOLDBRICK ||
+							e->obj->GetType() == QUESTIONBRICK ||
+							e->obj->GetType() == MUSICBRICK ||
+							e->obj->GetType() == KOOPAS || 
+							e->obj->GetType() == GOOMBA ) {
+					this->x += dx; 
+					this->y += dy;
+			}
 			else if (e->obj->GetType() == BOOMERANGBROTHER) {
 				this->isFinish = true;
 			}

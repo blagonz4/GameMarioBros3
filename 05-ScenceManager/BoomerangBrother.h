@@ -3,6 +3,19 @@
 #include "define.h"
 #include "Mario.h"
 #include "Boomerang.h"
+#include "PlayScence.h"
+
+//--------------------------BOOMERANG BROTHER---------------------------
+#define BOOM_BROTHER_STATE_WALKING					100
+#define BOOM_BROTHER_STATE_ATTACK					200
+#define	BOOM_BROTHER_STATE_DIE						300
+#define BOOM_BROTHER_ANI_RIGHT						0
+#define BOOM_BROTHER_ANI_LEFT						1
+#define BOOM_BROTHER_SPEED_X						0.00015f
+#define BOOM_BROTHER_BBOX_WIDTH						16
+#define BOOM_BROTHER_BBOX_HEIGHT					24
+#define TIME_BB_WALKING								2000
+#define TIME_BB_ATTACK								2000
 class BoomerangBrother : public CGameObject
 {
 public:

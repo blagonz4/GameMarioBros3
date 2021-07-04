@@ -97,9 +97,8 @@ void Grid::Move(Unit* unit, float X, float Y) {
 }
 
 void Grid::Get(float camX, float camY, vector<Unit*>&listUnits) {
-	DebugOut(L"camX: %f ,camY: %f \n", camX, camY);
-	int startCol = (int)((camX - CELL_WIDTH) / CELL_WIDTH);
-	int endCol = (int)ceil((camX + SCREEN_WIDTH + CELL_WIDTH) / CELL_WIDTH);
+	int startCol = (int)((camX) / CELL_WIDTH);
+	int endCol = (int)ceil((camX + SCREEN_WIDTH) / CELL_WIDTH);
 	int ENDCOL = (int)ceil(mapWidth / CELL_WIDTH);
 	if (endCol > ENDCOL)	endCol = ENDCOL;
 	if (startCol < 0) startCol = 0;
@@ -130,7 +129,8 @@ void Grid::Get(float camX, float camY, vector<Unit*>&listUnits) {
 
 					Unit* temp = unit;
 					unit = unit->next;
-					delete temp->GetObj();
+					if(temp->GetObj() != NULL)
+						delete temp->GetObj();
 					delete temp;
 				}
 			}
@@ -168,7 +168,7 @@ void Grid::ClearAll() {
 
 				Unit* temp = unit;
 				unit = unit->next;
-				delete unit->GetObj();
+				delete temp->GetObj();
 				delete temp;
 			}
 		}
@@ -182,7 +182,6 @@ Grid::Grid(int gridCols, int gridRows) {
 
 	this->mapWidth = gridCols * CELL_WIDTH;
 	this->mapHeight = gridRows * CELL_HEIGHT;
-	DebugOut(L"mapWidth %d mapHeight %d \n", mapWidth, mapHeight);
 
 	cells.resize(numRows);
 

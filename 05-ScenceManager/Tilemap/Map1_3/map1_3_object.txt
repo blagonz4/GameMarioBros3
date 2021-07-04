@@ -21,7 +21,7 @@
 2	1184	390	2	2	-1
 2	1616	390	2	1	-1
 2	1655	390	2	1	-1
-2	260	390	2	3	-1
+2	2000	380	2	3	-1
 
 ###################KOOPAS###################
 #TYPE    X       Y  ANI_SET_ID  MODEL   DIRECTION 1:GOOMBA base 2:GOOMBA RED

@@ -27,6 +27,11 @@ void FireBall::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	vector<LPCOLLISIONEVENT> coEventsResult;
 
 
+	if (!this->CheckObjectInCamera(this)) {
+		isFinish = true;
+		return;
+	}
+
 	coEvents.clear();
 	//if (defineVy == FIRE_GRAVITY) //lua tu mario
 	CalcPotentialCollisions(coObjects, coEvents);
@@ -62,31 +67,50 @@ void FireBall::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 			if (e->obj->GetType() == KOOPAS) 
 			{
-				e->obj->nx = this->nx;
-				e->obj->SetState(KOOPAS_STATE_DIE);
-				this->isFinish = true;
+				if (defineVy == FIRE_GRAVITY) {
+					e->obj->nx = this->nx;
+					e->obj->SetState(KOOPAS_STATE_DIE);
+					this->isFinish = true;
+				}
+				else {
+					x += dx; y += dy;
+				}
 			}
 			else if (e->obj->GetType() == GOOMBA) {
-				this->isFinish = true;
-				e->obj->nx = this->nx;
-				e->obj->SetState(GOOMBA_STATE_DIE);
-				this->isFinish = true;
+				if (defineVy == FIRE_GRAVITY) {
+					this->isFinish = true;
+					e->obj->nx = this->nx;
+					e->obj->SetState(GOOMBA_STATE_DIE);
+					this->isFinish = true;
+				}
+				else {
+					x += dx; y += dy;
+				}
 			}
 			else if (e->obj->GetType() == BOOMERANGBROTHER)
 			{
-				e->obj->nx = this->nx;
-				e->obj->SetState(BOOM_BROTHER_STATE_DIE);
-				this->isFinish = true;
+				if (defineVy == FIRE_GRAVITY) {
+					e->obj->nx = this->nx;
+					e->obj->SetState(BOOM_BROTHER_STATE_DIE);
+					this->isFinish = true;
+				}
+				else {
+					x += dx; y += dy;
+				}
+			}
+			else if (e->obj->GetType() == FIREPLANT) {
+				if (defineVy != FIRE_GRAVITY) {
+					x += dx; y += dy;
+				}
 			}
 			else if (e->obj->GetType() == PIPE ||
 					e->obj->GetType() == GOLDBRICK ||
 					e->obj->GetType() == QUESTIONBRICK||
 					e->obj->GetType() == MUSICBRICK) {
 						if (e->nx != 0) 
-						this->isFinish = true;
+							this->isFinish = true;
 			}			
 			else if (e->obj->GetType() == MARIO) {
-				DebugOut(L"col mario\n");
 				if (e->obj->untouchable == 0) {
 					
 					if (e->obj->level > MARIO_LEVEL_SMALL)
@@ -100,22 +124,24 @@ void FireBall::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				}
 			}
 			else if (e->obj->GetType() == PLATFORM || e->obj->GetType() == COLORBLOCK) {
-				DebugOut(L"col \n");
 				if (defineVy != FIRE_GRAVITY) {
-					if ( e->nx != 0 )	this->isFinish = true;
-					else { x += dx;	y += dy; }
+					//if ( e->nx != 0 || e->ny != 0 )	this->isFinish = true;
+					//else { x += dx;	y += dy; }
+					x += dx; y += dy;
 				}	
 			}
 		}
 	}
 
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
+
 }
 void FireBall::Render() {
 	int ani = -1;
 	if (nx > 0) ani = SHOOT_FIRE_RIGHT;
 	else ani = SHOOT_FIRE_LEFT;
 	animation_set->at(ani)->Render(x, y);
+	//RenderBoundingBox();
 }
 
 void FireBall::GetBoundingBox(float& left, float& top, float& right, float& bottom)

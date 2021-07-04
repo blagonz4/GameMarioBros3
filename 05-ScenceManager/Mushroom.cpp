@@ -7,12 +7,11 @@ Mushroom::Mushroom(float X, float Y, float model)
 	this->x = X;
 	this->y = Y;
 	this->nx = 1;
-	minY = Y - MUSHROOM_BBOX_HEIGHT +8;
+	minY = Y - MUSHROOM_BBOX_HEIGHT;
 	SetState(MUSHROOM_STATE_APPEAR);
 
 	if (this->model == MUSHROOM_MODEL_RED) eType = Type::MUSHROOM_POWER;
 	else  eType = Type::MUSHROOM_1_UP;
-
 	this->SetAnimationSet(CAnimationSets::GetInstance()->Get(LOAD_MUSHROOM_FROM_TXT));
 }
 
@@ -26,10 +25,11 @@ void Mushroom::GetBoundingBox(float& left, float& top, float& right, float& bott
 void Mushroom::Update(DWORD dt, vector<LPGAMEOBJECT>* listObject)
 {
 	CGameObject::Update(dt);
-	//if (!CheckObjectInCamera(this))
-	//{
-	//	this->isFinish = true;
-	//}
+	if (!CheckObjectInCamera(this))
+	{
+		this->isFinish = true;
+	}
+	
 	if (model == 1) {
 		if (state == MUSHROOM_STATE_APPEAR)
 			vy = -MUSHROOM_SPEED_APPEAR_Y;
@@ -101,6 +101,7 @@ void Mushroom::Update(DWORD dt, vector<LPGAMEOBJECT>* listObject)
 		}
 	}
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
+	if (isFinish) return;
 }
 void Mushroom::SetState(int state)
 {

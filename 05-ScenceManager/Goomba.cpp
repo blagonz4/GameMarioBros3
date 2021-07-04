@@ -22,14 +22,16 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	if (model == GOOMBA_MODEL_WING_BROWN) {
 
+		CPlayScene* scene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
 		if ( y >= DISTANCE_MARIO_FLY_THROUGH_SKY_Y)
 			vy = -MARIO_GRAVITY * 5 * dt;
 		else vy += MARIO_GRAVITY * dt;
 
 		if (listPoop.size() < 4) {
 			timeDropDelay += dt;
-			if (timeDropDelay >= 600) {
-				Poop* poop = new Poop(x, y + 10);
+			if (timeDropDelay >= POOP_DELAY_DROP) {
+				Poop* poop = new Poop(x, y + 10,mario);
+				scene->TurnIntoUnit(poop);
 				listPoop.push_back(poop);
 				timeDropDelay = 0;
 			}	
@@ -44,10 +46,11 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	for (size_t i = 0; i < listPoop.size(); i++)
 	{
 		listPoop[i]->Update(dt, coObjects);
-		if (!CheckObjectInCamera(listPoop.at(i)) || listPoop.at(i)->isFinish == true) {
+		if (!CheckObjectInCamera(listPoop.at(i)) || listPoop.at(i)->isFinish) {
 			listPoop.erase(listPoop.begin() + i);
 		}
 	}
+
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
 	coEvents.clear();
@@ -172,7 +175,7 @@ void CGoomba::Render()
 	}
 	animation_set->at(ani)->Render(x,y);
 
-	//RenderBoundingBox();
+	RenderBoundingBox();
 }
 
 void CGoomba::SetState(int state)
@@ -198,6 +201,8 @@ void CGoomba::GetBoundingBox(float &left, float &top, float &right, float &botto
 		bottom = y + GOOMBA_BBOX_HEIGHT_DIE;
 	else if (model == GOOMBA_MODEL_NORMAL || Health == 1)
 		bottom = y + GOOMBA_BBOX_HEIGHT;
+	else if (listPoop.size() == 4)
+		bottom = y + GOOMBA_BBOX_HEIGHT +5;
 	else bottom = y + GOOMBA_WING_BBOX_HEIGHT;
 
 }

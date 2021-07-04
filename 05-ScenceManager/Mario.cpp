@@ -21,6 +21,7 @@
 #include "BoomerangBrother.h"
 #include "Boomerang.h"
 #include "Poop.h"
+#include "PlayScence.h"
 
 CMario::CMario(float x, float y) 
 {
@@ -32,6 +33,7 @@ CMario::CMario(float x, float y)
 	this->x = x; 
 	this->y = y; 
 	eType = Type::MARIO;
+
 }
 
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
@@ -76,9 +78,8 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	for (size_t i = 0; i < listEffect.size(); i++)
 	{
 		listEffect[i]->Update(dt, coObjects);
-		if (!CheckObjectInCamera(listEffect.at(i)) || listEffect.at(i)->isFinish) {
+		if (!CheckObjectInCamera(listEffect.at(i)) || listEffect.at(i)->isFinish)
 			listEffect.erase(listEffect.begin() + i);
-		}
 	}
 	//------------------------------------------------------------------
 	if (GetTickCount() - untouchable_start > timeUntouchable)
@@ -91,7 +92,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		isFlying = false;
 		limitfly_start = 0;
 	}
-	if (GetTickCount() - limitjump_start > MARIO_LIMIT_JUMP_TIME)
+	if (GetTickCount() - limitjump_start > marioLimitJumpTime)
 	{
 		isJumping = false;
 		limitjump_start = 0;
@@ -160,6 +161,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		//
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{
+			CPlayScene* scene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
 			LPCOLLISIONEVENT e = coEventsResult[i];
 			if (e->obj->GetType() == GOOMBA) // if e->obj is Goomba 
 			{
@@ -192,7 +194,8 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						goomba->nx = this->nx;
 						goomba->SetState(GOOMBA_STATE_DIE);
 						EffectTailHit* effectTailHit = new EffectTailHit(goomba->x, goomba->y);
-						listEffect.push_back(effectTailHit);
+						scene->TurnIntoUnit(effectTailHit);
+						//listEffect.push_back(effectTailHit);
 					}
 					if (untouchable==0)
 					{
@@ -203,7 +206,8 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 								if (level > MARIO_LEVEL_BIG) {
 									level = MARIO_LEVEL_BIG;
 									EffectDisappear* effectDisappear = new EffectDisappear(this->x, this->y);
-									listEffect.push_back(effectDisappear);
+									scene->TurnIntoUnit(effectDisappear);
+									//listEffect.push_back(effectDisappear);
 									StartUntouchable(TIME_UNTOUCHABLE_SHORT);
 								}
 								else
@@ -258,7 +262,8 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						koopa->vy = -MARIO_DIE_DEFLECT_SPEED;
 						koopa->SetState(KOOPAS_STATE_DEFEND);
 						EffectTailHit* effectTailHit = new EffectTailHit(koopa->x, koopa->y);
-						listEffect.push_back(effectTailHit);
+						scene->TurnIntoUnit(effectTailHit);
+						//listEffect.push_back(effectTailHit);
 					}				
 					else if (untouchable == 0)
 					{
@@ -269,6 +274,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 								if (level > MARIO_LEVEL_BIG) {
 									level = MARIO_LEVEL_BIG;
 									EffectDisappear* effectDisappear = new EffectDisappear(this->x, this->y);
+									scene->TurnIntoUnit(effectDisappear);
 									listEffect.push_back(effectDisappear);
 									StartUntouchable(TIME_UNTOUCHABLE_SHORT);
 								}
@@ -324,6 +330,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						if (level > MARIO_LEVEL_BIG) {
 							level = MARIO_LEVEL_BIG;
 							EffectDisappear* effectDisappear = new EffectDisappear(this->x, this->y);
+							scene->TurnIntoUnit(effectDisappear);
 							listEffect.push_back(effectDisappear);
 							StartUntouchable(TIME_UNTOUCHABLE_SHORT);
 						}
@@ -423,7 +430,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					if (this->level < MARIO_LEVEL_BIG)
 						this->SetLevel(MARIO_LEVEL_BIG);
 				}
-				this->x += dx; //this->y += dy;
+				//this->x += dx; //this->y += dy;
 			}
 			else if (e->obj->GetType() == LEAF)
 			{
@@ -540,9 +547,9 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				}
 			}
 			else if (e->obj->GetType() == POOP) {
-				DebugOut(L"dung poop \n");
 				Poop* poop = dynamic_cast<Poop *>(e->obj);
-				this->vy += MARIO_GRAVITY*5 * dt;
+				poop->isAttach = true;
+				this->marioLimitJumpTime = 100;
 }
 		}
 	}
@@ -928,7 +935,8 @@ void CMario::Reset()
 
 void CMario::ShowEffectPoint(CGameObject* obj, float model) {
 	EffectPoint* effectPoint = new EffectPoint(obj->x, obj->y, model);
-	listEffect.push_back(effectPoint);
+	CPlayScene* scene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
+	scene->TurnIntoUnit(effectPoint);
 }
 
 

@@ -120,11 +120,13 @@ void FirePlant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	}
 	if (isAttacking) {
 		if (listFire.size() < 1 && model != BITE_PLANT) {
+			CPlayScene* scene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
 			FireBall *fire = new FireBall(this->x,
 											this->y,
 											this->vxFire,
 											this->vyFire);
-			fire->nx = this->nx;
+			fire->nx = this->nx;	
+			scene->TurnIntoUnit(fire);
 			listFire.push_back(fire);
 		}
 		timeAttack += dt;
@@ -142,7 +144,7 @@ void FirePlant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	}
 	
 	
-	if (timeToHide > 3000) {//HOLD XONG CHUI XUONG LAI
+	if (timeToHide > 5000) {//HOLD XONG CHUI XUONG LAI
 		vy = MARIO_GRAVITY * dt;
 		if (y > 380 && model == FIRE_PLANT_RED) {
 			vy = 0;			
@@ -166,9 +168,8 @@ void FirePlant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	for (size_t i = 0; i < listFire.size(); i++) {
 		listFire[i]->Update(dt, coObjects);
-		if (!CheckObjectInCamera(listFire.at(i)) || listFire.at(i)->isFinish) {
-			listFire.erase(listFire.begin() + i);
-		}
+		if (!listFire[i]->CheckObjectInCamera(listFire[i]) || listFire[i]->isFinish)
+			listFire.erase(listFire.begin() +i);
 	}
 
 	if (coEvents.size() == 0)
@@ -294,7 +295,8 @@ void FirePlant::Render()
 
 	for (size_t i = 0; i < listFire.size(); i++)
 	{
-		listFire[i]->Render();
+		if (CheckObjectInCamera(listFire.at(i)) || !listFire.at(i)->isFinish)
+			listFire[i]->Render();
 	}
 
 	animation_set->at(ani)->Render(x, y);

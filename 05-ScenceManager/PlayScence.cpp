@@ -354,6 +354,7 @@ void CPlayScene::Update(DWORD dt)
 		LPGAMEOBJECT e = objects[i];
 		if (objects[i]->CheckObjectInCamera(objects[i]))
 			objects[i]->Update(dt, &coObjects);
+		else objects[i]->Update(0, &coObjects);
 
 		if (e->GetType() == QUESTIONBRICK)
 		{
@@ -361,9 +362,10 @@ void CPlayScene::Update(DWORD dt)
 			if (qb->isUnbox)
 			{
 				if (qb->model == QUESTION_BRICK_MODEL_COIN) {
-					EffectCoin* effectCoin = new EffectCoin(qb->x + 4, qb->y - 10);
+					EffectCoin* effectCoin = new EffectCoin(qb->x, qb->y - 10);
+					TurnIntoUnit(effectCoin);
 					player->PlusCoinCollect(1);
-					objects.push_back(effectCoin);		
+					//objects.push_back(effectCoin);		
 				}
 				QuestionBrickDropItem(qb->GetModel(), qb->x, qb->y);
 				qb->isUnbox = false;
@@ -375,7 +377,10 @@ void CPlayScene::Update(DWORD dt)
 			if (brick->isUnbox == 1)
 			{
 				brick->isUnbox = 2;
-				objects.push_back(new Leaf(brick->x, brick->y - 10));			
+				Leaf* leaf = new Leaf(brick->x, brick->y - 10);
+				TurnIntoUnit(leaf);
+				//objects.push_back(leaf);
+				
 				return;
 			}
 		}
@@ -391,7 +396,9 @@ void CPlayScene::Update(DWORD dt)
 			if (gb->state == GOLD_BRICK_STATE_UNBOX)
 			{
 				if (!isHavePSwitch) {
-					objects.push_back(new PSwitch(gb->x, gb->y - QUESTION_BRICK_BBOX_HEIGHT));
+					PSwitch* pswitch = new PSwitch(gb->x, gb->y - QUESTION_BRICK_BBOX_HEIGHT);
+					TurnIntoUnit(pswitch);
+					//objects.push_back(pswitch);
 					isHavePSwitch = true;
 				}
 			}
@@ -422,10 +429,11 @@ void CPlayScene::Update(DWORD dt)
 			EffectCoin* effectCoin = dynamic_cast<EffectCoin*>(e);
 			if (effectCoin->isFinish) {
 				EffectPoint* effectPoint = new EffectPoint(effectCoin->x,
-					effectCoin->y,
-					POINT_EFFECT_MODEL_100);
+															effectCoin->y,
+															POINT_EFFECT_MODEL_100);
+				TurnIntoUnit(effectPoint);
 				player->PlusScore(100);
-				objects.push_back(effectPoint);
+				//objects.push_back(effectPoint);
 			}
 		}
 		if (e->GetType() == GOOMBA) {
@@ -532,8 +540,8 @@ void CPlayScene::Render()
 */
 void CPlayScene::Unload()
 {
-	for (size_t i = 0; i < objects.size(); i++)
-		delete objects[i];
+	//for (size_t i = 0; i < objects.size(); i++)
+	//	delete objects[i];
 
 	if (grid != NULL)
 		grid->ClearAll();
@@ -689,39 +697,39 @@ void CPlayScenceKeyHandler::OnKeyUp(int KeyCode) {
 	}
 }
 
-
-void CPlayScene::GoldBrickDestroy(int model, float x, float y)
-{
-	switch (model)
-	{
-	case GOLD_BRICK_MODEL_PSWITCH:
-	{
-			objects.push_back(new PSwitch(x, y));
-		break;
-	}
-	//case GB_CONTAIN_MUSHROOM_1_UP:
-	//{
-	//	ListItem.push_back(new CMushRoom(x, y + 10, MUSHROOM_GREEN));
-	//	break;
-	//}
-	//case GB_CONTAIN_POWER_UP:
-	//{
-	//	if (player->level == MARIO_LEVEL_SMALL)
-	//	{
-	//		ListItem.push_back(new CMushRoom(x, y + 10, MUSHROOM_RED));
-	//	}
-	//	if (player->level == MARIO_LEVEL_BIG)
-	//	{
-	//		ListItem.push_back(new Leaf(x, y));
-	//	}
-	//	if (player->level == MARIO_LEVEL_RACCOON || player->level == MARIO_LEVEL_FIRE)
-	//	{
-	//		ListItem.push_back(new Flower(x, y));
-	//	}
-	//	break;
-	//}
-	}
-}
+//
+//void CPlayScene::GoldBrickDestroy(int model, float x, float y)
+//{
+//	switch (model)
+//	{
+//	case GOLD_BRICK_MODEL_PSWITCH:
+//	{
+//			objects.push_back(new PSwitch(x, y));
+//		break;
+//	}
+//	//case GB_CONTAIN_MUSHROOM_1_UP:
+//	//{
+//	//	ListItem.push_back(new CMushRoom(x, y + 10, MUSHROOM_GREEN));
+//	//	break;
+//	//}
+//	//case GB_CONTAIN_POWER_UP:
+//	//{
+//	//	if (player->level == MARIO_LEVEL_SMALL)
+//	//	{
+//	//		ListItem.push_back(new CMushRoom(x, y + 10, MUSHROOM_RED));
+//	//	}
+//	//	if (player->level == MARIO_LEVEL_BIG)
+//	//	{
+//	//		ListItem.push_back(new Leaf(x, y));
+//	//	}
+//	//	if (player->level == MARIO_LEVEL_RACCOON || player->level == MARIO_LEVEL_FIRE)
+//	//	{
+//	//		ListItem.push_back(new Flower(x, y));
+//	//	}
+//	//	break;
+//	//}
+//	}
+//}
 
 void CPlayScene::QuestionBrickDropItem(float model, float x, float y) {
 	
@@ -729,16 +737,21 @@ void CPlayScene::QuestionBrickDropItem(float model, float x, float y) {
 	case QUESTION_BRICK_MODEL_COIN:
 		break;
 	case QUESTION_BRICK_MODEL_POWER_UP:
-		if (player->GetLevel() == MARIO_LEVEL_SMALL)
-			objects.push_back(new Mushroom(x, y - 10, MUSHROOM_MODEL_RED));
-		if (player->GetLevel() == MARIO_LEVEL_BIG || player->GetLevel() == MARIO_LEVEL_RACOON)
-			objects.push_back(new Leaf(x, y - 10));
+		if (player->GetLevel() == MARIO_LEVEL_SMALL) {
+			Mushroom* mr = new Mushroom(x, y, MUSHROOM_MODEL_RED);
+			TurnIntoUnit(mr);
+		}
+		if (player->GetLevel() == MARIO_LEVEL_BIG || player->GetLevel() == MARIO_LEVEL_RACOON) {
+			Leaf* leaf = new Leaf(x, y - 10);
+			TurnIntoUnit(leaf);
+		}
 	}
 }
 
 void CPlayScene::ShowEffectPoint(CGameObject* obj, float model) {
 	EffectPoint* effectPoint = new EffectPoint(obj->x, obj->y, model);
-	objects.push_back(effectPoint);
+	TurnIntoUnit(effectPoint);
+	//objects.push_back(effectPoint);
 }
 
 void CPlayScene::AnnounceSceneEnd(int boxState) {
@@ -758,4 +771,8 @@ void CPlayScene::AnnounceSceneEnd(int boxState) {
 		LPSPRITE SpriteTile = new CSprite(66, 235, 33, 259, 61, Tex);
 		SpriteTile->Draw(2700, 290);
 	}
+}
+
+void CPlayScene::TurnIntoUnit(CGameObject* obj) {
+	Unit* unit = new Unit(grid, obj, obj->x, obj->y);
 }
