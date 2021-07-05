@@ -21,8 +21,6 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	}
 
 	if (model == GOOMBA_MODEL_WING_BROWN) {
-
-		CPlayScene* scene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
 		if ( y >= DISTANCE_MARIO_FLY_THROUGH_SKY_Y)
 			vy = -MARIO_GRAVITY * 5 * dt;
 		else vy += MARIO_GRAVITY * dt;
@@ -31,7 +29,7 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			timeDropDelay += dt;
 			if (timeDropDelay >= POOP_DELAY_DROP) {
 				Poop* poop = new Poop(x, y + 10,mario);
-				scene->TurnIntoUnit(poop);
+				//scene->TurnIntoUnit(poop);
 				listPoop.push_back(poop);
 				timeDropDelay = 0;
 			}	
@@ -45,8 +43,8 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	for (size_t i = 0; i < listPoop.size(); i++)
 	{
-		//listPoop[i]->Update(dt, coObjects);
-		if (!CheckObjectInCamera(listPoop.at(i)) || listPoop.at(i)->isFinish) {
+		listPoop[i]->Update(dt, coObjects);
+		if (!listPoop[i]->CheckObjectInCamera() || listPoop.at(i)->isFinish) {
 			listPoop.erase(listPoop.begin() + i);
 		}
 	}
@@ -170,9 +168,9 @@ void CGoomba::Render()
 		}
 		else ani = GOOMBA_ANI_WALKING;
 	}
-	//for (size_t i = 0; i < listPoop.size(); i++) {
-	//	listPoop.at(i)->Render();
-	//}
+	for (size_t i = 0; i < listPoop.size(); i++) {
+		listPoop.at(i)->Render();
+	}
 	animation_set->at(ani)->Render(x,y);
 
 	//RenderBoundingBox();

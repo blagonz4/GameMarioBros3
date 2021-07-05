@@ -14,25 +14,12 @@ BoomerangBrother::BoomerangBrother(CMario* mario,float direction)
 void BoomerangBrother::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	
-	CGameObject::Update(dt);
+	CGameObject::Update(dt, coObjects);
 
 	vy += MARIO_GRAVITY * dt;
 	if (state == BOOM_BROTHER_STATE_ATTACK)		vx = 0;
 	if (state == BOOM_BROTHER_STATE_WALKING)	vx = nx * BOOM_BROTHER_SPEED_X *dt;
-	if (this->CheckObjectInCamera(this)) {
-		//timeAttacking += dt;
-		//if (timeAttacking > TIME_BB_ATTACK)
-		//{
-		//	timeAttacking = 0;
-		//	SetState(BOOM_BROTHER_STATE_ATTACK);
-		//	if (ListBoomerang.size() < 2)
-		//	{
-		//		CreateBoomerang();
-		//		timeAttacking = 0;
-		//	}
-		//	else SetState(BOOM_BROTHER_STATE_WALKING);
-		//}
-		
+	if (this->CheckObjectInCamera()) {
 		if (ListBoomerang.size() < 2) {
 			timeAttacking += dt;			
 			if (timeAttacking >= TIME_BB_ATTACK) {
@@ -42,14 +29,12 @@ void BoomerangBrother::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			}
 			else SetState(BOOM_BROTHER_STATE_WALKING);
 		}
-
 	}
-		
 
 	for (size_t i = 0; i < ListBoomerang.size(); i++)
 	{
-		//ListBoomerang[i]->Update(dt, coObjects);
-		if (!CheckObjectInCamera(ListBoomerang.at(i)) || ListBoomerang.at(i)->isFinish) {
+		ListBoomerang[i]->Update(dt, coObjects);
+		if (!ListBoomerang[i]->CheckObjectInCamera() || ListBoomerang.at(i)->isFinish) {
 			ListBoomerang.erase(ListBoomerang.begin() + i);
 		}
 	}
@@ -106,9 +91,9 @@ void BoomerangBrother::Render()
 		ani = BOOM_BROTHER_ANI_RIGHT;
 	else ani = BOOM_BROTHER_ANI_LEFT;
 	animation_set->at(ani)->Render(x, y);
-	//for (size_t i = 0; i < ListBoomerang.size(); i++) {
-	//	ListBoomerang.at(i)->Render();
-	//}
+	for (size_t i = 0; i < ListBoomerang.size(); i++) {
+		ListBoomerang.at(i)->Render();
+	}
 	//RenderBoundingBox();
 }
 float BoomerangBrother::GetMarioRangeCurrent()
@@ -134,10 +119,10 @@ void BoomerangBrother::GetBoundingBox(float& left, float& top, float& right, flo
 }
 void BoomerangBrother::CreateBoomerang()
 {
-	CPlayScene* scene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
+	//CPlayScene* scene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
 	float marioRange = GetMarioRangeCurrent();
 	Boomerang* boomerang = new Boomerang(x + (marioRange*20.f), y-20.f, marioRange,this);
-	scene->TurnIntoUnit(boomerang);
+	//scene->TurnIntoUnit(boomerang);
 	ListBoomerang.push_back(boomerang);
 }
 BoomerangBrother::~BoomerangBrother()

@@ -14,8 +14,8 @@
 #define KOOPAS_MODEL_GREEN_WING		3
 
 #define KOOPAS_WALKING_SPEED		0.0025f
-#define	KOOPAS_FLY_SPEED			0.02f
-#define KOOPAS_BALL_SPEED			0.005f
+#define	KOOPAS_FLY_SPEED			0.012f
+#define KOOPAS_BALL_SPEED			0.01f
 #define KOOPAS_BBOX_WIDTH			16
 #define KOOPAS_BBOX_HEIGHT			26
 #define KOOPAS_BBOX_HEIGHT_DIE		16
@@ -47,7 +47,6 @@ class CKoopas : public CGameObject
 	DWORD defend_start;
 	int isDefend;
 	void StartDefendTime() { isDefend = 1; defend_start = GetTickCount(); }
-
 
 public:
 	bool isBeingHeld;

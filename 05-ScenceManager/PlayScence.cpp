@@ -344,11 +344,12 @@ void CPlayScene::Update(DWORD dt)
 	CGameObject* obj = NULL;
 
 	vector<LPGAMEOBJECT> coObjects;
+	coObjects.clear();
 	GetObjectFromGrid();
 
 	playTime -= dt;
 
-	for (size_t i = 1; i < objects.size(); i++)
+	for (size_t i = 0; i < objects.size(); i++)
 	{
 		coObjects.push_back(objects[i]);
 	}
@@ -356,7 +357,8 @@ void CPlayScene::Update(DWORD dt)
 	for (size_t i = 0; i < objects.size(); i++)
 	{
 		LPGAMEOBJECT e = objects[i];
-		if (objects[i]->CheckObjectInCamera(objects[i]))
+
+		if (objects[i]->CheckObjectInCamera())
 			objects[i]->Update(dt, &coObjects);
 		else objects[i]->Update(0, &coObjects);
 
@@ -382,8 +384,8 @@ void CPlayScene::Update(DWORD dt)
 			{
 				brick->isUnbox = 2;
 				Leaf* leaf = new Leaf(brick->x, brick->y - 10);
-				TurnIntoUnit(leaf);
-				//objects.push_back(leaf);
+				//TurnIntoUnit(leaf);
+				objects.push_back(leaf);
 
 				return;
 			}
@@ -401,8 +403,8 @@ void CPlayScene::Update(DWORD dt)
 			{
 				if (!isHavePSwitch) {
 					PSwitch* pswitch = new PSwitch(gb->x, gb->y - QUESTION_BRICK_BBOX_HEIGHT);
-					TurnIntoUnit(pswitch);
-					//objects.push_back(pswitch);
+					//TurnIntoUnit(pswitch);
+					objects.push_back(pswitch);
 					isHavePSwitch = true;
 				}
 			}
@@ -419,7 +421,7 @@ void CPlayScene::Update(DWORD dt)
 						GoldBrick* goldbrick = dynamic_cast<GoldBrick*>(objects[i]);
 						if (goldbrick->model == GOLD_BRICK_MODEL_COIN)
 						{
-							if (goldbrick->CheckObjectInCamera(goldbrick))
+							if (goldbrick->CheckObjectInCamera())
 							{
 								goldbrick->SetState(GOLD_BRICK_STATE_IDLE_COIN);
 							}
@@ -435,9 +437,9 @@ void CPlayScene::Update(DWORD dt)
 				EffectPoint* effectPoint = new EffectPoint(effectCoin->x,
 					effectCoin->y,
 					POINT_EFFECT_MODEL_100);
-				TurnIntoUnit(effectPoint);
+				//TurnIntoUnit(effectPoint);
 				player->PlusScore(100);
-				//objects.push_back(effectPoint);
+				objects.push_back(effectPoint);
 			}
 		}
 		if (e->GetType() == GOOMBA) {
@@ -525,7 +527,7 @@ void CPlayScene::Render()
 	map->DrawMap();
 	for (size_t i = 0; i < objects.size(); i++) {
 
-		if (objects[i]->CheckObjectInCamera(objects[i]))
+		if (objects[i]->CheckObjectInCamera())
 			objects[i]->Render();
 
 		if (objects[i]->GetType() == BOX) {
@@ -588,6 +590,12 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 		case DIK_Q://-----------------------SHOOT FIRE--------------------------
 			if (mario->level == MARIO_LEVEL_FIRE)
 				mario->SetState(MARIO_STATE_SHOOT_FIRE);
+			if (mario->level == MARIO_LEVEL_RACOON) {
+				if (!mario->isHolding) {
+					mario->StartSpinning();
+					mario->SetState(MARIO_STATE_SPIN);
+				}		
+			}
 			break;
 		case DIK_E:
 			if (game->IsKeyDown(DIK_Q)) {
@@ -607,7 +615,7 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 	if (mario->GetState() == MARIO_STATE_DIE) return;
 
 	//--------------------RUN/TURN/FLY/WALK----------------------------
-	if (CGame::GetInstance()->GetScene() != WORLDMAP) {
+	if (!game->IsKeyDown(DIK_DOWN)) {
 		if (game->IsKeyDown(DIK_RIGHT)) {
 			if (game->IsKeyDown(DIK_Q)) {
 				mario->SetState(MARIO_STATE_RUN_RIGHT);
@@ -629,75 +637,30 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 			else mario->SetState(MARIO_STATE_WALK_LEFT);
 		}
 		else mario->SetState(MARIO_STATE_IDLE);
-
-		//-------------------------SIT------------------------
-		if (game->IsKeyDown(DIK_DOWN) && !(game->IsKeyDown(DIK_RIGHT) || game->IsKeyDown(DIK_LEFT))) {
+		}
+	else if (game->IsKeyDown(DIK_DOWN) && !(game->IsKeyDown(DIK_RIGHT) || game->IsKeyDown(DIK_LEFT))) {	//-------------------------SIT------------------------
 			if (mario->GetLevel() != MARIO_LEVEL_SMALL)
 				mario->SetState(MARIO_STATE_SIT);
-		}
+	}
 		//-------------------------JUMP------------------------
-		if (game->IsKeyDown(DIK_SPACE)) {
-			if (mario->vy <= 0) {
-				mario->SetState(MARIO_STATE_JUMP);
-			}
-			else if (mario->level == MARIO_LEVEL_RACOON) {
-				mario->SetState(MARIO_STATE_JUMP);
-			}
-
-		}
-
-		//-----------------------SPIN-------------------------
-		if (mario->level == MARIO_LEVEL_RACOON && game->IsKeyDown(DIK_Q)) {
-			if (!mario->isHolding)
-				if (!(game->IsKeyDown(DIK_RIGHT) || game->IsKeyDown(DIK_LEFT) || game->IsKeyDown(DIK_SPACE)))
-					mario->SetState(MARIO_STATE_SPIN);
+	if (game->IsKeyDown(DIK_SPACE)) {
+		if (mario->vy <= 0) {
+			mario->SetState(MARIO_STATE_JUMP);
 		}
 	}
-	else {
-		if (game->IsKeyDown(DIK_RIGHT)) {
-			mario->vx += MARIO_WALKING_SPEED * mario->dt;
-		}
-		if (game->IsKeyDown(DIK_LEFT)) {
-			mario->vx -= MARIO_WALKING_SPEED * mario->dt;
-		}
-		if (game->IsKeyDown(DIK_UP)) {
-			mario->vy -= MARIO_WALKING_SPEED * mario->dt;
-		}
-		if (game->IsKeyDown(DIK_DOWN)) {
-			mario->vy += MARIO_WALKING_SPEED * mario->dt;
-		}
-	}
+
 }
 
 void CPlayScenceKeyHandler::OnKeyUp(int KeyCode) {
 	CMario *mario = ((CPlayScene*)scence)->GetPlayer();
-	if (CGame::GetInstance()->GetScene() != WORLDMAP) {
-		switch (KeyCode)
-		{
-		case DIK_DOWN:
-			mario->y -= 10;
-			mario->SetState(MARIO_STATE_IDLE);
-			break;
-		case DIK_Q:
-			mario->isHolding = false;
-			mario->SetState(MARIO_STATE_KICK);
-		}
-	}
-	else {
-		switch (KeyCode) {
-		case DIK_RIGHT:
-			mario->vx = 0;
-			break;
-		case DIK_LEFT:
-			mario->vx = 0;
-			break;
-		case DIK_UP:
-			mario->vy = 0;
-			break;
-		case DIK_DOWN:
-			mario->vy = 0;
-			break;
-		}
+	switch (KeyCode){
+	case DIK_DOWN:
+		mario->y -= 10;
+		mario->SetState(MARIO_STATE_IDLE);
+		break;
+	case DIK_Q:
+		mario->isHolding = false;
+		mario->SetState(MARIO_STATE_KICK);
 	}
 }
 
@@ -754,8 +717,8 @@ void CPlayScene::QuestionBrickDropItem(float model, float x, float y) {
 
 void CPlayScene::ShowEffectPoint(CGameObject* obj, float model) {
 	EffectPoint* effectPoint = new EffectPoint(obj->x, obj->y, model);
-	TurnIntoUnit(effectPoint);
-	//objects.push_back(effectPoint);
+	//TurnIntoUnit(effectPoint);
+	objects.push_back(effectPoint);
 }
 
 void CPlayScene::AnnounceSceneEnd(int boxState) {
@@ -765,15 +728,15 @@ void CPlayScene::AnnounceSceneEnd(int boxState) {
 	LPDIRECT3DTEXTURE9 Tex = CTextures::GetInstance()->Get(TEXID_FONT35);
 	if (boxState == BOX_STATE_MUSHROOM) {
 		LPSPRITE SpriteTile = new CSprite(64, 187, 33, 211, 61, Tex);
-		SpriteTile->Draw(2700, 290);
+		SpriteTile->Draw(2730, 290);
 	}
 	else if (boxState == BOX_STATE_FLOWER) {
 		LPSPRITE SpriteTile = new CSprite(65, 211, 33, 235, 61, Tex);
-		SpriteTile->Draw(2700, 290);
+		SpriteTile->Draw(2730, 290);
 	}
 	else if (boxState == BOX_STATE_STAR) {
 		LPSPRITE SpriteTile = new CSprite(66, 235, 33, 259, 61, Tex);
-		SpriteTile->Draw(2700, 290);
+		SpriteTile->Draw(2730, 290);
 	}
 }
 

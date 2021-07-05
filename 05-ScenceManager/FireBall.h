@@ -5,6 +5,16 @@
 #include "Goomba.h"
 #include "Pipe.h"
 #include "BoomerangBrother.h"
+
+//----------------------FIRE BALL-------------------
+#define FIRE_SPEED						0.008f
+#define FIRE_GRAVITY					0.0006f
+#define FIRE_BOUNCE_SPEED_Y				0.15f
+#define FIRE_BBOX_WIDTH					8
+#define FIRE_BBOX_HEIGHT				8
+#define SHOOT_FIRE_RIGHT				0
+#define SHOOT_FIRE_LEFT					1
+#define LOAD_FIRE_FROM_FILE				5
 class FireBall : public CGameObject
 {
 	float defineVx, defineVy;

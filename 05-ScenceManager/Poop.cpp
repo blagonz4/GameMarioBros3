@@ -22,7 +22,7 @@ void Poop::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 void Poop::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	CGameObject::Update(dt, coObjects);
-	if (!CheckObjectInCamera(this))
+	if (!this->CheckObjectInCamera())
 	{
 		isFinish = true;
 	}

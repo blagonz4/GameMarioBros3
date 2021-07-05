@@ -23,7 +23,7 @@ CKoopas::CKoopas(float &model, float &direction,CMario* mario)
 
 void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
-	CGameObject::Update(dt);
+	CGameObject::Update(dt, coObjects);
 	if (!isBeingHeld)
 		vy += MARIO_GRAVITY * dt;
 	if (state == KOOPAS_STATE_WALKING || state == KOOPAS_STATE_FLY) {
@@ -110,7 +110,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 		if (nx != 0) vx = 0;
 		if (ny != 0 && state == KOOPAS_STATE_FLY) vy = -KOOPAS_FLY_SPEED * dt;
-			else vy = 0;
+		else if (ny != 0) vy = 0;
 
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{
@@ -174,9 +174,10 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				GoldBrick* gb = dynamic_cast<GoldBrick*>(e->obj);
 				if (e->nx != 0) {
 					this->nx *= -1;
-					this->vx = this->nx * KOOPAS_WALKING_SPEED * dt;
+					if (state == KOOPAS_STATE_WALKING)
+						this->vx = this->nx * KOOPAS_WALKING_SPEED ;
 					if (state == KOOPAS_STATE_BALL) {
-						this->vx = this->nx * KOOPAS_BALL_SPEED * dt;
+						this->vx = this->nx * KOOPAS_BALL_SPEED ;
 						int model = (int)gb->model;
 						switch (model)
 						{
@@ -185,30 +186,16 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 							gb->isFinish = true;
 							break;
 						case GOLD_BRICK_MODEL_PSWITCH:
-						{
 							gb->SetState(GOLD_BRICK_STATE_UNBOX);
-							/*if (gb->GetState() != GOLD_BRICK_STATE_UNBOX)
-							{
-								gb->SetState(GOLD_BRICK_STATE_UNBOX);
-							}*/
 							break;
-						}
-						//case GOLD_BRICK_MODEL_MUSHROOM_1_UP:
-						//{
-						//	if (gb->Health != 0)
-						//	{
-						//		gb->vy = -QUESTION_BRICK_SPEED_UP * dt;
-						//		gb->Health--;
-						//	}
-						//	break;
-						//}
 						}
 					}
 				}								
 			}
-			else if (e->obj->GetType() == GOOMBA) {
+			else if (e->obj->GetObjectType() == ENEMY) {
 				x += dx;
 				this->vx = this->nx * KOOPAS_BALL_SPEED * dt;
+				e->obj->isFinish = true;
 			}
 			else if (e->obj->GetType() == MUSHROOM_1_UP || e->obj->GetType() == MUSHROOM_POWER) {
 				x += dx;

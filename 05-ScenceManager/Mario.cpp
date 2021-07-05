@@ -42,7 +42,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	CGame *game = CGame::GetInstance();
 	// Calculate dx, dy 
 	CGameObject::Update(dt);
-	if (vx * nx < 0) {
+	if (vx * nx < 0 && !isJumping) {
 		SetState(MARIO_STATE_TURN);
 	}
 	// Simple fall down
@@ -71,14 +71,14 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	for (size_t i = 0; i < listFire.size(); i++)
 	{
 		listFire[i]->Update(dt, coObjects);
-		if (!CheckObjectInCamera(listFire.at(i)) || listFire.at(i)->isFinish) {
+		if (!listFire[i]->CheckObjectInCamera() || listFire.at(i)->isFinish) {
 			listFire.erase(listFire.begin() + i);
 		}
 	}
 	for (size_t i = 0; i < listEffect.size(); i++)
 	{
 		listEffect[i]->Update(dt, coObjects);
-		if (!CheckObjectInCamera(listEffect.at(i)) || listEffect.at(i)->isFinish)
+		if (!listEffect[i]->CheckObjectInCamera() || listEffect.at(i)->isFinish)
 			listEffect.erase(listEffect.begin() + i);
 	}
 	//------------------------------------------------------------------
@@ -86,6 +86,11 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	{
 		untouchable_start = 0;
 		untouchable = 0;
+	}
+	if (GetTickCount() - turning_start > 600 && isSpinning)
+	{
+		turning_start = 0;
+		isSpinning = false;
 	}
 	if (GetTickCount() - limitfly_start > MARIO_LIMIT_FLY_TIME)
 	{
@@ -190,13 +195,12 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					}
 					else if (e->nx != 0 || e->ny > 0)
 					{
-
-						if (state == MARIO_STATE_SPIN && level == MARIO_LEVEL_RACOON) {
+						if (isSpinning && level == MARIO_LEVEL_RACOON) {
 							goomba->nx = this->nx;
 							goomba->SetState(GOOMBA_STATE_DIE);
 							EffectTailHit* effectTailHit = new EffectTailHit(goomba->x, goomba->y);
-							scene->TurnIntoUnit(effectTailHit);
-							//listEffect.push_back(effectTailHit);
+							//scene->TurnIntoUnit(effectTailHit);
+							listEffect.push_back(effectTailHit);
 						}
 						if (untouchable == 0)
 						{
@@ -207,8 +211,8 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 									if (level > MARIO_LEVEL_BIG) {
 										level = MARIO_LEVEL_BIG;
 										EffectDisappear* effectDisappear = new EffectDisappear(this->x, this->y);
-										scene->TurnIntoUnit(effectDisappear);
-										//listEffect.push_back(effectDisappear);
+										//scene->TurnIntoUnit(effectDisappear);
+										listEffect.push_back(effectDisappear);
 										StartUntouchable(TIME_UNTOUCHABLE_SHORT);
 									}
 									else
@@ -221,6 +225,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 									SetState(MARIO_STATE_DIE);
 							}
 						}
+						else { goomba->x += dx; this->x += dx;}
 					}
 				}
 				else if (e->obj->GetType() == KOOPAS)
@@ -235,19 +240,22 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 							if (koopa->GetState() == KOOPAS_STATE_FLY)
 								koopa->SetState(KOOPAS_STATE_WALKING);
 						}
+
 						if (koopa->GetState() == KOOPAS_STATE_DEFEND) {
-							vy = -MARIO_JUMP_DEFLECT_SPEED;
+							vy = -MARIO_JUMP_DEFLECT_SPEED *4;
 							koopa->SetState(KOOPAS_STATE_BALL);
 						}
 						else if (koopa->GetState() != KOOPAS_STATE_DIE)
 						{
 							ShowEffectPoint(koopa, POINT_EFFECT_MODEL_100);
 							PlusScore(100);
+							vy = -MARIO_JUMP_DEFLECT_SPEED * 4;
 							koopa->SetState(KOOPAS_STATE_DEFEND);
 						}
 					}
 					else if (nx != 0)
 					{
+						koopa->x += dx;
 						if (game->IsKeyDown(DIK_Q) && koopa->state == KOOPAS_STATE_DEFEND) {
 							this->isHolding = true;
 							koopa->isBeingHeld = true;
@@ -258,13 +266,13 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 							koopa->nx = this->nx;
 							koopa->SetState(KOOPAS_STATE_BALL);
 						}
-						else if (state == MARIO_STATE_SPIN && level == MARIO_LEVEL_RACOON) {
+						else if (isSpinning && level == MARIO_LEVEL_RACOON) {
 							koopa->vx += this->nx * MARIO_DIE_DEFLECT_SPEED * 2;
 							koopa->vy = -MARIO_DIE_DEFLECT_SPEED;
 							koopa->SetState(KOOPAS_STATE_DEFEND);
 							EffectTailHit* effectTailHit = new EffectTailHit(koopa->x, koopa->y);
-							scene->TurnIntoUnit(effectTailHit);
-							//listEffect.push_back(effectTailHit);
+							//scene->TurnIntoUnit(effectTailHit);
+							listEffect.push_back(effectTailHit);
 						}
 						else if (untouchable == 0)
 						{
@@ -275,7 +283,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 									if (level > MARIO_LEVEL_BIG) {
 										level = MARIO_LEVEL_BIG;
 										EffectDisappear* effectDisappear = new EffectDisappear(this->x, this->y);
-										scene->TurnIntoUnit(effectDisappear);
+										//scene->TurnIntoUnit(effectDisappear);
 										listEffect.push_back(effectDisappear);
 										StartUntouchable(TIME_UNTOUCHABLE_SHORT);
 									}
@@ -331,7 +339,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 							if (level > MARIO_LEVEL_BIG) {
 								level = MARIO_LEVEL_BIG;
 								EffectDisappear* effectDisappear = new EffectDisappear(this->x, this->y);
-								scene->TurnIntoUnit(effectDisappear);
+								//scene->TurnIntoUnit(effectDisappear);
 								listEffect.push_back(effectDisappear);
 								StartUntouchable(TIME_UNTOUCHABLE_SHORT);
 							}
@@ -355,6 +363,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 							qb->Health = 0;
 							qb->isUnbox = true;
 						}
+						this->vy = MARIO_DIE_DEFLECT_SPEED;
 					}
 				}
 				else if (e->obj->GetType() == GOLDBRICK) { // if e->obj is fireball 
@@ -380,18 +389,13 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 							gb->SetState(GOLD_BRICK_STATE_UNBOX);
 							break;
 						}
+						this->vy = MARIO_DIE_DEFLECT_SPEED;
 					}
 				}
 				else if (e->obj->GetType() == MUSICBRICK) {
 					MusicBrick* mb = dynamic_cast<MusicBrick*>(e->obj);
-					if (e->ny > 0)
+					if (e->ny < 0)
 					{
-						if (mb->GetModel() == MUSIC_BRICK_MODEL_HIDDEN)
-							mb->isHidden = false;
-						mb->vy = -QUESTION_BRICK_SPEED_UP;
-
-					}
-					else if (e->ny < 0) {
 						if (mb->GetModel() == MUSIC_BRICK_MODEL_HIDDEN) {
 							if (mb->isHidden) { x += dx; y += dy; }
 							else if (game->IsKeyDown(DIK_SPACE)) {
@@ -400,13 +404,22 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 							}
 						}
 						else {
+							this->vy = -(MARIO_DIE_DEFLECT_SPEED -0.01f) * dt;
 							mb->vy = QUESTION_BRICK_SPEED_UP;
-							this->vy -= QUESTION_BRICK_SPEED_UP * 4;
+						}
+					}
+					else if (e->ny > 0) {
+						if (mb->GetModel() == MUSIC_BRICK_MODEL_HIDDEN)
+							mb->isHidden = false;
+						else {
+							mb->vy = -QUESTION_BRICK_SPEED_UP;
+							this->vy = MARIO_DIE_DEFLECT_SPEED;
 						}
 					}
 				}
 				else if (e->obj->GetType() == COIN) {
 					//Coin* coin = dynamic_cast<Coin*>(e->obj);
+					this->x += dx; this->y += dy;
 					e->obj->isFinish = true;
 					PlusCoinCollect(1);
 					PlusScore(50);
@@ -495,7 +508,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					}
 					else if (nx != 0)
 					{
-						if (state == MARIO_STATE_SPIN && level == MARIO_LEVEL_RACOON) {
+						if (isSpinning && level == MARIO_LEVEL_RACOON) {
 							bb->vx += this->nx * MARIO_DIE_DEFLECT_SPEED * 2;
 							bb->vy = -MARIO_DIE_DEFLECT_SPEED;
 							bb->SetState(BOOM_BROTHER_STATE_DIE);
@@ -707,6 +720,10 @@ void CMario::Render()
 					ani = MARIO_ANI_BIG_HOLD_WALK_RIGHT;
 				else ani = MARIO_ANI_BIG_HOLD_WALK_LEFT;
 			}
+			if (vy < 0) {
+				if (nx > 0)ani = MARIO_ANI_BIG_JUMP_RIGHT;
+				else ani = MARIO_ANI_BIG_JUMP_LEFT;
+			}
 			if (state == MARIO_STATE_WORLD_MAP)
 				ani = MARIO_ANI_BIG_WORLD_MAP;
 		}
@@ -766,6 +783,10 @@ void CMario::Render()
 					ani = MARIO_ANI_SMALL_HOLD_WALK_RIGHT;
 				else ani = MARIO_ANI_SMALL_HOLD_WALK_LEFT;
 			}
+			if (vy < 0) {
+				if (nx > 0)ani = MARIO_ANI_SMALL_JUMP_RIGHT;
+				else ani = MARIO_ANI_SMALL_JUMP_LEFT;
+			}
 			if (state == MARIO_STATE_WORLD_MAP)
 				ani = MARIO_ANI_SMALL_WORLD_MAP;
 		}
@@ -823,6 +844,10 @@ void CMario::Render()
 				if (nx > 0) ani = MARIO_ANI_FIRE_SHOOT_FIRE_RIGHT;
 				else ani = MARIO_ANI_FIRE_SHOOT_FIRE_LEFT;
 			}
+			if (vy < 0) {
+				if (nx > 0)ani = MARIO_ANI_FIRE_JUMP_RIGHT;
+				else ani = MARIO_ANI_FIRE_JUMP_LEFT;
+			}
 			if (state == MARIO_STATE_WORLD_MAP)
 				ani = MARIO_ANI_FIRE_WORLD_MAP;
 		}
@@ -864,8 +889,8 @@ void CMario::Render()
 
 
 			if (state == MARIO_STATE_JUMP ) {
-				if (nx > 0) ani = MARIO_ANI_RACOON_FLOAT_RIGHT;
-				else ani = MARIO_ANI_RACOON_FLOAT_LEFT;
+				if (nx > 0) ani = MARIO_ANI_RACOON_JUMP_RIGHT;
+				else ani = MARIO_ANI_RACOON_JUMP_LEFT;
 			}
 
 			if (state == MARIO_STATE_SIT) {
@@ -878,9 +903,13 @@ void CMario::Render()
 				else ani = MARIO_ANI_RACOON_KICK_LEFT;
 			}
 
-			if (state == MARIO_STATE_SPIN) {
+			if (state == MARIO_STATE_SPIN || isSpinning) {
 				if (nx > 0) ani = MARIO_ANI_RACOON_SPIN_RIGHT;
 				else ani = MARIO_ANI_RACOON_SPIN_LEFT;
+			}
+			if (vy < 0) {
+				if (nx > 0)ani = MARIO_ANI_RACOON_JUMP_RIGHT;
+				else ani = MARIO_ANI_RACOON_JUMP_LEFT;
 			}
 			if (state == MARIO_STATE_WORLD_MAP)
 				ani = MARIO_ANI_RACOON_WORLD_MAP;
@@ -903,7 +932,7 @@ void CMario::Render()
 		{
 			listEffect[i]->Render();
 		}
-		//RenderBoundingBox();
+		RenderBoundingBox();
 }
 
 void CMario::SetState(int state)
@@ -989,7 +1018,7 @@ void CMario::GetBoundingBox(float &left, float &top, float &right, float &bottom
 			right = x + MARIO_BIG_BBOX_SIT_WIDTH;
 			bottom = y + MARIO_BIG_BBOX_SIT_HEIGHT;
 		}
-		else if (state == MARIO_STATE_SPIN){
+		else if (state == MARIO_STATE_SPIN || isSpinning){
 			right = x + MARIO_RACOON_BBOX_SPIN_WIDTH;
 			bottom = y + MARIO_BIG_BBOX_HEIGHT;
 		}
@@ -1020,7 +1049,8 @@ void CMario::Reset()
 void CMario::ShowEffectPoint(CGameObject* obj, float model) {
 	EffectPoint* effectPoint = new EffectPoint(obj->x, obj->y, model);
 	CPlayScene* scene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
-	scene->TurnIntoUnit(effectPoint);
+	listEffect.push_back(effectPoint);
+	//scene->TurnIntoUnit(effectPoint);
 }
 
 

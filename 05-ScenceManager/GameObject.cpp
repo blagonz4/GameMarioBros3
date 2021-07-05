@@ -139,13 +139,13 @@ CGameObject::~CGameObject()
 
 }
 
-bool CGameObject::CheckObjectInCamera(CGameObject* obj)
+bool CGameObject::CheckObjectInCamera()
 {
 	float w = TILE_WIDTH;
 	float h = TILE_HEIGHT;
-	if (obj->x + w < (CGame::GetInstance()->GetCamX()) || (CGame::GetInstance()->GetCamX()) + SCREEN_WIDTH < obj->x)
+	if (this->x + w < (CGame::GetInstance()->GetCamX()) || (CGame::GetInstance()->GetCamX()) + SCREEN_WIDTH +100< this->x)
 		return false;
-	if (obj->y + h < (CGame::GetInstance()->GetCamY() - 32.0f) || (CGame::GetInstance()->GetCamY()) + SCREEN_HEIGHT + 32.0f < obj->y)
+	if (this->y + h < (CGame::GetInstance()->GetCamY() - 32.0f) || (CGame::GetInstance()->GetCamY()) + SCREEN_HEIGHT + 32.0f < this->y)
 		return false;
 	return true;
 }

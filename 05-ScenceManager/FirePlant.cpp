@@ -18,10 +18,6 @@ void FirePlant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	CGameObject::Update(dt, coObjects);
 
-	x += dx;
-	y += dy;
-
-
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
 	coEvents.clear();
@@ -121,13 +117,13 @@ void FirePlant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	if (isAttacking) {
 		if (listFire.size() < 1 && model != BITE_PLANT) {
 		//if (model != BITE_PLANT){
-			CPlayScene* scene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
+			//CPlayScene* scene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
 			FireBall *fire = new FireBall(this->x,
 											this->y,
 											this->vxFire,
 											this->vyFire);
 			fire->nx = this->nx;	
-			scene->TurnIntoUnit(fire);
+			//scene->TurnIntoUnit(fire);
 			listFire.push_back(fire);
 		}
 		timeAttack += dt;
@@ -167,15 +163,15 @@ void FirePlant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	}
 
 	for (size_t i = 0; i < listFire.size(); i++) {
-		if (!listFire[i]->CheckObjectInCamera(listFire[i]) || listFire[i]->isFinish)
+		listFire[i]->Update(dt, coObjects);
+		if (!listFire[i]->CheckObjectInCamera() || listFire[i]->isFinish)
 			listFire.erase(listFire.begin() + i);
-		////listFire[i]->Update(dt, coObjects);
+		
 		//	//delete listFire[i];
 	}
 
 	if (coEvents.size() == 0)
 	{
-		x += dx;
 		y += dy;
 	}
 	else
@@ -184,10 +180,10 @@ void FirePlant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		float rdx = 0;
 		float rdy = 0;
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
-		x += min_tx * dx + nx * 0.4f;
+		//x += min_tx * dx + nx * 0.4f;
 		y += min_ty * dy + ny * 0.4f;
-		if (nx != 0) vx = 0;
-		if (ny != 0) vy = 0;
+		//if (nx != 0) vx = 0;
+		//if (ny != 0) y+=dy;
 
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{
@@ -294,11 +290,11 @@ void FirePlant::Render()
 			ani = BITE_PLANT_ANI_ATTACK;
 	else return;
 
-	//for (size_t i = 0; i < listFire.size(); i++)
-	//{
-	//	if (CheckObjectInCamera(listFire.at(i)) || !listFire.at(i)->isFinish)
-	//		listFire[i]->Render();
-	//}
+	for (size_t i = 0; i < listFire.size(); i++)
+	{
+		if (!listFire[i]->CheckObjectInCamera() || !listFire.at(i)->isFinish)
+			listFire[i]->Render();
+	}
 
 	animation_set->at(ani)->Render(x, y);
 	//RenderBoundingBox();

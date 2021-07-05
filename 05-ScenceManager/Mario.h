@@ -13,7 +13,7 @@
 #define MARIO_JUMP_SPEED_PEEK				0.005f
 #define MARIO_JUMP_DEFLECT_SPEED			0.09f
 #define MARIO_GRAVITY						0.002f
-#define MARIO_DIE_DEFLECT_SPEED				0.3f
+#define MARIO_DIE_DEFLECT_SPEED				0.03f
 #define MARIO_SLIDING_SPEED					1.5f
 
 //----------------------Mario------------------------
@@ -172,7 +172,7 @@
 #define MARIO_BIG_BBOX_SIT_HEIGHT			18
 #define MARIO_RACOON_BBOX_SPIN_WIDTH		23
 #define TIME_UNTOUCHABLE_SHORT				500
-#define	TIME_UNTOUCHABLE_LONG				5000
+#define	TIME_UNTOUCHABLE_LONG				3000
 #define MARIO_LIMIT_JUMP_TIME				450
 #define MARIO_LIMIT_FLY_TIME				400
 
@@ -183,6 +183,8 @@ class CMario : public CGameObject
 	DWORD limitjump_start;
 	DWORD limitfly_start;
 	DWORD timeTransform; 
+	DWORD turning_start;
+	DWORD falling_start;
 	float start_x;			// initial position of Mario at scene
 	float start_y; 
 	int score;
@@ -195,6 +197,8 @@ public:
 	bool isTransformToRacoon = false;
 	bool isJumping = false;
 	bool isFlying = false;
+	bool isSpinning = false;
+	bool isFalling = false;
 	int gotCard;
 	int marioLimitJumpTime = MARIO_LIMIT_JUMP_TIME;
 	CMario(float x = 0.0f, float y = 0.0f);
@@ -211,6 +215,8 @@ public:
 	void SetLevel(int l) { level = l; }
 	void StartLimitJump() { isJumping = true; limitjump_start = GetTickCount(); }
 	void StartLimitFly() { isFlying = true; limitfly_start = GetTickCount(); }
+	void StartFalling() { isFalling = true; falling_start = GetTickCount(); }
+	void StartSpinning() { turning_start = GetTickCount(); isSpinning = true; }
 	void Reset();
 	void ShowEffectPoint(CGameObject* obj, float model);
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);

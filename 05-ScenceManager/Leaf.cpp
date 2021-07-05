@@ -21,7 +21,7 @@ void Leaf::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 void Leaf::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	CGameObject::Update(dt, coObjects);
-	if (!CheckObjectInCamera(this))
+	if (!CheckObjectInCamera())
 	{
 		isFinish = true;
 	}

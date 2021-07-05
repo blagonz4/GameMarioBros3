@@ -27,7 +27,7 @@ void FireBall::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	vector<LPCOLLISIONEVENT> coEventsResult;
 
 
-	if (!this->CheckObjectInCamera(this)) {
+	if (!this->CheckObjectInCamera()) {
 		isFinish = true;
 		return;
 	}

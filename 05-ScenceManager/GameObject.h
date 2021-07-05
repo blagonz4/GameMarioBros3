@@ -84,7 +84,7 @@ public:
 		untouchable = 1; 
 		untouchable_start = GetTickCount();
 	}
-	bool CheckObjectInCamera(CGameObject* obj);
+	bool CheckObjectInCamera();
 	int GetState() { return this->state; }
 
 	void RenderBoundingBox();

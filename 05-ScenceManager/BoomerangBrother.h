@@ -15,7 +15,7 @@
 #define BOOM_BROTHER_BBOX_WIDTH						16
 #define BOOM_BROTHER_BBOX_HEIGHT					24
 #define TIME_BB_WALKING								2000
-#define TIME_BB_ATTACK								2000
+#define TIME_BB_ATTACK								1500
 class BoomerangBrother : public CGameObject
 {
 public:

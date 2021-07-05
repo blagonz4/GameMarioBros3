@@ -25,7 +25,7 @@ void Mushroom::GetBoundingBox(float& left, float& top, float& right, float& bott
 void Mushroom::Update(DWORD dt, vector<LPGAMEOBJECT>* listObject)
 {
 	CGameObject::Update(dt);
-	if (!CheckObjectInCamera(this))
+	if (!CheckObjectInCamera())
 	{
 		this->isFinish = true;
 	}

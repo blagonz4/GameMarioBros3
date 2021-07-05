@@ -15,7 +15,7 @@ void Boomerang::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	CGameObject::Update(dt, coObjects);
 
-	if (this->boomerangbrother->isFinish || !this->CheckObjectInCamera(this)) {
+	if (this->boomerangbrother->isFinish || !this->CheckObjectInCamera()) {
 		this->isFinish = true;
 		return;
 	}
@@ -53,8 +53,8 @@ void Boomerang::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		x += min_tx * dx + nx * 0.4f;
 		y += min_ty * dy + ny * 0.1f;
 
-		if (nx != 0) x += dx;
-		if (ny != 0) y += dy;
+		if (nx != 0) vx = 0;
+		if (ny != 0) vy = 0;
 
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{
@@ -62,9 +62,6 @@ void Boomerang::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			if (e->obj->GetType() == PLATFORM) {
 				this->isComingBack = true;
 				this->nx *= -1; vx = 0; vy = 0;
-			}
-			else if (e->obj->GetType() == MARIO) {
-				vx = 0; vy = 0;
 			}
 			else if (e->obj->GetType() == COLORBLOCK || 
 							e->obj->GetType() == GOLDBRICK ||
@@ -74,6 +71,19 @@ void Boomerang::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 							e->obj->GetType() == GOOMBA ) {
 					this->x += dx; 
 					this->y += dy;
+			}
+			else if (e->obj->GetType() == MARIO) {
+				if (e->obj->untouchable == 0) {
+					if (e->obj->level > MARIO_LEVEL_SMALL)
+					{
+
+						e->obj->level = MARIO_LEVEL_SMALL;
+						e->obj->StartUntouchable(TIME_UNTOUCHABLE_LONG);
+					}
+					else
+						e->obj->SetState(MARIO_STATE_DIE);
+					this->x += dx;
+				}
 			}
 			else if (e->obj->GetType() == BOOMERANGBROTHER) {
 				this->isFinish = true;

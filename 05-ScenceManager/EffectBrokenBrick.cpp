@@ -19,7 +19,7 @@ void EffectBrokenBrick::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	vy += EFFECT_BROKEN_BRICK_GRAVITY * dt;
 	x += dx;
 	y += dy;
-	if (!CheckObjectInCamera(this))
+	if (!CheckObjectInCamera())
 	{
 		isFinish = true;
 	}

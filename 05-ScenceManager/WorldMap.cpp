@@ -275,10 +275,9 @@ void WorldMap::Update(DWORD dt)
 	for (size_t i = 0; i < objects.size(); i++)
 	{
 		LPGAMEOBJECT e = objects[i];
-		if (objects[i]->CheckObjectInCamera(objects[i]))
+		if (objects[i]->CheckObjectInCamera())
 			objects[i]->Update(dt, &coObjects);
 		else objects[i]->Update(0, &coObjects);
-
 
 	}
 
@@ -301,7 +300,7 @@ void WorldMap::Render()
 	map->DrawMap();
 	for (size_t i = 0; i < objects.size(); i++) {
 
-		if (objects[i]->CheckObjectInCamera(objects[i]))
+		if (objects[i]->CheckObjectInCamera())
 			objects[i]->Render();
 
 	}
@@ -338,37 +337,37 @@ void WorldMapKeyHandler::KeyState(BYTE *states)
 
 	//--------------------RUN/TURN/FLY/WALK----------------------------
 
-		if (game->IsKeyDown(DIK_RIGHT)) {
-			mario->vx += MARIO_WALKING_SPEED * mario->dt;
-		}
-		if (game->IsKeyDown(DIK_LEFT)) {
-			mario->vx -= MARIO_WALKING_SPEED * mario->dt;
-		}
-		if (game->IsKeyDown(DIK_UP)) {
-			mario->vy -= MARIO_WALKING_SPEED * mario->dt;
-		}
-		if (game->IsKeyDown(DIK_DOWN)) {
-			mario->vy += MARIO_WALKING_SPEED * mario->dt;
-		}
+	if (game->IsKeyDown(DIK_RIGHT)) {
+		mario->vx += MARIO_WALKING_SPEED * mario->dt;
+	}
+	if (game->IsKeyDown(DIK_LEFT)) {
+		mario->vx -= MARIO_WALKING_SPEED * mario->dt;
+	}
+	if (game->IsKeyDown(DIK_UP)) {
+		mario->vy -= MARIO_WALKING_SPEED * mario->dt;
+	}
+	if (game->IsKeyDown(DIK_DOWN)) {
+		mario->vy += MARIO_WALKING_SPEED * mario->dt;
+	}
 
 }
 
 void WorldMapKeyHandler::OnKeyUp(int KeyCode) {
 	CMario *mario = ((WorldMap*)scence)->GetPlayer();
 
-		switch (KeyCode) {
-		case DIK_RIGHT:
-			mario->vx = 0;
-			break;
-		case DIK_LEFT:
-			mario->vx = 0;
-			break;
-		case DIK_UP:
-			mario->vy = 0;
-			break;
-		case DIK_DOWN:
-			mario->vy = 0;
-			break;
-		}
+	switch (KeyCode) {
+	case DIK_RIGHT:
+		mario->vx = 0;
+		break;
+	case DIK_LEFT:
+		mario->vx = 0;
+		break;
+	case DIK_UP:
+		mario->vy = 0;
+		break;
+	case DIK_DOWN:
+		mario->vy = 0;
+		break;
+	}
 
 }
