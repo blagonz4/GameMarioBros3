@@ -45,7 +45,7 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	for (size_t i = 0; i < listPoop.size(); i++)
 	{
-		listPoop[i]->Update(dt, coObjects);
+		//listPoop[i]->Update(dt, coObjects);
 		if (!CheckObjectInCamera(listPoop.at(i)) || listPoop.at(i)->isFinish) {
 			listPoop.erase(listPoop.begin() + i);
 		}
@@ -170,9 +170,9 @@ void CGoomba::Render()
 		}
 		else ani = GOOMBA_ANI_WALKING;
 	}
-	for (size_t i = 0; i < listPoop.size(); i++) {
-		listPoop.at(i)->Render();
-	}
+	//for (size_t i = 0; i < listPoop.size(); i++) {
+	//	listPoop.at(i)->Render();
+	//}
 	animation_set->at(ani)->Render(x,y);
 
 	//RenderBoundingBox();

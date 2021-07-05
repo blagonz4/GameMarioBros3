@@ -120,6 +120,7 @@ void FirePlant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	}
 	if (isAttacking) {
 		if (listFire.size() < 1 && model != BITE_PLANT) {
+		//if (model != BITE_PLANT){
 			CPlayScene* scene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
 			FireBall *fire = new FireBall(this->x,
 											this->y,
@@ -138,12 +139,11 @@ void FirePlant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		timeAttack = 0;
 	}
 	
-	if (listFire.size() == 1 ){
+	if (listFire.size() == 1 || model == BITE_PLANT){
 		timeToHide += dt;
 		//timeDelayAttack += dt;
 	}
-	
-	
+
 	if (timeToHide > 5000) {//HOLD XONG CHUI XUONG LAI
 		vy = MARIO_GRAVITY * dt;
 		if (y > 380 && model == FIRE_PLANT_RED) {
@@ -155,9 +155,10 @@ void FirePlant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			vy = 0;
 			SetState(FIRE_PLANT_STATE_HIDING); timeToHide = 0;
 		}
-		if (y < 384 && model == BITE_PLANT) {
+		if (y > 384 && model == BITE_PLANT) {
 			vy = 0;
-			SetState(FIRE_PLANT_STATE_HIDING); timeToHide = 0;
+			SetState(FIRE_PLANT_STATE_HIDING);
+			timeToHide = 0;
 		}
 		//if (timeToHide > 3000) {
 		//	SetState(FIRE_PLANT_STATE_HIDING);
@@ -165,13 +166,11 @@ void FirePlant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		//}
 	}
 
-
 	for (size_t i = 0; i < listFire.size(); i++) {
 		if (!listFire[i]->CheckObjectInCamera(listFire[i]) || listFire[i]->isFinish)
 			listFire.erase(listFire.begin() + i);
-		listFire[i]->Update(dt, coObjects);
-			//delete listFire[i];
-		
+		////listFire[i]->Update(dt, coObjects);
+		//	//delete listFire[i];
 	}
 
 	if (coEvents.size() == 0)
@@ -295,11 +294,11 @@ void FirePlant::Render()
 			ani = BITE_PLANT_ANI_ATTACK;
 	else return;
 
-	for (size_t i = 0; i < listFire.size(); i++)
-	{
-		if (CheckObjectInCamera(listFire.at(i)) || !listFire.at(i)->isFinish)
-			listFire[i]->Render();
-	}
+	//for (size_t i = 0; i < listFire.size(); i++)
+	//{
+	//	if (CheckObjectInCamera(listFire.at(i)) || !listFire.at(i)->isFinish)
+	//		listFire[i]->Render();
+	//}
 
 	animation_set->at(ani)->Render(x, y);
 	//RenderBoundingBox();

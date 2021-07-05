@@ -122,7 +122,7 @@ void WriteGridFile(int sceneId, int gridCols, int gridRows) {
 		vector<string> tokens = split(line);
 
 		if (line[0] != '#' && //#
-			line[0] != '0' &&
+			line[0] != '0' &&//Mario
 			line[0] != '7') {//Platform
 			if (tokens.size() < 3)	continue;
 

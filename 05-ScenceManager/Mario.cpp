@@ -554,7 +554,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				}
 			}
 		}
-		else {
+		else {//Collision Intro
 			for (UINT i = 0; i < coEventsResult.size(); i++)
 			{
 				LPCOLLISIONEVENT e = coEventsResult[i];
@@ -618,7 +618,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			}
 				else if (e->obj->GetType() == MUSHROOM_POWER || e->obj->GetType() == MUSHROOM_1_UP)
 				{
-					DebugOut(L"dung nam \n");
 					Mushroom* mushroom = dynamic_cast<Mushroom*>(e->obj);
 					mushroom->isFinish = true;
 					if (e->obj->GetType() == MUSHROOM_POWER) {

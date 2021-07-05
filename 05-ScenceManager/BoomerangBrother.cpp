@@ -48,7 +48,7 @@ void BoomerangBrother::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	for (size_t i = 0; i < ListBoomerang.size(); i++)
 	{
-		ListBoomerang[i]->Update(dt, coObjects);
+		//ListBoomerang[i]->Update(dt, coObjects);
 		if (!CheckObjectInCamera(ListBoomerang.at(i)) || ListBoomerang.at(i)->isFinish) {
 			ListBoomerang.erase(ListBoomerang.begin() + i);
 		}
@@ -106,9 +106,9 @@ void BoomerangBrother::Render()
 		ani = BOOM_BROTHER_ANI_RIGHT;
 	else ani = BOOM_BROTHER_ANI_LEFT;
 	animation_set->at(ani)->Render(x, y);
-	for (size_t i = 0; i < ListBoomerang.size(); i++) {
-		ListBoomerang.at(i)->Render();
-	}
+	//for (size_t i = 0; i < ListBoomerang.size(); i++) {
+	//	ListBoomerang.at(i)->Render();
+	//}
 	//RenderBoundingBox();
 }
 float BoomerangBrother::GetMarioRangeCurrent()
