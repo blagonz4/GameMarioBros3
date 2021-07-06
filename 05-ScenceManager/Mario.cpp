@@ -1,26 +1,8 @@
 #include"Mario.h"
-#include "Game.h"
-#include "Brick.h"
-#include "FireBall.h"
-#include "Goomba.h"
-#include "Platform.h"
-#include "ColorBlock.h"
-#include "QuestionBrick.h"
-#include "GoldBrick.h"
-#include "Coin.h"
-#include "PSwitch.h"
-#include "Leaf.h"
-#include "Mushroom.h"
 #include "EffectPoint.h"
 #include "EffectDisappear.h"
 #include "EffectTailHit.h"
 #include "EffectBrokenBrick.h"
-#include "Portal.h"
-#include "Box.h"
-#include "MusicBrick.h"
-#include "BoomerangBrother.h"
-#include "Boomerang.h"
-#include "Poop.h"
 #include "PlayScence.h"
 
 CMario::CMario(float x, float y) 
@@ -87,7 +69,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		untouchable_start = 0;
 		untouchable = 0;
 	}
-	if (GetTickCount() - turning_start > 600 && isSpinning)
+	if (GetTickCount() - turning_start > TIME_SPINNING && isSpinning)
 	{
 		turning_start = 0;
 		isSpinning = false;
@@ -105,7 +87,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	if (isTransformToBig) {
 		timeTransform += dt;
-		if (timeTransform < 200) {
+		if (timeTransform < TIME_TRANSFORM) {
 			if (timeTransform % 2 == 0)
 				SetLevel(MARIO_LEVEL_BIG);
 			else SetLevel(MARIO_LEVEL_SMALL);
@@ -169,6 +151,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			{
 				CPlayScene* scene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
 				LPCOLLISIONEVENT e = coEventsResult[i];
+
 				if (e->obj->GetType() == GOOMBA) // if e->obj is Goomba 
 				{
 					CGoomba *goomba = dynamic_cast<CGoomba *>(e->obj);
@@ -249,7 +232,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						{
 							ShowEffectPoint(koopa, POINT_EFFECT_MODEL_100);
 							PlusScore(100);
-							vy = -MARIO_JUMP_DEFLECT_SPEED * 4;
+							vy = -MARIO_JUMP_DEFLECT_SPEED * 5;
 							koopa->SetState(KOOPAS_STATE_DEFEND);
 						}
 					}
@@ -332,14 +315,20 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					}
 				}
 				else if (e->obj->GetType() == FIREPLANT) { // if e->obj is fireball 
+					FirePlant *plant = dynamic_cast<FirePlant *>(e->obj);
 					if (untouchable == 0)
 					{
+						if (isSpinning && level == MARIO_LEVEL_RACOON) {
+							plant->isFinish = true;
+							EffectTailHit* effectTailHit = new EffectTailHit(plant->x, plant->y);
+							//scene->TurnIntoUnit(effectTailHit);
+							listEffect.push_back(effectTailHit);
+						}
 						if (level > MARIO_LEVEL_SMALL)
 						{
 							if (level > MARIO_LEVEL_BIG) {
 								level = MARIO_LEVEL_BIG;
 								EffectDisappear* effectDisappear = new EffectDisappear(this->x, this->y);
-								//scene->TurnIntoUnit(effectDisappear);
 								listEffect.push_back(effectDisappear);
 								StartUntouchable(TIME_UNTOUCHABLE_SHORT);
 							}
@@ -352,6 +341,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						else
 							SetState(MARIO_STATE_DIE);
 					}
+					else { this->x += dx; this->y += dy; }
 				}
 				else if (e->obj->GetType() == QUESTIONBRICK) { // if e->obj is fireball 
 					QuestionBrick* qb = dynamic_cast<QuestionBrick*>(e->obj);
@@ -366,24 +356,16 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						this->vy = MARIO_DIE_DEFLECT_SPEED;
 					}
 				}
-				else if (e->obj->GetType() == GOLDBRICK) { // if e->obj is fireball 
+				else if (e->obj->GetType() == GOLDBRICK) { 
 					GoldBrick* gb = dynamic_cast<GoldBrick*>(e->obj);
 					int model = (int)gb->model;
-
-					if (this->CheckAABB(gb) && this->GetState() == MARIO_STATE_SPIN) {
-						gb->isFinish = true;
-						listEffect.push_back(new EffectBrokenBrick(gb->x, gb->y, 2));
-						listEffect.push_back(new EffectBrokenBrick(gb->x, gb->y, 5));
-						listEffect.push_back(new EffectBrokenBrick(gb->x, gb->y, -2));
-						listEffect.push_back(new EffectBrokenBrick(gb->x, gb->y, -5));
-					}
 					if (e->ny > 0)
 					{
 						switch (model) {
 						case GOLD_BRICK_MODEL_COIN:
-							if (gb->y >= gb->minY) {
-								gb->vy = -QUESTION_BRICK_SPEED_UP * dt;
+							if (gb->y >= gb->minY) {								
 							}
+							gb->vy = -QUESTION_BRICK_SPEED_UP;
 							break;
 						case GOLD_BRICK_MODEL_PSWITCH:
 							gb->SetState(GOLD_BRICK_STATE_UNBOX);
@@ -394,7 +376,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				}
 				else if (e->obj->GetType() == MUSICBRICK) {
 					MusicBrick* mb = dynamic_cast<MusicBrick*>(e->obj);
-					if (e->ny < 0)
+					if (e->ny < 0)//nhay tu duoi len 
 					{
 						if (mb->GetModel() == MUSIC_BRICK_MODEL_HIDDEN) {
 							if (mb->isHidden) { x += dx; y += dy; }
@@ -408,7 +390,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 							mb->vy = QUESTION_BRICK_SPEED_UP;
 						}
 					}
-					else if (e->ny > 0) {
+					else if (e->ny > 0) {//nhay tu tren xuong
 						if (mb->GetModel() == MUSIC_BRICK_MODEL_HIDDEN)
 							mb->isHidden = false;
 						else {
@@ -419,7 +401,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				}
 				else if (e->obj->GetType() == COIN) {
 					//Coin* coin = dynamic_cast<Coin*>(e->obj);
-					this->x += dx; this->y += dy;
+					this->x += dx;
 					e->obj->isFinish = true;
 					PlusCoinCollect(1);
 					PlusScore(50);
@@ -504,6 +486,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						if (bb->GetState() != BOOM_BROTHER_STATE_DIE)
 						{
 							bb->SetState(BOOM_BROTHER_STATE_DIE);
+							bb->ListBoomerang.clear();
 						}
 					}
 					else if (nx != 0)
@@ -681,9 +664,9 @@ void CMario::Render()
 					ani = MARIO_ANI_BIG_TURN_RIGHT;
 			}
 
-			if (state == MARIO_STATE_RUN_RIGHT)
+			if (state == MARIO_STATE_RUN_RIGHT || (isFlying && nx > 0))
 				ani = MARIO_ANI_BIG_RUN_RIGHT;
-			if (state == MARIO_STATE_RUN_LEFT)
+			if (state == MARIO_STATE_RUN_LEFT || (isFlying && nx < 0))
 				ani = MARIO_ANI_BIG_RUN_LEFT;
 
 			if (state == MARIO_STATE_RUN_MAXSPEED) {
@@ -692,9 +675,9 @@ void CMario::Render()
 				else ani = MARIO_ANI_BIG_RUN_LEFT_MAXSPEED;
 			}
 
-			if (state == MARIO_STATE_FLY_RIGHT)
+			if (state == MARIO_STATE_FLY_RIGHT || isFlying)
 				ani = MARIO_ANI_BIG_FLY_RIGHT;
-			if (state == MARIO_STATE_FLY_LEFT)
+			if (state == MARIO_STATE_FLY_LEFT || isFlying)
 				ani = MARIO_ANI_BIG_FLY_LEFT;
 
 			if (state == MARIO_STATE_JUMP || !isOnGround) {
@@ -720,7 +703,7 @@ void CMario::Render()
 					ani = MARIO_ANI_BIG_HOLD_WALK_RIGHT;
 				else ani = MARIO_ANI_BIG_HOLD_WALK_LEFT;
 			}
-			if (vy < 0) {
+			if (vy < 0 && !isFlying) {
 				if (nx > 0)ani = MARIO_ANI_BIG_JUMP_RIGHT;
 				else ani = MARIO_ANI_BIG_JUMP_LEFT;
 			}

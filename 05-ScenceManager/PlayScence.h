@@ -27,6 +27,7 @@
 #include "PSwitch.h"
 #include "Leaf.h"
 #include "Mushroom.h"
+#include "EffectTailHit.h"
 #include "EffectBrokenBrick.h"
 #include "EffectCoin.h"
 #include "EffectPoint.h"

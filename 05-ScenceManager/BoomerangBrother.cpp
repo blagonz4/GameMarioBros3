@@ -16,6 +16,17 @@ void BoomerangBrother::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	
 	CGameObject::Update(dt, coObjects);
 
+
+	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+	if (mario != NULL && mario->level == MARIO_LEVEL_RACOON && mario->isSpinning) {
+		float mLeft, mTop, mRight, mBottom;
+		float oLeft, oTop, oRight, oBottom;
+		mario->GetBoundingBox(mLeft, mTop, mRight, mBottom);
+		GetBoundingBox(oLeft, oTop, oRight, oBottom);
+		if (CheckAABB(mLeft, mTop + TAIL_SIZE, mRight, mBottom))
+			isFinish = true;
+	}
+
 	vy += MARIO_GRAVITY * dt;
 	if (state == BOOM_BROTHER_STATE_ATTACK)		vx = 0;
 	if (state == BOOM_BROTHER_STATE_WALKING)	vx = nx * BOOM_BROTHER_SPEED_X *dt;

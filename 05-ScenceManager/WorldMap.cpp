@@ -5,7 +5,7 @@ using namespace std;
 WorldMap::WorldMap(int id, LPCWSTR filePath) :
 	CScene(id, filePath)
 {
-	key_handler = new CPlayScenceKeyHandler(this);
+	key_handler = new WorldMapKeyHandler(this);
 }
 
 /*
@@ -332,9 +332,9 @@ void WorldMapKeyHandler::KeyState(BYTE *states)
 {
 	CGame *game = CGame::GetInstance();
 	CMario *mario = ((WorldMap*)scence)->GetPlayer();
-
+	DebugOut(L"di phai \n");
 	// disable control key when Mario die 
-
+	if (mario->GetState() == MARIO_STATE_DIE) return;
 	//--------------------RUN/TURN/FLY/WALK----------------------------
 
 	if (game->IsKeyDown(DIK_RIGHT)) {

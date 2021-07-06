@@ -254,6 +254,12 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 			int gridRow = (int)atoi(tokens[tokens.size() - 2].c_str());
 			Unit* unit = new Unit(grid, obj, gridRow, gridCol);
 		}
+
+		//LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);
+		//obj->SetPosition(x, y);
+		//obj->SetAnimationSet(ani_set);
+		//objects.push_back(obj);
+
 	}
 
 	f.close();
@@ -360,7 +366,7 @@ void CPlayScene::Update(DWORD dt)
 
 		if (objects[i]->CheckObjectInCamera())
 			objects[i]->Update(dt, &coObjects);
-		else objects[i]->Update(0, &coObjects);
+		//else objects[i]->Update(0, &coObjects);
 
 		if (e->GetType() == QUESTIONBRICK)
 		{
@@ -404,7 +410,7 @@ void CPlayScene::Update(DWORD dt)
 				if (!isHavePSwitch) {
 					PSwitch* pswitch = new PSwitch(gb->x, gb->y - QUESTION_BRICK_BBOX_HEIGHT);
 					//TurnIntoUnit(pswitch);
-					objects.push_back(pswitch);
+					TurnIntoUnit(pswitch);
 					isHavePSwitch = true;
 				}
 			}
@@ -464,8 +470,19 @@ void CPlayScene::Update(DWORD dt)
 		if (e->GetType() == BOOMERANGBROTHER) {
 			BoomerangBrother* bb = dynamic_cast<BoomerangBrother*>(e);
 			if (bb->isFinish) {
+				EffectTailHit* effectTailHit = new EffectTailHit(bb->x, bb->y);
+				objects.push_back(effectTailHit);
 				player->PlusScore(200);
 				ShowEffectPoint(bb, POINT_EFFECT_MODEL_200);
+			}
+		}
+		if (e->GetType() == FIREPLANT) {
+			FirePlant* plant = dynamic_cast<FirePlant*>(e);
+			if (plant->isFinish) {
+				EffectTailHit* effectTailHit = new EffectTailHit(plant->x, plant->y);
+				objects.push_back(effectTailHit);
+				player->PlusScore(200);
+				ShowEffectPoint(plant, POINT_EFFECT_MODEL_200);
 			}
 		}
 		if (e->GetType() == BOX) {
@@ -569,7 +586,7 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 		case DIK_SPACE:
 			mario->StartLimitJump();
 			break;
-		case DIK_A:
+		case DIK_R:
 			mario->Reset();
 			break;
 		case DIK_F1:
@@ -586,6 +603,14 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 		case DIK_F4:
 			mario->y -= 20;
 			mario->SetLevel(MARIO_LEVEL_RACOON);
+			break;
+		case DIK_T:
+			float x, y;
+			mario->GetPosition(x, y);
+			mario->SetPosition(x + 500, y - 50);
+			break;
+		case DIK_F5:
+			mario->SetPosition(2256, 30);
 			break;
 		case DIK_Q://-----------------------SHOOT FIRE--------------------------
 			if (mario->level == MARIO_LEVEL_FIRE)
@@ -706,10 +731,12 @@ void CPlayScene::QuestionBrickDropItem(float model, float x, float y) {
 	case QUESTION_BRICK_MODEL_POWER_UP:
 		if (player->GetLevel() == MARIO_LEVEL_SMALL) {
 			Mushroom* mr = new Mushroom(x, y, MUSHROOM_MODEL_RED);
+			//objects.push_back(mr);
 			TurnIntoUnit(mr);
 		}
 		if (player->GetLevel() == MARIO_LEVEL_BIG || player->GetLevel() == MARIO_LEVEL_RACOON) {
 			Leaf* leaf = new Leaf(x, y - 10);
+			//objects.push_back(leaf);
 			TurnIntoUnit(leaf);
 		}
 	}
@@ -717,8 +744,8 @@ void CPlayScene::QuestionBrickDropItem(float model, float x, float y) {
 
 void CPlayScene::ShowEffectPoint(CGameObject* obj, float model) {
 	EffectPoint* effectPoint = new EffectPoint(obj->x, obj->y, model);
-	//TurnIntoUnit(effectPoint);
-	objects.push_back(effectPoint);
+	TurnIntoUnit(effectPoint);
+	//objects.push_back(effectPoint);
 }
 
 void CPlayScene::AnnounceSceneEnd(int boxState) {

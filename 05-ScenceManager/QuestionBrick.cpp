@@ -1,5 +1,5 @@
 #include "QuestionBrick.h"
-
+#include "GoldBrick.h"
 QuestionBrick::QuestionBrick(float x, float y,float model)
 {
 	this->model = model;

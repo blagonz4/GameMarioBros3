@@ -32,7 +32,9 @@ LPCOLLISIONEVENT CGameObject::SweptAABBEx(LPGAMEOBJECT coO)
 	float ml, mt, mr, mb;		// moving object bbox
 	float t, nx, ny;
 
-	coO->GetBoundingBox(sl, st, sr, sb);
+	//if (!coO->isFinish)
+		coO->GetBoundingBox(sl, st, sr, sb);
+	//else return NULL;
 
 	// deal with moving object: m speed = original m speed - collide object speed
 	float svx, svy;
@@ -72,6 +74,7 @@ void CGameObject::CalcPotentialCollisions(
 	{
 		LPCOLLISIONEVENT e = SweptAABBEx(coObjects->at(i));
 
+		//if (e != NULL)
 		if (e->t > 0 && e->t <= 1.0f)
 			coEvents.push_back(e);
 		else
@@ -150,13 +153,11 @@ bool CGameObject::CheckObjectInCamera()
 	return true;
 }
 
-bool CGameObject::CheckAABB(CGameObject* obj) {
-	float leftThis, topThis, rightThis, bottomThis;
-	float leftObj, topObj, rightObj, bottomObj;
+bool CGameObject::CheckAABB(float mainLeft,float mainTop, float mainRight, float mainBottom) {
+	float thisLeft, thisTop, thisRight, thisBottom;
 
-	this->GetBoundingBox(leftThis, topThis, rightThis, bottomThis);
-	obj->GetBoundingBox(leftObj, topObj, rightObj, bottomObj);
+	GetBoundingBox(thisLeft, thisTop, thisRight, thisBottom);
 
-	return (CGame::GetInstance()->checkAABB(leftThis, topThis, rightThis, bottomThis, leftObj, topObj, rightObj, bottomObj));
+	return (CGame::GetInstance()->checkAABB(mainLeft, mainTop, mainRight, mainBottom, thisLeft, thisTop, thisRight, thisBottom));
 
 }

@@ -56,8 +56,8 @@ void FireBall::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		}
 		//
 		if (defineVy != FIRE_GRAVITY) {
-			if (nx != 0) vx =0;
-			if (ny != 0) vy =0;
+			if (nx != 0) x+=dx;
+			if (ny != 0) y+=dy;
 		}
 		
 

@@ -15,10 +15,10 @@ void Boomerang::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	CGameObject::Update(dt, coObjects);
 
-	if (this->boomerangbrother->isFinish || !this->CheckObjectInCamera()) {
-		this->isFinish = true;
-		return;
-	}
+	//if (this->boomerangbrother->isFinish || !this->CheckObjectInCamera()) {
+	//	this->isFinish = true;
+	//	return;
+	//}
 
 	if (startY - y < BOOMERANG_FLY_MIN_HEIGHT && !isTurning) {
 		vx = nx * BOOMERANG_SPEED_X * dt;
@@ -53,8 +53,8 @@ void Boomerang::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		x += min_tx * dx + nx * 0.4f;
 		y += min_ty * dy + ny * 0.1f;
 
-		if (nx != 0) vx = 0;
-		if (ny != 0) vy = 0;
+		if (nx != 0) x+=dx;
+		if (ny != 0) y+=dy;
 
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{

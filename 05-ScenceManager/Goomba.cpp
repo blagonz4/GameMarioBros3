@@ -17,13 +17,13 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
 	CGameObject::Update(dt);
 	if (state != GOOMBA_STATE_DIE) {
-		vx = nx * GOOMBA_WALKING_SPEED * dt;
+		vx = nx * GOOMBA_WALKING_SPEED;
 	}
 
 	if (model == GOOMBA_MODEL_WING_BROWN) {
 		if ( y >= DISTANCE_MARIO_FLY_THROUGH_SKY_Y)
-			vy = -MARIO_GRAVITY * 5 * dt;
-		else vy += MARIO_GRAVITY * dt;
+			vy = -MARIO_GRAVITY * 5 ;
+		else vy += MARIO_GRAVITY ;
 
 		if (listPoop.size() < 4) {
 			timeDropDelay += dt;

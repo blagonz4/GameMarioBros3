@@ -95,7 +95,7 @@ public:
 	}
 
 	LPCOLLISIONEVENT SweptAABBEx(LPGAMEOBJECT coO);
-	bool CheckAABB(CGameObject* obj);
+	bool CheckAABB(float mainLeft, float mainTop, float mainRight, float mainBottom);
 	void CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vector<LPCOLLISIONEVENT> &coEvents);
 	void FilterCollision(
 		vector<LPCOLLISIONEVENT> &coEvents, 

@@ -12,22 +12,26 @@ GoldBrick::GoldBrick(float x, float y, float model)
 void GoldBrick::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	CGameObject::Update(dt);
+	if(isFinish) return;
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
 
 	coEvents.clear();
-	//y += dy;
-	//if (Health == 0)
-	//{
-	//	if (model == GOLD_BRICK_MODEL_COIN)
-	//	{
-	//		isFinish = true;
-	//	}
-	//	else SetState(GOLD_BRICK_STATE_UNBOX);
-	//}
+	y += dy;
+
+	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+	if (mario != NULL && mario->level == MARIO_LEVEL_RACOON && mario->isSpinning) {
+		float mLeft, mTop, mRight, mBottom;
+		float oLeft, oTop, oRight, oBottom;
+		mario->GetBoundingBox(mLeft, mTop, mRight, mBottom);
+		GetBoundingBox(oLeft, oTop, oRight, oBottom);
+		if (CheckAABB(mLeft, mTop+TAIL_SIZE, mRight, mBottom))
+			isFinish = true;
+	}
+
 	if (y <= minY)
 	{
-		vy = QUESTION_BRICK_SPEED_UP * dt;
+		vy = QUESTION_BRICK_SPEED_UP;
 	}
 	if (y >= startY)
 	{

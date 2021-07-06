@@ -5,7 +5,7 @@
 #include "Mario.h"
 #include "PlayScence.h"
 //-----------------------------Goomba---------------------------
-#define GOOMBA_WALKING_SPEED					0.005f
+#define GOOMBA_WALKING_SPEED					0.05f
 
 #define GOOMBA_BBOX_WIDTH						16
 #define GOOMBA_WING_BBOX_WIDTH					20

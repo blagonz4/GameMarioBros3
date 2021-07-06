@@ -15,7 +15,9 @@
 #define MARIO_GRAVITY						0.002f
 #define MARIO_DIE_DEFLECT_SPEED				0.03f
 #define MARIO_SLIDING_SPEED					1.5f
-
+#define TIME_SPINNING						500
+#define TIME_TRANSFORM						200
+#define TAIL_SIZE							15
 //----------------------Mario------------------------
 #define MARIO_STATE_IDLE					0
 #define MARIO_STATE_WALK_RIGHT				1000
