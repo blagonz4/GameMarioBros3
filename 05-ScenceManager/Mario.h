@@ -192,7 +192,7 @@ class CMario : public CGameObject
 	int score;
 	int coinCollect;
 public: 
-	bool isOnGround = true;
+	bool isOnGround = false;
 	bool isSitting;
 	bool isHolding;
 	bool isTransformToBig = false;

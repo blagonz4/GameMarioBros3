@@ -175,9 +175,9 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				if (e->nx != 0) {
 					this->nx *= -1;
 					if (state == KOOPAS_STATE_WALKING)
-						this->vx = this->nx * KOOPAS_WALKING_SPEED ;
+						this->vx = this->nx * KOOPAS_WALKING_SPEED*dt;
 					if (state == KOOPAS_STATE_BALL) {
-						this->vx = this->nx * KOOPAS_BALL_SPEED ;
+						this->vx = this->nx * KOOPAS_BALL_SPEED*dt;
 						int model = (int)gb->model;
 						switch (model)
 						{
@@ -226,7 +226,6 @@ void CKoopas::Render()
 		}
 
 	}
-
 	else {
 		if (state == KOOPAS_STATE_DIE) {
 			ani = KOOPAS_ANI_GREEN_DIE;
