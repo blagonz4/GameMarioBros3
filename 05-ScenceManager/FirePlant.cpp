@@ -177,8 +177,6 @@ void FirePlant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		listFire[i]->Update(dt, coObjects);
 		if (!listFire[i]->CheckObjectInCamera() || listFire[i]->isFinish)
 			listFire.erase(listFire.begin() + i);
-		
-		//	//delete listFire[i];
 	}
 
 	if (coEvents.size() == 0)

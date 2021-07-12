@@ -885,6 +885,6 @@
 #EFFECT 1_UP
 19	152
 [OBJECTS]
-Tilemap/Map1_1_1/map1_1_1_grid.txt
+Tilemap/Map1_1_1/map1_1_1_object.txt
 [TILEMAP]
 Tilemap/Map1_1_1/map1_1_1_map.txt

@@ -25,8 +25,15 @@ void GoldBrick::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		float oLeft, oTop, oRight, oBottom;
 		mario->GetBoundingBox(mLeft, mTop, mRight, mBottom);
 		GetBoundingBox(oLeft, oTop, oRight, oBottom);
-		if (CheckAABB(mLeft, mTop+TAIL_SIZE, mRight, mBottom))
-			isFinish = true;
+		if (mario->nx > 0) {
+			if (CheckAABB(mLeft, mTop + TAIL_SIZE, mRight, mBottom))
+				isFinish = true;
+		}
+		else {
+			if (CheckAABB(mLeft-6, mTop + TAIL_SIZE, mRight, mBottom))
+				isFinish = true;
+		}
+
 	}
 
 	if (y <= minY)

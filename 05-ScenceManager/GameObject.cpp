@@ -5,8 +5,7 @@
 #include "Game.h"
 #include "GameObject.h"
 #include "Sprites.h"
-#include "Koopas.h"
-#include "Mario.h"
+
 
 
 CGameObject::CGameObject()

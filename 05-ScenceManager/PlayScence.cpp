@@ -137,13 +137,13 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 
 			DebugOut(L"[INFO] Player object created!\n");
 			break;
-		case GRID: {
-			//DebugOut(L"object: %d \n", atoi(tokens[0].c_str()));
-			int gridRows = atoi(tokens[1].c_str());
-			int gridCols = atoi(tokens[2].c_str());
-			grid = new Grid(gridCols, gridRows);
-			break;
-		}
+		//case GRID: {
+		//	//DebugOut(L"object: %d \n", atoi(tokens[0].c_str()));
+		//	int gridRows = atoi(tokens[1].c_str());
+		//	int gridCols = atoi(tokens[2].c_str());
+		//	grid = new Grid(gridCols, gridRows);
+		//	break;
+		//}
 		case OBJECT_TYPE_GOOMBA: {
 			float model = (float)atof(tokens[4].c_str());
 			float direction = (float)atof(tokens[5].c_str());
@@ -240,30 +240,30 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 			DebugOut(L"[ERR] Invalid object type: %d\n", object_type);
 			return;
 		}
-		if (object_type != GRID) {// General object setup
-			LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);
-			obj->SetPosition(x, y);
-			obj->SetAnimationSet(ani_set);
+		//if (object_type != GRID) {// General object setup
+		//	LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);
+		//	obj->SetPosition(x, y);
+		//	obj->SetAnimationSet(ani_set);
 
-			if (object_type == OBJECT_TYPE_MARIO || object_type == OBJECT_TYPE_PLATFORM)
-				objects.push_back(obj);
+		//	if (object_type == OBJECT_TYPE_MARIO || object_type == OBJECT_TYPE_PLATFORM)
+		//		objects.push_back(obj);
 
-		}
-		if (object_type != OBJECT_TYPE_MARIO && object_type != GRID && object_type != OBJECT_TYPE_PLATFORM) {
-			int gridCol = (int)atoi(tokens[tokens.size() - 1].c_str());
-			int gridRow = (int)atoi(tokens[tokens.size() - 2].c_str());
-			Unit* unit = new Unit(grid, obj, gridRow, gridCol);
-		}
+		//}
+		//if (object_type != OBJECT_TYPE_MARIO && object_type != GRID && object_type != OBJECT_TYPE_PLATFORM) {
+		//	int gridCol = (int)atoi(tokens[tokens.size() - 1].c_str());
+		//	int gridRow = (int)atoi(tokens[tokens.size() - 2].c_str());
+		//	Unit* unit = new Unit(grid, obj, gridRow, gridCol);
+		//}
 
-		//LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);
-		//obj->SetPosition(x, y);
-		//obj->SetAnimationSet(ani_set);
-		//objects.push_back(obj);
+		LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);
+		obj->SetPosition(x, y);
+		obj->SetAnimationSet(ani_set);
+		objects.push_back(obj);
 
 	}
 
 	f.close();
-	grid->Out();
+	////grid->Out();
 }
 
 void CPlayScene::_ParseSection_TILEMAP(string line) {	//doc map tu file txt
@@ -351,11 +351,11 @@ void CPlayScene::Update(DWORD dt)
 
 	vector<LPGAMEOBJECT> coObjects;
 	coObjects.clear();
-	GetObjectFromGrid();
+	//GetObjectFromGrid();
 
 	playTime -= dt;
 
-	for (size_t i = 0; i < objects.size(); i++)
+	for (size_t i =1; i < objects.size(); i++)
 	{
 		coObjects.push_back(objects[i]);
 	}
@@ -375,9 +375,9 @@ void CPlayScene::Update(DWORD dt)
 			{
 				if (qb->model == QUESTION_BRICK_MODEL_COIN) {
 					EffectCoin* effectCoin = new EffectCoin(qb->x, qb->y - 10);
-					TurnIntoUnit(effectCoin);
+					//TurnIntoUnit(effectCoin);
 					player->PlusCoinCollect(1);
-					//objects.push_back(effectCoin);		
+					objects.push_back(effectCoin);		
 				}
 				QuestionBrickDropItem(qb->GetModel(), qb->x, qb->y);
 				qb->isUnbox = false;
@@ -410,7 +410,7 @@ void CPlayScene::Update(DWORD dt)
 				if (!isHavePSwitch) {
 					PSwitch* pswitch = new PSwitch(gb->x, gb->y - QUESTION_BRICK_BBOX_HEIGHT);
 					//TurnIntoUnit(pswitch);
-					TurnIntoUnit(pswitch);
+					objects.push_back(pswitch);
 					isHavePSwitch = true;
 				}
 			}
@@ -502,7 +502,7 @@ void CPlayScene::Update(DWORD dt)
 
 	Camera* camera = new Camera(player, game, map);
 	camera->Update(dt);
-	UpdateGrid();
+	//UpdateGrid();
 
 	//skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
 	if (player == NULL) return;
@@ -563,13 +563,13 @@ void CPlayScene::Render()
 */
 void CPlayScene::Unload()
 {
-	//for (size_t i = 0; i < objects.size(); i++)
-	//	delete objects[i];
+	for (size_t i = 0; i < objects.size(); i++)
+		delete objects[i];
 
 	if (grid != NULL)
 		grid->ClearAll();
 	objects.clear();
-	units.clear();
+	//units.clear();
 	player = NULL;
 
 	DebugOut(L"[INFO] Scene %s unloaded! \n", sceneFilePath);
@@ -585,6 +585,9 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 		{
 		case DIK_SPACE:
 			mario->StartLimitJump();
+			//if (mario->isOnGround) {
+			//	mario->isReadyToJump = true;
+			//}
 			break;
 		case DIK_R:
 			mario->Reset();
@@ -671,7 +674,12 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 	if (game->IsKeyDown(DIK_SPACE)) {
 		if (mario->vy <= 0) {
 			mario->SetState(MARIO_STATE_JUMP);
+			mario->isOnGround = false;
+			DebugOut(L"isOnGround: %d \n", mario->isOnGround);
 		}
+		//mario->SetState(MARIO_STATE_JUMP);
+		//mario->isJumping = true;
+		//mario->isReadyToJump = false;
 	}
 
 }
@@ -685,7 +693,8 @@ void CPlayScenceKeyHandler::OnKeyUp(int KeyCode) {
 		break;
 	case DIK_Q:
 		mario->isHolding = false;
-		mario->SetState(MARIO_STATE_KICK);
+		//mario->SetState(MARIO_STATE_KICK);
+		break;
 	}
 }
 
@@ -731,21 +740,21 @@ void CPlayScene::QuestionBrickDropItem(float model, float x, float y) {
 	case QUESTION_BRICK_MODEL_POWER_UP:
 		if (player->GetLevel() == MARIO_LEVEL_SMALL) {
 			Mushroom* mr = new Mushroom(x, y, MUSHROOM_MODEL_RED);
-			//objects.push_back(mr);
-			TurnIntoUnit(mr);
+			objects.push_back(mr);
+			//TurnIntoUnit(mr);
 		}
 		if (player->GetLevel() == MARIO_LEVEL_BIG || player->GetLevel() == MARIO_LEVEL_RACOON) {
 			Leaf* leaf = new Leaf(x, y - 10);
-			//objects.push_back(leaf);
-			TurnIntoUnit(leaf);
+			objects.push_back(leaf);
+			//TurnIntoUnit(leaf);
 		}
 	}
 }
 
 void CPlayScene::ShowEffectPoint(CGameObject* obj, float model) {
 	EffectPoint* effectPoint = new EffectPoint(obj->x, obj->y, model);
-	TurnIntoUnit(effectPoint);
-	//objects.push_back(effectPoint);
+	//TurnIntoUnit(effectPoint);
+	objects.push_back(effectPoint);
 }
 
 void CPlayScene::AnnounceSceneEnd(int boxState) {
@@ -755,18 +764,18 @@ void CPlayScene::AnnounceSceneEnd(int boxState) {
 	LPDIRECT3DTEXTURE9 Tex = CTextures::GetInstance()->Get(TEXID_FONT35);
 	if (boxState == BOX_STATE_MUSHROOM) {
 		LPSPRITE SpriteTile = new CSprite(64, 187, 33, 211, 61, Tex);
-		SpriteTile->Draw(2730, 290);
+		SpriteTile->Draw(2750, 290);
 	}
 	else if (boxState == BOX_STATE_FLOWER) {
 		LPSPRITE SpriteTile = new CSprite(65, 211, 33, 235, 61, Tex);
-		SpriteTile->Draw(2730, 290);
+		SpriteTile->Draw(2750, 290);
 	}
 	else if (boxState == BOX_STATE_STAR) {
 		LPSPRITE SpriteTile = new CSprite(66, 235, 33, 259, 61, Tex);
-		SpriteTile->Draw(2730, 290);
+		SpriteTile->Draw(2750, 290);
 	}
 }
 
 void CPlayScene::TurnIntoUnit(CGameObject* obj) {
-	Unit* unit = new Unit(grid, obj, obj->x, obj->y);
+	//Unit* unit = new Unit(grid, obj, obj->x, obj->y);
 }

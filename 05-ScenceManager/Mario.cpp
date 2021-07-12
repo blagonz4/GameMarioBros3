@@ -30,6 +30,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	// Simple fall down
 	if (CGame::GetInstance()->GetScene() != WORLDMAP)
 	{
+		//DebugOut(L"gravity: %f \n", vy);
 		vy += MARIO_GRAVITY * dt;		
 	}
 	else SetState(MARIO_STATE_WORLD_MAP);
@@ -217,7 +218,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					if (e->ny < 0)
 					{
 						if (koopa->model == KOOPAS_MODEL_GREEN_WING) {
-							koopa->model = 1;
+							koopa->model = KOOPAS_MODEL_GREEN;
 							ShowEffectPoint(koopa, POINT_EFFECT_MODEL_100);
 							PlusScore(100);
 							if (koopa->GetState() == KOOPAS_STATE_FLY)
@@ -314,7 +315,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 							SetState(MARIO_STATE_DIE);
 					}
 				}
-				else if (e->obj->GetType() == FIREPLANT) { // if e->obj is fireball 
+				else if (e->obj->GetType() == FIREPLANT) {
 					FirePlant *plant = dynamic_cast<FirePlant *>(e->obj);
 					if (untouchable == 0)
 					{
@@ -680,7 +681,7 @@ void CMario::Render()
 			if (state == MARIO_STATE_FLY_LEFT || isFlying)
 				ani = MARIO_ANI_BIG_FLY_LEFT;
 
-			if (state == MARIO_STATE_JUMP || !isOnGround) {
+			if (state == MARIO_STATE_JUMP || isJumping) {
 				if (nx > 0) ani = MARIO_ANI_BIG_JUMP_RIGHT;
 				else ani = MARIO_ANI_BIG_JUMP_LEFT;				
 			}
@@ -703,7 +704,7 @@ void CMario::Render()
 					ani = MARIO_ANI_BIG_HOLD_WALK_RIGHT;
 				else ani = MARIO_ANI_BIG_HOLD_WALK_LEFT;
 			}
-			if (vy < 0 && !isFlying) {
+			if (vy < 0) {
 				if (nx > 0)ani = MARIO_ANI_BIG_JUMP_RIGHT;
 				else ani = MARIO_ANI_BIG_JUMP_LEFT;
 			}
@@ -766,7 +767,7 @@ void CMario::Render()
 					ani = MARIO_ANI_SMALL_HOLD_WALK_RIGHT;
 				else ani = MARIO_ANI_SMALL_HOLD_WALK_LEFT;
 			}
-			if (vy < 0) {
+			if (vy < 0 ) {
 				if (nx > 0)ani = MARIO_ANI_SMALL_JUMP_RIGHT;
 				else ani = MARIO_ANI_SMALL_JUMP_LEFT;
 			}

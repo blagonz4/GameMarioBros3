@@ -8,8 +8,8 @@
 #define BOOMERANG_BBOX_HEIGHT						16
 #define LOAD_BOOMERANG_FROM_TXT						25
 #define BOOMERANG_FLY_MIN_HEIGHT					40
-#define BOOMERANG_SPEED_X							0.0015f
-#define BOOMERANG_SPEED_Y							0.00075f
+#define BOOMERANG_SPEED_X							0.002f
+#define BOOMERANG_SPEED_Y							0.001f
 class Boomerang : public CGameObject
 {
 	bool isTurning = false;

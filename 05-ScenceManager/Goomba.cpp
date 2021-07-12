@@ -22,7 +22,7 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	if (model == GOOMBA_MODEL_WING_BROWN) {
 		if ( y >= DISTANCE_MARIO_FLY_THROUGH_SKY_Y)
-			vy = -MARIO_GRAVITY * 5 ;
+			vy = -MARIO_GRAVITY * 3 * dt ;
 		else vy += MARIO_GRAVITY ;
 
 		if (listPoop.size() < 4) {
@@ -36,7 +36,7 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		}
 		else {
 			TurnAround();
-			vy = MARIO_GRAVITY * 5 * dt;
+			vy = MARIO_GRAVITY * 3 * dt;
 		}
 	}
 	else vy += MARIO_GRAVITY * dt;

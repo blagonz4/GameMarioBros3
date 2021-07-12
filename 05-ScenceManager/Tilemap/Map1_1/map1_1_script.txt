@@ -921,6 +921,6 @@
 #BOX
 23	155	156	157	168	169	170
 [OBJECTS]
-Tilemap/Map1_1/map1_1_grid.txt
+Tilemap/Map1_1/map1_1_object.txt
 [TILEMAP]
 Tilemap/Map1_1/map1_1_map.txt

@@ -192,7 +192,7 @@ class CMario : public CGameObject
 	int score;
 	int coinCollect;
 public: 
-	bool isOnGround = true;
+	bool isOnGround = false;
 	bool isSitting;
 	bool isHolding;
 	bool isTransformToBig = false;
@@ -201,6 +201,7 @@ public:
 	bool isFlying = false;
 	bool isSpinning = false;
 	bool isFalling = false;
+	bool isReadyToJump = true;
 	int gotCard;
 	int marioLimitJumpTime = MARIO_LIMIT_JUMP_TIME;
 	CMario(float x = 0.0f, float y = 0.0f);

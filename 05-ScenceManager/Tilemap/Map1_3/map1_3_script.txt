@@ -973,6 +973,6 @@
 #music box
 27	1116
 [OBJECTS]
-Tilemap/Map1_3/map1_3_grid.txt
+Tilemap/Map1_3/map1_3_object.txt
 [TILEMAP]
 Tilemap/Map1_3/map1_3_map.txt
