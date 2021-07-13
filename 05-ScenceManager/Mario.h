@@ -4,21 +4,24 @@
 #include "define.h"
 
 //----------------------Mario------------------------
-#define MARIO_WALKING_SPEED					0.00012f 
-#define MARIO_WALKING_MAXSPEED				0.1f
-#define MARIO_RUNNING_SPEED					0.00015f
+#define MARIO_WALKING_SPEED					0.12f 
+#define MARIO_WALKING_MAXSPEED				0.15f
+#define MARIO_RUNNING_SPEED					0.2f
 #define MARIO_RUNNING_MAXSPEED				0.25f
-#define MARIO_JUMP_SPEED					0.01f
+#define MARIO_JUMP_SPEED_MIN				0.18f
+#define MARIO_JUMP_SPEED_MAX				0.28f
 #define MARIO_FLY_SPEED						0.02f
 #define MARIO_JUMP_SPEED_PEEK				0.005f
 #define MARIO_JUMP_DEFLECT_SPEED			0.09f
 #define MARIO_GRAVITY						0.002f
 #define MARIO_DIE_DEFLECT_SPEED				0.03f
+#define MARIO_ACCELERATION_JUMP				0.0005f
 #define MARIO_SLIDING_SPEED					1.5f
 #define TIME_SPINNING						500
 #define TIME_TRANSFORM						200
 #define TAIL_SIZE							15
-	
+#define TIME_UNTOUCHABLE_SHORT				500
+#define TIME_UNTOUCHABLE_LONG				5000
 #define MARIO_RUNNING_STACK_TIME			250
 #define MARIO_SLOW_TIME						1000
 #define MARIO_ACCELERATION					0.0003f
@@ -219,7 +222,7 @@ public:
 	int score;
 	int coinCollect;
 	int turning_state = 0;
-
+	int gotCard = 0;
 	int RunningStacks = 0;
 	int level;
 	int prelevel;
@@ -272,13 +275,15 @@ public:
 	void BasicRenderLogicsForAllLevel(int& ani,
 		int ani_idle_right, int ani_idle_left, int ani_jump_down_right, int ani_jump_down_left,
 		int ani_baking_right, int ani_baking_left, int ani_walking_right, int ani_walking_left, int ani_kicking_right, int ani_kicking_left);
-	void RenderSitting(int& ani, int ani_sit_right, int ani_sit_left);
 
 	void RenderJumping(int& ani, int ani_jump_up_right, int ani_jump_up_left, int ani_jump_down_right, int ani_jump_down_left);
 	void PlusScore(int score) { this->score += score; }
 	void PlusCoinCollect(int coin) { this->coinCollect += coin; }
 	int GetScore() { return score; }
 	int GetCoinCollect() { return coinCollect; }
+	void SetState(int State);
+	void SetLevel(int level) { this->level = level; }
+	int GetLevel() { return this->level; }
 	//timer
 	void DelayShooting() { delay_start = GetTickCount(); isKicking = true; }
 	void StartKicking() { kicking_start = GetTickCount(); isKicking = true; }

@@ -272,7 +272,7 @@ void IntroScene::Update(DWORD dt)
 				mario->Update(dt, &coObjects);			
 				if (introTime > 6900 && introTime < 7400) {
 					mario->SetState(MARIO_STATE_JUMP);
-					mario->vy = -MARIO_JUMP_SPEED * dt;
+					mario->vy = -MARIO_JUMP_SPEED_MIN * dt;
 				}
 				else if (introTime > 7400) {
 					mario->vx = 0;
@@ -324,7 +324,7 @@ void IntroScene::Update(DWORD dt)
 					mario->SetState(MARIO_STATE_IDLE);
 					if (introTime > 9200) {
 						mario->SetState(MARIO_STATE_JUMP);
-						mario->vy = -MARIO_JUMP_SPEED * dt;
+						mario->vy = -MARIO_JUMP_SPEED_MIN * dt;
 					}				
 				}
 				if (introTime > 9700 && introTime < 11500) {

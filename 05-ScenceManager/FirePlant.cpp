@@ -19,7 +19,7 @@ void FirePlant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	CGameObject::Update(dt, coObjects);
 
 	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
-	if (mario != NULL && mario->level == MARIO_LEVEL_RACOON && mario->isSpinning) {
+	if (mario != NULL && mario->level == MARIO_LEVEL_RACOON && mario->isTurningTail) {
 		float mLeft, mTop, mRight, mBottom;
 		float oLeft, oTop, oRight, oBottom;
 		mario->GetBoundingBox(mLeft, mTop, mRight, mBottom);

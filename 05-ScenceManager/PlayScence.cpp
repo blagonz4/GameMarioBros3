@@ -355,7 +355,7 @@ void CPlayScene::Update(DWORD dt)
 
 	playTime -= dt;
 
-	for (size_t i = 1; i < objects.size(); i++)
+	for (size_t i =1; i < objects.size(); i++)
 	{
 		coObjects.push_back(objects[i]);
 	}
@@ -611,17 +611,20 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 			mario->y -= 20;
 			mario->SetLevel(MARIO_LEVEL_RACOON);
 			break;
+		case DIK_F5:
+			mario->SetPosition(2256, 30);
+			break;
 		case DIK_T:
 			float x, y;
 			mario->GetPosition(x, y);
 			mario->SetPosition(x + 500, y - 50);
 			break;
-		case DIK_F5:
-			mario->SetPosition(2256, 30);
+		case DIK_DOWN:
+			mario->isWannaDown = true;
 			break;
 		case DIK_A://-----------------------SHOOT FIRE--------------------------
 			if (mario->level == MARIO_LEVEL_FIRE && !mario->isShooting && !mario->isSitting)
-				mario->StartShooting(mario->x, mario->y);
+				mario->SetState(MARIO_STATE_SHOOT_FIRE);
 			if (mario->level == MARIO_LEVEL_RACOON && !mario->isTurningTail && !mario->isSitting) {
 					mario->StartTurning();
 			}
@@ -640,7 +643,7 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 	//--------------------RUN/TURN/FLY/WALK----------------------------
 	if (game->IsKeyDown(DIK_A)) {
 		mario->isReadyToHold = true;
-		if (!mario->isRunning && mario->vx != 0 mario->isReadyToRun)
+		if (!mario->isRunning && mario->vx != 0 && mario->isReadyToRun)
 			mario->StartRunning();
 	}
 	if (game->IsKeyDown(DIK_S) && mario->isReadyToJump) {
@@ -667,6 +670,8 @@ void CPlayScenceKeyHandler::OnKeyUp(int KeyCode) {
 		}
 		break;
 	case DIK_DOWN:
+		if(mario->GetLevel() != MARIO_LEVEL_SMALL)
+			mario->y -= 10;
 		mario->isSitting = false;
 		mario->isWannaDown = false;
 		break;

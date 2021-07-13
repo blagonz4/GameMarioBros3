@@ -44,7 +44,7 @@ void Poop::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	if (isAttach) {
 		AttachToMario();
 		if (timeDisappear > TIME_DISAPPEAR) {
-			mario->marioLimitJumpTime = MARIO_LIMIT_JUMP_TIME;
+			//mario->marioLimitJumpTime = MARIO_LIMIT_JUMP_TIME;
 			isAttach = false;
 			isFinish = true;
 		}		
