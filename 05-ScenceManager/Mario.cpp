@@ -5,19 +5,93 @@
 #include "EffectBrokenBrick.h"
 #include "PlayScence.h"
 
+
 CMario::CMario(float x, float y) 
 {
 	level = MARIO_LEVEL_BIG;
 	untouchable = 0;
 	SetState(MARIO_STATE_IDLE);
-	start_x = x; 
-	start_y = y; 
-	this->x = x; 
-	this->y = y; 
-	eType = Type::MARIO;
+	ax = MARIO_ACCELERATION;
+	ay = MARIO_GRAVITY;
+	nx = 1;
+	start_x = x;
+	start_y = y;
+	this->x = x;
+	this->y = y;
 
+	RunningStacks = 0;
+	eType = Type::MARIO;
 }
 
+void CMario::TimingFlag()
+{
+
+	if (GetTickCount() - slow_start > MARIO_SLOW_TIME && slow_start != 0)
+	{
+		slow_start = 0;
+		isReadyToRun = true;
+	}
+	if (GetTickCount() - running_start > MARIO_RUNNING_STACK_TIME && isRunning && vx != 0 && isReadyToRun)
+	{
+		running_start = GetTickCount();
+		RunningStacks++;
+
+		if (RunningStacks > 7)
+		{
+			RunningStacks = 7;
+			vx = nx * MARIO_RUNNING_MAXSPEED;
+		}
+	}
+	if (GetTickCount() - running_stop > MARIO_SLOW_STACK_TIME && !isRunning)
+	{
+		running_stop = GetTickCount64();
+		RunningStacks--;
+		if (RunningStacks < 0)
+		{
+			RunningStacks = 0;
+			isRunning = false;
+			isFlying = false;
+		}
+	}
+	if (GetTickCount() - kicking_start > MARIO_KICKING_TIME && isKicking)	isKicking = false;
+	if (GetTickCount() - shooting_start > MARIO_SHOOTING_TIME && isShooting) isShooting = false;
+	if (GetTickCount() - turning_state_start > MARIO_TURNING_STATE_TIME && isTurningTail)
+	{
+		turning_state_start = GetTickCount64();
+		turning_state++;
+	}
+	if (GetTickCount() - turning_start > MARIO_TURNING_TAIL_TIME && isTurningTail)
+	{
+		isTurningTail = false;
+		turning_state = 0;
+		turning_state_start = 0;
+	}
+	if (GetTickCount() - untouchable_start > MARIO_UNTOUCHABLE_TIME)
+	{
+		untouchable_start = 0;
+		untouchable = 0;
+	}
+	if (GetTickCount() - flapping_start > MARIO_FLAPPING_TIME && isFlapping)	isFlapping = false;
+	if (GetTickCount() - flapping_start <= MARIO_FLAPPING_TIME && isFlapping)
+	{
+		if (vy >= MARIO_SLOW_FALLING_SPEED)
+			vy = MARIO_SLOW_FALLING_SPEED;
+	}
+	if (GetTickCount() - tailflying_start > MARIO_TAIL_FLYING_TIME && isTailFlying)
+	{
+		isTailFlying = false;
+		isRunning = false;
+		isFlying = false;
+	}
+	if (GetTickCount() - fly_start > MARIO_FLYING_TIME && fly_start != 0 && isFlying)
+	{
+		fly_start = 0;
+		isTailFlying = false;
+		isRunning = false;
+		isFlying = false;
+		StartSlowDown();
+	}
+}
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
 
@@ -1036,5 +1110,3 @@ void CMario::ShowEffectPoint(CGameObject* obj, float model) {
 	listEffect.push_back(effectPoint);
 	//scene->TurnIntoUnit(effectPoint);
 }
-
-

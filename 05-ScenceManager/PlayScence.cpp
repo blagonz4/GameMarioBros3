@@ -355,7 +355,7 @@ void CPlayScene::Update(DWORD dt)
 
 	playTime -= dt;
 
-	for (size_t i =1; i < objects.size(); i++)
+	for (size_t i = 1; i < objects.size(); i++)
 	{
 		coObjects.push_back(objects[i]);
 	}
@@ -580,14 +580,18 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 	//DebugOut(L"[INFO] KeyDown: %d\n", KeyCode);
 	CGame *game = CGame::GetInstance();
 	CMario *mario = ((CPlayScene*)scence)->GetPlayer();
-	if (CGame::GetInstance()->GetScene() != WORLDMAP) {
+
 		switch (KeyCode)
 		{
-		case DIK_SPACE:
-			mario->StartLimitJump();
-			//if (mario->isOnGround) {
-			//	mario->isReadyToJump = true;
-			//}
+		case DIK_S:
+			if (mario->isOnGround) {
+				mario->isReadyToJump = true;
+			}
+			else if (mario->level == MARIO_LEVEL_RACOON && (!mario->isFlying && !mario->isFlapping && mario->vy > 0)) {
+				mario->StartFlapping();
+			}
+			if (mario->isFlying && mario->level == MARIO_LEVEL_RACOON)
+				mario->StartTailFlying();
 			break;
 		case DIK_R:
 			mario->Reset();
@@ -615,23 +619,14 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 		case DIK_F5:
 			mario->SetPosition(2256, 30);
 			break;
-		case DIK_Q://-----------------------SHOOT FIRE--------------------------
-			if (mario->level == MARIO_LEVEL_FIRE)
-				mario->SetState(MARIO_STATE_SHOOT_FIRE);
-			if (mario->level == MARIO_LEVEL_RACOON) {
-				if (!mario->isHolding) {
-					mario->StartSpinning();
-					mario->SetState(MARIO_STATE_SPIN);
-				}		
-			}
-			break;
-		case DIK_E:
-			if (game->IsKeyDown(DIK_Q)) {
-				mario->StartLimitFly();
+		case DIK_A://-----------------------SHOOT FIRE--------------------------
+			if (mario->level == MARIO_LEVEL_FIRE && !mario->isShooting && !mario->isSitting)
+				mario->StartShooting(mario->x, mario->y);
+			if (mario->level == MARIO_LEVEL_RACOON && !mario->isTurningTail && !mario->isSitting) {
+					mario->StartTurning();
 			}
 			break;
 		}
-	}
 }
 
 void CPlayScenceKeyHandler::KeyState(BYTE *states)
@@ -643,94 +638,47 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 	if (mario->GetState() == MARIO_STATE_DIE) return;
 
 	//--------------------RUN/TURN/FLY/WALK----------------------------
-	if (!game->IsKeyDown(DIK_DOWN)) {
-		if (game->IsKeyDown(DIK_RIGHT)) {
-			if (game->IsKeyDown(DIK_Q)) {
-				mario->SetState(MARIO_STATE_RUN_RIGHT);
-				if (game->IsKeyDown(DIK_E) && mario->state == MARIO_STATE_RUN_MAXSPEED) {
-					mario->isFlying = true;
-					mario->SetState(MARIO_STATE_FLY_RIGHT);
-				}
-			}
-			else mario->SetState(MARIO_STATE_WALK_RIGHT);
-		}
-		else if (game->IsKeyDown(DIK_LEFT)) {
-			if (game->IsKeyDown(DIK_Q)) {
-				mario->SetState(MARIO_STATE_RUN_LEFT);
-				if (game->IsKeyDown(DIK_E) && mario->state == MARIO_STATE_RUN_MAXSPEED) {
-					mario->isFlying = true;
-					mario->SetState(MARIO_STATE_FLY_LEFT);
-				}
-			}
-			else mario->SetState(MARIO_STATE_WALK_LEFT);
-		}
-		else mario->SetState(MARIO_STATE_IDLE);
-		}
-	else if (game->IsKeyDown(DIK_DOWN) && !(game->IsKeyDown(DIK_RIGHT) || game->IsKeyDown(DIK_LEFT))) {	//-------------------------SIT------------------------
-			if (mario->GetLevel() != MARIO_LEVEL_SMALL)
-				mario->SetState(MARIO_STATE_SIT);
+	if (game->IsKeyDown(DIK_A)) {
+		mario->isReadyToHold = true;
+		if (!mario->isRunning && mario->vx != 0 mario->isReadyToRun)
+			mario->StartRunning();
 	}
-		//-------------------------JUMP------------------------
-	if (game->IsKeyDown(DIK_SPACE)) {
-		if (mario->vy <= 0) {
-			mario->SetState(MARIO_STATE_JUMP);
-			mario->isOnGround = false;
-			DebugOut(L"isOnGround: %d \n", mario->isOnGround);
-		}
-		//mario->SetState(MARIO_STATE_JUMP);
-		//mario->isJumping = true;
-		//mario->isReadyToJump = false;
+	if (game->IsKeyDown(DIK_S) && mario->isReadyToJump) {
+		mario->SetState(MARIO_STATE_JUMP);
+		mario->isJumping = true;
+		mario->isReadyToSit = false;
 	}
-
+	else if (game->IsKeyDown(DIK_RIGHT))
+		mario->SetState(MARIO_STATE_WALK_RIGHT);
+	else if (game->IsKeyDown(DIK_LEFT))
+		mario->SetState(MARIO_STATE_WALK_LEFT);
+	else if (game->IsKeyDown(DIK_DOWN) && mario->isReadyToSit && mario->level != MARIO_LEVEL_SMALL)
+		mario->SetState(MARIO_STATE_SIT);
+	else mario->SetState(MARIO_STATE_IDLE);
 }
 
 void CPlayScenceKeyHandler::OnKeyUp(int KeyCode) {
 	CMario *mario = ((CPlayScene*)scence)->GetPlayer();
 	switch (KeyCode){
-	case DIK_DOWN:
-		mario->y -= 10;
-		mario->SetState(MARIO_STATE_IDLE);
+	case DIK_S:
+		if (!mario->isOnGround) {
+			mario->isReadyToJump = false;
+			mario->isFlapping = false;
+		}
 		break;
-	case DIK_Q:
+	case DIK_DOWN:
+		mario->isSitting = false;
+		mario->isWannaDown = false;
+		break;
+	case DIK_A:
 		mario->isHolding = false;
-		//mario->SetState(MARIO_STATE_KICK);
+		mario->isReadyToHold = false;
+		mario->StopRunning();
+		mario->isHolding ? mario->isHolding = false : mario->isHolding = true;
 		break;
 	}
 }
 
-//
-//void CPlayScene::GoldBrickDestroy(int model, float x, float y)
-//{
-//	switch (model)
-//	{
-//	case GOLD_BRICK_MODEL_PSWITCH:
-//	{
-//			objects.push_back(new PSwitch(x, y));
-//		break;
-//	}
-//	//case GB_CONTAIN_MUSHROOM_1_UP:
-//	//{
-//	//	ListItem.push_back(new CMushRoom(x, y + 10, MUSHROOM_GREEN));
-//	//	break;
-//	//}
-//	//case GB_CONTAIN_POWER_UP:
-//	//{
-//	//	if (player->level == MARIO_LEVEL_SMALL)
-//	//	{
-//	//		ListItem.push_back(new CMushRoom(x, y + 10, MUSHROOM_RED));
-//	//	}
-//	//	if (player->level == MARIO_LEVEL_BIG)
-//	//	{
-//	//		ListItem.push_back(new Leaf(x, y));
-//	//	}
-//	//	if (player->level == MARIO_LEVEL_RACCOON || player->level == MARIO_LEVEL_FIRE)
-//	//	{
-//	//		ListItem.push_back(new Flower(x, y));
-//	//	}
-//	//	break;
-//	//}
-//	}
-//}
 
 void CPlayScene::QuestionBrickDropItem(float model, float x, float y) {
 

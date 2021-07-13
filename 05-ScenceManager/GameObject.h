@@ -52,6 +52,8 @@ public:
 	float x; 
 	float y;
 
+	float ax, ay; //acceleration
+
 	float dx;	// dx = vx*dt
 	float dy;	// dy = vy*dt
 

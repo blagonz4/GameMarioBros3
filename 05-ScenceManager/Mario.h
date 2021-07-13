@@ -18,6 +18,21 @@
 #define TIME_SPINNING						500
 #define TIME_TRANSFORM						200
 #define TAIL_SIZE							15
+	
+#define MARIO_RUNNING_STACK_TIME			250
+#define MARIO_SLOW_TIME						1000
+#define MARIO_ACCELERATION					0.0003f
+
+#define MARIO_SLOW_STACK_TIME				250
+#define MARIO_KICKING_TIME					200
+#define MARIO_SHOOTING_TIME					150
+#define MARIO_TURNING_STATE_TIME			70
+#define MARIO_TURNING_TAIL_TIME				350
+#define MARIO_UNTOUCHABLE_TIME				5000
+#define MARIO_FLAPPING_TIME					200
+#define MARIO_SLOW_FALLING_SPEED			0.05f
+#define MARIO_FLYING_TIME					5000
+#define MARIO_TAIL_FLYING_TIME				250
 //----------------------Mario------------------------
 #define MARIO_STATE_IDLE					0
 #define MARIO_STATE_WALK_RIGHT				1000
@@ -178,50 +193,122 @@
 #define MARIO_LIMIT_JUMP_TIME				450
 #define MARIO_LIMIT_FLY_TIME				400
 
-
-class CMario : public CGameObject
-{
-
-	DWORD limitjump_start;
-	DWORD limitfly_start;
-	DWORD timeTransform; 
+class CMario : public CGameObject {
+	DWORD untouchable_start;
+	DWORD kicking_start;
+	DWORD shooting_start;
+	DWORD delay_start;
 	DWORD turning_start;
-	DWORD falling_start;
+	DWORD turning_state_start;
+	DWORD flapping_start;
+	DWORD running_start;
+	DWORD running_stop;
+	DWORD slow_start = 0;
+	DWORD tailflying_start;
+	DWORD transforming_start;
+	DWORD fly_start = 0;
+
+public:
 	float start_x;			// initial position of Mario at scene
-	float start_y; 
+	float start_y;
+	vector <LPGAMEOBJECT> listFire;
+	vector <LPGAMEOBJECT> listEffect;
+	float lastStandingY = 0;
+
+	bool isWannaDown = false;
 	int score;
 	int coinCollect;
-public: 
+	int turning_state = 0;
+
+	int RunningStacks = 0;
+	int level;
+	int prelevel;
+	int untouchable;
+	//state
 	bool isOnGround = false;
-	bool isSitting;
-	bool isHolding;
-	bool isTransformToBig = false;
-	bool isTransformToRacoon = false;
-	bool isJumping = false;
-	bool isFlying = false;
-	bool isSpinning = false;
-	bool isFalling = false;
+	bool isInPipe = false;
+
+	//sit
+	bool isReadyToSit = true;
+	bool isSitting = false;
+
+	//high-jump
 	bool isReadyToJump = true;
-	int gotCard;
-	int marioLimitJumpTime = MARIO_LIMIT_JUMP_TIME;
+	bool isJumping = false;
+	bool isChangeDirection = false;
+	bool isDeflect = false;
+
+	//using tail
+	bool isTurningTail = false;
+	bool isFlapping = false;
+	bool isTailFlying = false;
+
+	//shoot
+	bool isShooting = false;
+	bool isReadyToShoot = true;
+	int	ShootTimes = 0;
+
+	//hold
+	bool isHolding = false;
+	bool isReadyToHold = false;
+
+	//kick
+	bool isKicking = false;
+	bool isReadyToKick = true;
+
+	//run
+	bool isRunning = false;
+	bool isReadyToRun = true;
+	//fly
+	bool isFlying = false;
+	//trasnforming
+	bool isTransforming = false;
+	bool transformState = false;
+
 	CMario(float x = 0.0f, float y = 0.0f);
-	vector<LPGAMEOBJECT> listFire;
-	vector<LPGAMEOBJECT> listEffect;
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *colliable_objects = NULL);
 	virtual void Render();
-	int GetLevel(){return level;}
-	void SetState(int state);
+	void CMario::TimingFlag();
+	void BasicRenderLogicsForAllLevel(int& ani,
+		int ani_idle_right, int ani_idle_left, int ani_jump_down_right, int ani_jump_down_left,
+		int ani_baking_right, int ani_baking_left, int ani_walking_right, int ani_walking_left, int ani_kicking_right, int ani_kicking_left);
+	void RenderSitting(int& ani, int ani_sit_right, int ani_sit_left);
+
+	void RenderJumping(int& ani, int ani_jump_up_right, int ani_jump_up_left, int ani_jump_down_right, int ani_jump_down_left);
 	void PlusScore(int score) { this->score += score; }
 	void PlusCoinCollect(int coin) { this->coinCollect += coin; }
 	int GetScore() { return score; }
 	int GetCoinCollect() { return coinCollect; }
-	void SetLevel(int l) { level = l; }
-	void StartLimitJump() { isJumping = true; limitjump_start = GetTickCount(); }
-	void StartLimitFly() { isFlying = true; limitfly_start = GetTickCount(); }
-	void StartFalling() { isFalling = true; falling_start = GetTickCount(); }
-	void StartSpinning() { turning_start = GetTickCount(); isSpinning = true; }
+	//timer
+	void DelayShooting() { delay_start = GetTickCount(); isKicking = true; }
+	void StartKicking() { kicking_start = GetTickCount(); isKicking = true; }
+	void StartRunning() { running_start = GetTickCount(); isRunning = true; }
+	void StopRunning() { running_stop = GetTickCount(); isRunning = false; }
+	void StartSlowDown() { slow_start = GetTickCount(); isReadyToRun = false; }
+	void StartShooting(float bx, float by);
+	void StartTurning() { 
+		turning_start = GetTickCount(); 
+		isTurningTail = true; 
+		turning_state_start = GetTickCount(); 
+		turning_state = 1; 
+	}
+	void StartFlapping()
+	{
+		flapping_start = GetTickCount();
+		isFlapping = true;
+	}
+	void StartTailFlying()
+	{
+		tailflying_start = GetTickCount();
+		isTailFlying = true;
+	}
+	void StartFlying()
+	{
+		fly_start = GetTickCount();
+	}
+	void StartTransforming() { transforming_start = GetTickCount64(); isTransforming = true; }
+	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount(); }
+	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
 	void Reset();
 	void ShowEffectPoint(CGameObject* obj, float model);
-	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
 };
-
