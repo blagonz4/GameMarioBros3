@@ -86,7 +86,6 @@ int CGame::IsKeyDown(int KeyCode)
 	return (keyStates[KeyCode] & 0x80) > 0;
 }
 
-
 void CGame::InitKeyboard()
 {
 	HRESULT
@@ -321,12 +320,6 @@ bool CGame::checkAABB(float b1Left, float b1Top, float b1Right, float b1Bottom,
 		b1Right >= b2Left &&
 		b1Top <= b2Bottom &&
 		b1Bottom >= b2Top);
-
-		//(b1Left >= b2Right &&
-		//	b1Right <= b2Left &&
-		//	b1Top <= b2Bottom &&
-		//	b1Bottom >= b2Top);
-
 }
 
 

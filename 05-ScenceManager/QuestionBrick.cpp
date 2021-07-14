@@ -25,7 +25,25 @@ void QuestionBrick::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			vy = 0;
 		}
 	}
-
+	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+	if (mario != NULL && mario->level == MARIO_LEVEL_RACOON && mario->isTurningTail) {
+		float mLeft, mTop, mRight, mBottom;
+		float oLeft, oTop, oRight, oBottom;
+		mario->GetBoundingBox(mLeft, mTop, mRight, mBottom);
+		GetBoundingBox(oLeft, oTop, oRight, oBottom);
+		if (mario->nx > 0) {
+			if (CheckAABB(mLeft, mTop + TAIL_SIZE, mRight, mBottom)) {
+				isUnbox = true;
+				Health = 0;
+			}				
+		}
+		else {
+			if (CheckAABB(mLeft - 6, mTop + TAIL_SIZE, mRight, mBottom)) {
+				isUnbox = true;
+				Health = 0;
+			}				
+		}
+	}
 }
 void QuestionBrick::Render()
 {
@@ -34,6 +52,7 @@ void QuestionBrick::Render()
 	else ani = QUESTION_BRICK_ANI_EMPTY;
 
 	animation_set->at(ani)->Render(x, y);
+	//RenderBoundingBox();
 }
 void QuestionBrick::GetBoundingBox(float& l, float& t, float& r, float& b)
 {

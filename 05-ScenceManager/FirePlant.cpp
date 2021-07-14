@@ -28,12 +28,6 @@ void FirePlant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			isFinish = true;
 	}
 
-
-	vector<LPCOLLISIONEVENT> coEvents;
-	vector<LPCOLLISIONEVENT> coEventsResult;
-	coEvents.clear();
-	CalcPotentialCollisions(coObjects, coEvents);
-
 	//if (CheckObjectInCamera(this))//TRONG CAMERA THI CHUI LEN
 	//	if (!isGrowUp && isHiding) {
 	//		SetState(FIRE_PLANT_STATE_GROW_UP);
@@ -136,6 +130,7 @@ void FirePlant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			fire->nx = this->nx;	
 			//scene->TurnIntoUnit(fire);
 			listFire.push_back(fire);
+			//coObjects->push_back(fire);
 		}
 		timeAttack += dt;
 	}
@@ -179,6 +174,10 @@ void FirePlant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			listFire.erase(listFire.begin() + i);
 	}
 
+	vector<LPCOLLISIONEVENT> coEvents;
+	vector<LPCOLLISIONEVENT> coEventsResult;
+	coEvents.clear();
+	CalcPotentialCollisions(coObjects, coEvents);
 	if (coEvents.size() == 0)
 	{
 		y += dy;

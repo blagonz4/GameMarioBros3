@@ -332,22 +332,21 @@ void WorldMapKeyHandler::KeyState(BYTE *states)
 {
 	CGame *game = CGame::GetInstance();
 	CMario *mario = ((WorldMap*)scence)->GetPlayer();
-	DebugOut(L"di phai \n");
 	// disable control key when Mario die 
 	if (mario->GetState() == MARIO_STATE_DIE) return;
 	//--------------------RUN/TURN/FLY/WALK----------------------------
 
 	if (game->IsKeyDown(DIK_RIGHT)) {
-		mario->vx += MARIO_WALKING_SPEED * mario->dt;
+		mario->vx += MARIO_WALKING_SPEED/4;
 	}
 	if (game->IsKeyDown(DIK_LEFT)) {
-		mario->vx -= MARIO_WALKING_SPEED * mario->dt;
+		mario->vx -= MARIO_WALKING_SPEED/4;
 	}
 	if (game->IsKeyDown(DIK_UP)) {
-		mario->vy -= MARIO_WALKING_SPEED * mario->dt;
+		mario->vy -= MARIO_WALKING_SPEED/4;
 	}
 	if (game->IsKeyDown(DIK_DOWN)) {
-		mario->vy += MARIO_WALKING_SPEED * mario->dt;
+		mario->vy += MARIO_WALKING_SPEED/4;
 	}
 
 }

@@ -111,13 +111,18 @@ void FireBall::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 							this->isFinish = true;
 			}			
 			else if (e->obj->GetType() == MARIO) {
-				if (e->obj->untouchable == 0) {
-					
+				if (e->obj->untouchable == 0) {		
 					if (e->obj->level > MARIO_LEVEL_SMALL)
 					{
-						
-						e->obj->level = MARIO_LEVEL_SMALL;
-						e->obj->StartUntouchable(TIME_UNTOUCHABLE_LONG);
+						if (e->obj->level > MARIO_LEVEL_BIG) {
+							e->obj->level = MARIO_LEVEL_BIG;
+							e->obj->StartUntouchable(MARIO_UNTOUCHABLE_TIME);
+						}
+						else
+						{
+							e->obj->level = MARIO_LEVEL_SMALL;
+							e->obj->StartUntouchable(MARIO_UNTOUCHABLE_TIME);
+						}
 					}
 					else
 						e->obj->SetState(MARIO_STATE_DIE);

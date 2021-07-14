@@ -24,6 +24,19 @@ CKoopas::CKoopas(float &model, float &direction,CMario* mario)
 void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
 	CGameObject::Update(dt, coObjects);
+
+	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+	if (mario != NULL && mario->level == MARIO_LEVEL_RACOON && mario->isTurningTail) {
+		float mLeft, mTop, mRight, mBottom;
+		float oLeft, oTop, oRight, oBottom;
+		mario->GetBoundingBox(mLeft, mTop, mRight, mBottom);
+		GetBoundingBox(oLeft, oTop, oRight, oBottom);
+		if (CheckAABB(mLeft, mTop + TAIL_SIZE, mRight, mBottom)) {
+			this->vy = -MARIO_DIE_DEFLECT_SPEED;
+			SetState(KOOPAS_STATE_UP_SIDE_DOWN);			
+		}
+	}
+
 	if (!isBeingHeld)
 		vy += MARIO_GRAVITY * dt;
 	if (state == KOOPAS_STATE_WALKING || state == KOOPAS_STATE_FLY) {
@@ -81,7 +94,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	{
 		defend_start = 0;
 		isDefend = 0;		
-		y -= 16;
+		y -= KOOPAS_TURN_BACK_SIZE;
 		isBeingHeld = false;
 		SetState(KOOPAS_STATE_WALKING);
 	}
@@ -134,12 +147,12 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				if (e->nx != 0) {
 					this->nx *= -1;
 					if (this->state == KOOPAS_STATE_BALL) {
-							this->vx = this->nx * KOOPAS_BALL_SPEED * dt;
+						this->vx = this->nx * KOOPAS_BALL_SPEED * dt;
 					}
 					else if (this->state == KOOPAS_STATE_WALKING) {
-							this->vx = this->nx * KOOPAS_WALKING_SPEED * dt;
+						this->vx = this->nx * KOOPAS_WALKING_SPEED * dt;
 					}
-				}				
+				}
 			}
 
 			else if (e->obj->GetType() == PLATFORM) {
@@ -175,9 +188,9 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				if (e->nx != 0) {
 					this->nx *= -1;
 					if (state == KOOPAS_STATE_WALKING)
-						this->vx = this->nx * KOOPAS_WALKING_SPEED *dt ;
+						this->vx = this->nx * KOOPAS_WALKING_SPEED *dt;
 					if (state == KOOPAS_STATE_BALL) {
-						this->vx = this->nx * KOOPAS_BALL_SPEED *dt ;
+						this->vx = this->nx * KOOPAS_BALL_SPEED *dt;
 						int model = (int)gb->model;
 						switch (model)
 						{
@@ -190,14 +203,14 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 							break;
 						}
 					}
-				}								
+				}
 			}
 			else if (e->obj->GetObjectType() == ENEMY) {
 				x += dx;
 				if (this->GetState() == KOOPAS_STATE_BALL) {
 					this->vx = this->nx * KOOPAS_BALL_SPEED * dt;
 					e->obj->isFinish = true;
-				}		
+				}
 			}
 			else if (e->obj->GetType() == MUSHROOM_1_UP || e->obj->GetType() == MUSHROOM_POWER) {
 				x += dx;
@@ -209,6 +222,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			}
 		}
 	}
+
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
 }
 
@@ -226,10 +240,10 @@ void CKoopas::Render()
 		else if (state == KOOPAS_STATE_DEFEND) {
 			ani = KOOPAS_ANI_RED_DEFEND;
 		}
-
 		else if (state == KOOPAS_STATE_BALL) {
 			ani = KOOPAS_ANI_RED_BALL;
 		}
+
 
 	}
 
@@ -244,7 +258,9 @@ void CKoopas::Render()
 		else if (state == KOOPAS_STATE_DEFEND) {
 			ani = KOOPAS_ANI_GREEN_DEFEND;
 		}
-
+		else if (state == KOOPAS_STATE_UP_SIDE_DOWN) {
+			ani = KOOPAS_ANI_GREEN_DIE;
+		}
 		else if (state == KOOPAS_STATE_BALL) {
 			ani = KOOPAS_ANI_GREEN_BALL;
 		}
@@ -268,7 +284,6 @@ void CKoopas::SetState(int state)
 		vy = MARIO_DIE_DEFLECT_SPEED*dt;
 		break;
 	case KOOPAS_STATE_WALKING:
-		
 		break;
 	case KOOPAS_STATE_DEFEND:
 		vx = 0;
@@ -280,6 +295,10 @@ void CKoopas::SetState(int state)
 		break;
 	case KOOPAS_STATE_FLY:
 		break;
+	case KOOPAS_STATE_UP_SIDE_DOWN:
+		this->vx = 0;
+		StartDefendTime();
+		break;
 	}
 
 }
@@ -288,7 +307,7 @@ void CKoopas::GetBoundingBox(float &left, float &top, float &right, float &botto
 	left = x;
 	top = y;
 
-	if (state == KOOPAS_STATE_DEFEND || state == KOOPAS_STATE_BALL)
+	if (state == KOOPAS_STATE_DEFEND || state == KOOPAS_STATE_BALL || state == KOOPAS_STATE_UP_SIDE_DOWN)
 	{
 		right = left + KOOPAS_DEFEND_HITBOX;
 		bottom = top + KOOPAS_DEFEND_HITBOX;

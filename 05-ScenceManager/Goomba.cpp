@@ -73,8 +73,6 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		x += min_tx * dx + nx * 0.4f;
 		y += min_ty * dy + ny * 0.4f;
 
-		//if (nx != 0 ) x+=dx;
-
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{
 			LPCOLLISIONEVENT e = coEventsResult[i];
@@ -106,9 +104,7 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 			}*/
 
-			if (e->nx != 0) {
-				/*vx *= -1;
-				this->nx *= -1;*/				
+			if (e->nx != 0) {			
 				if (e->obj->GetType() == COLORBLOCK || e->obj->GetObjectType() == ENEMY) {
 					x += dx;
 				}
@@ -117,8 +113,6 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					e->obj->GetType() == QUESTIONBRICK ||
 					e->obj->GetType() == GOLDBRICK) {
 					this->nx *= -1;
-					this->vy = 0;
-					this->vx = 0;
 					this->vx = nx * GOOMBA_WALKING_SPEED * dt;
 				}
 			}

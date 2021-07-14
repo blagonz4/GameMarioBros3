@@ -355,7 +355,7 @@ void CPlayScene::Update(DWORD dt)
 
 	playTime -= dt;
 
-	for (size_t i =1; i < objects.size(); i++)
+	for (size_t i = 0; i < objects.size(); i++)
 	{
 		coObjects.push_back(objects[i]);
 	}
@@ -375,7 +375,6 @@ void CPlayScene::Update(DWORD dt)
 			{
 				if (qb->model == QUESTION_BRICK_MODEL_COIN) {
 					EffectCoin* effectCoin = new EffectCoin(qb->x, qb->y - 10);
-					//TurnIntoUnit(effectCoin);
 					player->PlusCoinCollect(1);
 					objects.push_back(effectCoin);		
 				}
@@ -623,8 +622,10 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 			mario->isWannaDown = true;
 			break;
 		case DIK_A://-----------------------SHOOT FIRE--------------------------
-			if (mario->level == MARIO_LEVEL_FIRE && !mario->isShooting && !mario->isSitting)
+			if (mario->level == MARIO_LEVEL_FIRE && !mario->isShooting && !mario->isSitting) {
 				mario->SetState(MARIO_STATE_SHOOT_FIRE);
+				mario->StartShooting();
+			}
 			if (mario->level == MARIO_LEVEL_RACOON && !mario->isTurningTail && !mario->isSitting) {
 					mario->StartTurning();
 			}
@@ -643,8 +644,12 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 	//--------------------RUN/TURN/FLY/WALK----------------------------
 	if (game->IsKeyDown(DIK_A)) {
 		mario->isReadyToHold = true;
-		if (!mario->isRunning && mario->vx != 0 && mario->isReadyToRun)
+		if (!mario->isRunning && mario->vx != 0 && mario->isReadyToRun) {
+			if(mario->nx > 0)	mario->SetState(MARIO_STATE_RUN_RIGHT);
+			else mario->SetState(MARIO_STATE_RUN_LEFT);
 			mario->StartRunning();
+		}
+			
 	}
 	if (game->IsKeyDown(DIK_S) && mario->isReadyToJump) {
 		mario->SetState(MARIO_STATE_JUMP);
@@ -670,8 +675,6 @@ void CPlayScenceKeyHandler::OnKeyUp(int KeyCode) {
 		}
 		break;
 	case DIK_DOWN:
-		if(mario->GetLevel() != MARIO_LEVEL_SMALL)
-			mario->y -= 10;
 		mario->isSitting = false;
 		mario->isWannaDown = false;
 		break;
@@ -679,7 +682,7 @@ void CPlayScenceKeyHandler::OnKeyUp(int KeyCode) {
 		mario->isHolding = false;
 		mario->isReadyToHold = false;
 		mario->StopRunning();
-		mario->isHolding ? mario->isHolding = false : mario->isHolding = true;
+		//mario->isHolding ? mario->isHolding = false : mario->isHolding = true;
 		break;
 	}
 }

@@ -4,37 +4,36 @@
 #include "define.h"
 
 //----------------------Mario------------------------
-#define MARIO_WALKING_SPEED					0.12f 
-#define MARIO_WALKING_MAXSPEED				0.15f
-#define MARIO_RUNNING_SPEED					0.2f
+#define MARIO_WALKING_SPEED					0.08f 
+#define MARIO_WALKING_MAXSPEED				0.10f
+#define MARIO_RUNNING_SPEED					0.12f
 #define MARIO_RUNNING_MAXSPEED				0.25f
-#define MARIO_JUMP_SPEED_MIN				0.18f
-#define MARIO_JUMP_SPEED_MAX				0.28f
-#define MARIO_FLY_SPEED						0.02f
+#define MARIO_JUMP_SPEED_MIN				0.15f
+#define MARIO_JUMP_SPEED_MAX				0.27f
+#define MARIO_FLY_SPEED						0.13f
 #define MARIO_JUMP_SPEED_PEEK				0.005f
-#define MARIO_JUMP_DEFLECT_SPEED			0.09f
+#define MARIO_JUMP_DEFLECT_SPEED			0.40f
 #define MARIO_GRAVITY						0.002f
-#define MARIO_DIE_DEFLECT_SPEED				0.03f
+#define MARIO_DIE_DEFLECT_SPEED				0.1f
 #define MARIO_ACCELERATION_JUMP				0.0005f
 #define MARIO_SLIDING_SPEED					1.5f
 #define TIME_SPINNING						500
 #define TIME_TRANSFORM						200
 #define TAIL_SIZE							15
-#define TIME_UNTOUCHABLE_SHORT				500
-#define TIME_UNTOUCHABLE_LONG				5000
 #define MARIO_RUNNING_STACK_TIME			250
-#define MARIO_SLOW_TIME						1000
+#define MARIO_SLOW_TIME						800
 #define MARIO_ACCELERATION					0.0003f
-
+#define MARIO_SIT_PUSH_BACK					9
 #define MARIO_SLOW_STACK_TIME				250
 #define MARIO_KICKING_TIME					200
-#define MARIO_SHOOTING_TIME					150
+#define MARIO_JUMPING_TIME					200
+#define MARIO_SHOOTING_TIME					200
 #define MARIO_TURNING_STATE_TIME			70
 #define MARIO_TURNING_TAIL_TIME				350
 #define MARIO_UNTOUCHABLE_TIME				5000
 #define MARIO_FLAPPING_TIME					200
-#define MARIO_SLOW_FALLING_SPEED			0.05f
-#define MARIO_FLYING_TIME					5000
+#define MARIO_SLOW_FALLING_SPEED			0.03f
+#define MARIO_FLYING_TIME					1000
 #define MARIO_TAIL_FLYING_TIME				250
 //----------------------Mario------------------------
 #define MARIO_STATE_IDLE					0
@@ -195,7 +194,7 @@
 #define	TIME_UNTOUCHABLE_LONG				3000
 #define MARIO_LIMIT_JUMP_TIME				450
 #define MARIO_LIMIT_FLY_TIME				400
-
+#define ENEMY_PUSH_BACK						1.5f
 class CMario : public CGameObject {
 	DWORD untouchable_start;
 	DWORD kicking_start;
@@ -210,7 +209,7 @@ class CMario : public CGameObject {
 	DWORD tailflying_start;
 	DWORD transforming_start;
 	DWORD fly_start = 0;
-
+	DWORD delay_jump = 0;
 public:
 	float start_x;			// initial position of Mario at scene
 	float start_y;
@@ -289,8 +288,8 @@ public:
 	void StartKicking() { kicking_start = GetTickCount(); isKicking = true; }
 	void StartRunning() { running_start = GetTickCount(); isRunning = true; }
 	void StopRunning() { running_stop = GetTickCount(); isRunning = false; }
+	void StartShooting() { shooting_start = GetTickCount(); isShooting = true; }
 	void StartSlowDown() { slow_start = GetTickCount(); isReadyToRun = false; }
-	void StartShooting(float bx, float by);
 	void StartTurning() { 
 		turning_start = GetTickCount(); 
 		isTurningTail = true; 
@@ -311,7 +310,8 @@ public:
 	{
 		fly_start = GetTickCount();
 	}
-	void StartTransforming() { transforming_start = GetTickCount64(); isTransforming = true; }
+	void StartTransforming() { transforming_start = GetTickCount(); isTransforming = true; }
+	void StartDelayJump() { delay_jump = GetTickCount(); isJumping = false; }
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount(); }
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
 	void Reset();

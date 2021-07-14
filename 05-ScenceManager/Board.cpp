@@ -47,37 +47,34 @@ void Board::Render(CMario * mario, int RemainingTime) {
 		SpriteTileLogo->Draw(x + 25, y + 20);
 	}
 	//Power
-	if (mario->GetState() == MARIO_STATE_RUN_RIGHT ||
-		mario->GetState() == MARIO_STATE_RUN_LEFT ||
-		mario->isFlying)
+	if (mario->isRunning || mario->isFlying)
 	{
-		float marioSpeed = MARIO_RUNNING_MAXSPEED / 7;
-		if (abs(mario->vx) >= marioSpeed)
+		//float marioSpeed = MARIO_RUNNING_MAXSPEED / 7;
+		if (mario->RunningStacks >= 1)
 		{
 			DrawPowerBar(x + 70, y + 12);
 		}
-		if (abs(mario->vx) >= marioSpeed * 2)
+		if (mario->RunningStacks >= 2)
 		{
 			DrawPowerBar(x + 78, y + 12);
 		}
-		if (abs(mario->vx) >= marioSpeed * 3)
+		if (mario->RunningStacks >= 3)
 		{
 			DrawPowerBar(x + 86, y + 12);
 		}
-		if (abs(mario->vx) >= marioSpeed * 4)
+		if (mario->RunningStacks >= 4)
 		{
 			DrawPowerBar(x + 94, y + 12);
 		}
-		if (abs(mario->vx) >= marioSpeed * 5)
+		if (mario->RunningStacks >= 5)
 		{
 			DrawPowerBar(x + 102, y + 12);
 		}
-		if (abs(mario->vx) >= marioSpeed * 6)
+		if (mario->RunningStacks >= 6)
 		{
 			DrawPowerBar(x + 110, y + 12);
 		}
-
-		if (abs(mario->vx) >= marioSpeed * 6.5f)
+		if (abs(mario->vx) == MARIO_RUNNING_MAXSPEED)
 		{
 			//DrawPowerBar(x + 118, y + 12);
 			LPSPRITE SpriteTilePower = new CSprite(0, 12, 33, 27, 40, TexPatch);

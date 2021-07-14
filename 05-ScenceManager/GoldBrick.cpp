@@ -33,7 +33,6 @@ void GoldBrick::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			if (CheckAABB(mLeft-6, mTop + TAIL_SIZE, mRight, mBottom))
 				isFinish = true;
 		}
-
 	}
 
 	if (y <= minY)
