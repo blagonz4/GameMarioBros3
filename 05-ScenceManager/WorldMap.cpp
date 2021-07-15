@@ -325,7 +325,6 @@ void WorldMap::Unload()
 
 void WorldMapKeyHandler::OnKeyDown(int KeyCode)
 {
-
 }
 
 void WorldMapKeyHandler::KeyState(BYTE *states)
@@ -337,16 +336,16 @@ void WorldMapKeyHandler::KeyState(BYTE *states)
 	//--------------------RUN/TURN/FLY/WALK----------------------------
 
 	if (game->IsKeyDown(DIK_RIGHT)) {
-		mario->vx += MARIO_WALKING_SPEED/4;
+		mario->vx += MARIO_INTRO_WALKING_SPEED;
 	}
 	if (game->IsKeyDown(DIK_LEFT)) {
-		mario->vx -= MARIO_WALKING_SPEED/4;
+		mario->vx -= MARIO_INTRO_WALKING_SPEED;
 	}
 	if (game->IsKeyDown(DIK_UP)) {
-		mario->vy -= MARIO_WALKING_SPEED/4;
+		mario->vy -= MARIO_INTRO_WALKING_SPEED;
 	}
 	if (game->IsKeyDown(DIK_DOWN)) {
-		mario->vy += MARIO_WALKING_SPEED/4;
+		mario->vy += MARIO_INTRO_WALKING_SPEED;
 	}
 
 }

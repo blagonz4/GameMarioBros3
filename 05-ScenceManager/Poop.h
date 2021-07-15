@@ -7,7 +7,7 @@
 #define LOAD_POOP_FROM_TXT			26
 #define POOP_BBOX					8
 #define POOP_MAX_RIGHT_X			8
-#define TIME_DISAPPEAR				7000
+#define TIME_DISAPPEAR				5000
 class Poop : public CGameObject
 {
 	DWORD timeDisappear;

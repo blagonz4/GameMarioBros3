@@ -155,7 +155,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				}
 			}
 
-			else if (e->obj->GetType() == PLATFORM) {
+			else if (e->obj->GetType() == PLATFORM || e->obj->GetType() == MUSICBRICK) {
 				if (e->nx != 0) {
 					this->nx *= -1;
 					if (this->state == KOOPAS_STATE_BALL) {

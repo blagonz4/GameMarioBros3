@@ -366,7 +366,7 @@ void CPlayScene::Update(DWORD dt)
 
 		if (objects[i]->CheckObjectInCamera())
 			objects[i]->Update(dt, &coObjects);
-		//else objects[i]->Update(0, &coObjects);
+		else objects[i]->Update(0, &coObjects);
 
 		if (e->GetType() == QUESTIONBRICK)
 		{

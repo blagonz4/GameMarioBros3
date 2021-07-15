@@ -44,10 +44,47 @@ void Poop::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	if (isAttach) {
 		AttachToMario();
 		if (timeDisappear > TIME_DISAPPEAR) {
-			//mario->marioLimitJumpTime = MARIO_LIMIT_JUMP_TIME;
+			mario->limitJumpVelocity = MARIO_JUMP_SPEED_MAX;
 			isAttach = false;
 			isFinish = true;
 		}		
+	}
+
+	vector<LPCOLLISIONEVENT> coEvents;
+	vector<LPCOLLISIONEVENT> coEventsResult;
+
+	coEvents.clear();
+	CalcPotentialCollisions(coObjects, coEvents);
+
+	if (coEvents.size() == 0)
+	{
+		x += dx;
+		y += dy;
+	}
+	else
+	{
+		float min_tx, min_ty, nx = 0, ny;
+		float rdx = 0;
+		float rdy = 0;
+		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
+		x += min_tx * dx + nx * 0.4f;
+		y += min_ty * dy + ny * 0.1f;
+
+		if (nx != 0) x += dx;
+		if (ny != 0) y += dy;
+
+		for (UINT i = 0; i < coEventsResult.size(); i++)
+		{
+			LPCOLLISIONEVENT e = coEventsResult[i];
+			if (e->obj->GetType() == MARIO) {
+				CMario* mario = dynamic_cast<CMario*>(e->obj);
+				if (mario->untouchable == 0) {	
+					this->isAttach = true;
+					mario->limitJumpVelocity = 0.05f;
+					
+				}
+			}
+		}
 	}
 }
 void Poop::Render()

@@ -73,16 +73,22 @@ void Boomerang::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					this->y += dy;
 			}
 			else if (e->obj->GetType() == MARIO) {
-				if (e->obj->untouchable == 0) {
-					if (e->obj->level > MARIO_LEVEL_SMALL)
+				CMario* mario = dynamic_cast<CMario*>(e->obj);
+				if (mario->untouchable == 0) {
+					if (mario->level > MARIO_LEVEL_SMALL)
 					{
-
-						e->obj->level = MARIO_LEVEL_SMALL;
-						e->obj->StartUntouchable(TIME_UNTOUCHABLE_LONG);
+						if (mario->level > MARIO_LEVEL_BIG) {
+							mario->level = MARIO_LEVEL_BIG;
+							mario->StartUntouchable();
+						}
+						else
+						{
+							mario->level = MARIO_LEVEL_SMALL;
+							mario->StartUntouchable();
+						}
 					}
 					else
-						e->obj->SetState(MARIO_STATE_DIE);
-					this->x += dx;
+						mario->SetState(MARIO_STATE_DIE);
 				}
 			}
 			else if (e->obj->GetType() == BOOMERANGBROTHER) {

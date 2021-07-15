@@ -5,6 +5,7 @@
 
 //----------------------Mario------------------------
 #define MARIO_WALKING_SPEED					0.08f 
+#define MARIO_INTRO_WALKING_SPEED			0.005f 
 #define MARIO_WALKING_MAXSPEED				0.10f
 #define MARIO_RUNNING_SPEED					0.12f
 #define MARIO_RUNNING_MAXSPEED				0.25f
@@ -194,7 +195,7 @@
 #define	TIME_UNTOUCHABLE_LONG				3000
 #define MARIO_LIMIT_JUMP_TIME				450
 #define MARIO_LIMIT_FLY_TIME				400
-#define ENEMY_PUSH_BACK						1.5f
+#define ENEMY_PUSH_BACK						3.f
 class CMario : public CGameObject {
 	DWORD untouchable_start;
 	DWORD kicking_start;
@@ -216,7 +217,7 @@ public:
 	vector <LPGAMEOBJECT> listFire;
 	vector <LPGAMEOBJECT> listEffect;
 	float lastStandingY = 0;
-
+	float limitJumpVelocity = MARIO_JUMP_SPEED_MAX;
 	bool isWannaDown = false;
 	int score;
 	int coinCollect;
