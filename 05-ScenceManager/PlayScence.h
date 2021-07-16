@@ -41,6 +41,21 @@
 #include "MusicBrick.h"
 #include "BoomerangBrother.h"
 #include "Grid.h"
+
+#define MAP_1_COURSE_CLEAR_X	2635
+#define MAP_1_COURSE_CLEAR_Y	275
+#define MAP_1_YGAC_X			2620
+#define MAP_1_YGAC_Y			300
+#define MAP_1_CARD_X			2750
+#define MAP_1_CARD_Y			290
+
+#define MAP_3_COURSE_CLEAR_X	2370
+#define MAP_3_COURSE_CLEAR_Y	275
+#define MAP_3_YGAC_X			2350
+#define MAP_3_YGAC_Y			300
+#define MAP_3_CARD_X			2480
+#define MAP_3_CARD_Y			290
+
 class CPlayScene: public CScene
 {
 private:

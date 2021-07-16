@@ -2,7 +2,7 @@
 #include "GameObject.h"
 #include "define.h"
 #include "Mario.h"
-#include "PlayScence.h"
+//#include "PlayScence.h"
 //-----------------------------Koopas----------------------------
 #define KOOPAS_DEFEND_TIME			5000
 #define KOOPAS_DEFEND_HITBOX		16
@@ -14,12 +14,12 @@
 #define KOOPAS_MODEL_GREEN_WING		3
 
 #define KOOPAS_WALKING_SPEED		0.0025f
-#define	KOOPAS_FLY_SPEED			0.012f
+#define	KOOPAS_FLY_SPEED			0.3f
 #define KOOPAS_BALL_SPEED			0.01f
 #define KOOPAS_BBOX_WIDTH			16
 #define KOOPAS_BBOX_HEIGHT			26
 #define KOOPAS_BBOX_HEIGHT_DIE		16
-
+#define KOOPAS_DEFLECT_SPEED		0.1f
 #define KOOPAS_STATE_WALKING		100
 #define KOOPAS_STATE_DEFEND			200
 #define KOOPAS_STATE_BALL			300

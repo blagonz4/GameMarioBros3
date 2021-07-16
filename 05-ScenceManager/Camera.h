@@ -8,9 +8,11 @@ using namespace std;
 
 class Camera{
 public:
+	bool isTurnOn = false;
 	float cxMin,__cx, px, py;
-	float cxMax = 2500;
-	float __cy = CAMERA_COORDINATE_Y;
+	int sw, sh; float mw, mh;
+	int cxMax = 2500;
+	int __cy = CAMERA_COORDINATE_Y;
 	CMario* mario;
 	CGame* game = CGame::GetInstance();
 	Map* map;

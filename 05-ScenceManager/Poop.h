@@ -8,6 +8,7 @@
 #define POOP_BBOX					8
 #define POOP_MAX_RIGHT_X			8
 #define TIME_DISAPPEAR				5000
+#define LIMIT_JUMP_VELOCITY			0.1f
 class Poop : public CGameObject
 {
 	DWORD timeDisappear;

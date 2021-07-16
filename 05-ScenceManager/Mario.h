@@ -13,9 +13,9 @@
 #define MARIO_JUMP_SPEED_MAX				0.27f
 #define MARIO_FLY_SPEED						0.13f
 #define MARIO_JUMP_SPEED_PEEK				0.005f
-#define MARIO_JUMP_DEFLECT_SPEED			0.40f
+#define MARIO_JUMP_DEFLECT_SPEED			0.45f
 #define MARIO_GRAVITY						0.002f
-#define MARIO_DIE_DEFLECT_SPEED				0.1f
+#define MARIO_DIE_DEFLECT_SPEED				0.8f
 #define MARIO_ACCELERATION_JUMP				0.0005f
 #define MARIO_SLIDING_SPEED					1.5f
 #define TIME_SPINNING						500
@@ -34,7 +34,7 @@
 #define MARIO_UNTOUCHABLE_TIME				5000
 #define MARIO_FLAPPING_TIME					200
 #define MARIO_SLOW_FALLING_SPEED			0.03f
-#define MARIO_FLYING_TIME					1000
+#define MARIO_FLYING_TIME					1500
 #define MARIO_TAIL_FLYING_TIME				250
 //----------------------Mario------------------------
 #define MARIO_STATE_IDLE					0

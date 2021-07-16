@@ -3,6 +3,7 @@
 Box::Box()
 {
 	eType = Type::BOX;
+	this->isUnbox = false;
 	if (!isUnbox)	
 		SetState((rand() % 3 + 1) * 100);
 }
@@ -25,8 +26,7 @@ void Box::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		int stateBox = (rand() % 3 + 1) * 100;
 		SetState(stateBox);
 	}
-	if(isUnbox)
-		DebugOut(L"stateUnbox: %d \n", stateUnbox);
+
 }
 
 void Box::SetState(int state)

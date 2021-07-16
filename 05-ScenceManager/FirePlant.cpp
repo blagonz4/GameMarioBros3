@@ -368,51 +368,55 @@ int FirePlant::GetCurrentMarioRange() {
 	LPSCENE scence = CGame::GetInstance()->GetCurrentScene();
 	CMario* mario = ((CPlayScene*)scence)->GetPlayer();
 
-	if (mario->x < this->x && mario->y < this->y)
-	{
-		if (this->x - mario->x < DISTANCE_FROM_MARIO_TO_PLANT)
-		{
-			return LEFT_TOP_SIDE_NEAR;
+	if ( this->x > mario->x) {	//Plant ben phai Mario
+		if (mario->y < this->y) {
+			if (this->x - mario->x < DISTANCE_FROM_MARIO_TO_PLANT)
+			{
+				return LEFT_TOP_SIDE_NEAR;
+			}
+			else
+			{
+				return LEFT_TOP_SIDE_FAR;
+			}
 		}
-		else // (this->x - mario->x >= DISTANCE_FROM_MARIO_TO_PLANT)
+		else
 		{
-			return LEFT_TOP_SIDE_FAR;
+			if (this->x - mario->x < DISTANCE_FROM_MARIO_TO_PLANT)
+			{
+				return LEFT_BOTTOM_SIDE_NEAR;
+			}
+			else
+			{
+				return LEFT_BOTTOM_SIDE_FAR;
+			}
 		}
 	}
-	else if (mario->x < this->x && mario->y > this->y)
+	
+	else	//Plant ben trai Mario
 	{
-		if (this->x - mario->x < DISTANCE_FROM_MARIO_TO_PLANT)
-		{
-			return LEFT_BOTTOM_SIDE_NEAR;
+		if (mario->y < this->y) {
+			if (mario->x - this->x  < DISTANCE_FROM_MARIO_TO_PLANT)
+			{
+				return RIGHT_TOP_SIDE_NEAR;
+			}
+			else
+			{
+				return RIGHT_TOP_SIDE_FAR;
+			}
 		}
-		else// (this->x - mario->x > DISTANCE_FROM_MARIO_TO_PLANT)
+		else 
 		{
-			return LEFT_BOTTOM_SIDE_FAR;
+			if (mario->x - this->x  < DISTANCE_FROM_MARIO_TO_PLANT)
+			{
+				return RIGHT_BOTTOM_SIDE_NEAR;
+			}
+			else 
+			{
+				return RIGHT_BOTTOM_SIDE_FAR;
+			}
 		}
+	}
 
-	}
-	else if (mario->x > this->x && mario->y < this->y)
-	{
-		if (this->x - mario->x < DISTANCE_FROM_MARIO_TO_PLANT)
-		{
-			return RIGHT_TOP_SIDE_NEAR;
-		}
-		else// (this->x - mario->x >= DISTANCE_FROM_MARIO_TO_PLANT)
-		{
-			return RIGHT_TOP_SIDE_FAR;
-		}
-	}
-	else  //(mario->x > this->x && mario->y > this->y)
-	{
-		if (this->x - mario->x < DISTANCE_FROM_MARIO_TO_PLANT)
-		{
-			return RIGHT_BOTTOM_SIDE_NEAR;
-		}
-		else  //(this->x - mario->x >= DISTANCE_FROM_MARIO_TO_PLANT)
-		{
-			return RIGHT_BOTTOM_SIDE_FAR;
-		}
-	}
 }
 
 

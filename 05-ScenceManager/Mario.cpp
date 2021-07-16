@@ -233,7 +233,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				if (this != NULL && e->obj != NULL) {
 					GetBoundingBox(mLeft, mTop, mRight, mBottom);
 					e->obj->GetBoundingBox(oLeft, oTop, oRight, oBottom);
-
 				}
 				
 				if (e->obj->GetType() == PLATFORM) {
@@ -319,7 +318,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 									SetState(MARIO_STATE_DIE);
 							}
 						}
-						else { goomba->x += goomba->nx * ENEMY_PUSH_BACK; this->x += dx; }
+						else { goomba->x += goomba->nx * ENEMY_PUSH_BACK/2; this->x += dx; }
 					}
 				}
 				else if (e->obj->GetType() == KOOPAS)
@@ -493,16 +492,12 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					{
 						switch (model) {
 						case GOLD_BRICK_MODEL_COIN:
-							if (gb->y >= gb->minY) {								
-							}
-							gb->vy = -QUESTION_BRICK_SPEED_UP;
+							gb->isFinish = true;
 							break;
 						case GOLD_BRICK_MODEL_PSWITCH:
 							gb->SetState(GOLD_BRICK_STATE_UNBOX);
 							break;
 						}
-						this->vy = MARIO_DIE_DEFLECT_SPEED;
-						vy = 0;
 						ay = MARIO_GRAVITY;
 						isReadyToJump = false;
 						this->vy = MARIO_JUMP_SPEED_MAX;
@@ -520,17 +515,17 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						if (mb->GetModel() == MUSIC_BRICK_MODEL_HIDDEN) {
 							if (mb->isHidden) { x += dx; y += dy; }
 							else {
-								this->vy = -(MARIO_DIE_DEFLECT_SPEED)* dt;
+								this->vy = -MARIO_DIE_DEFLECT_SPEED;
 								mb->vy = QUESTION_BRICK_SPEED_UP / 2;
 								lastStandingY = y;
 								if (game->IsKeyDown(DIK_S)) {
-									this->vy -= MARIO_FLY_SPEED *dt; //nhay qua map phu
+									this->vy -= MARIO_FLY_SPEED * 5*dt; //nhay qua map phu
 									mb->vy = QUESTION_BRICK_SPEED_UP;
 								}
 							}
 						}
 						else {
-							this->vy = -(MARIO_DIE_DEFLECT_SPEED) * dt;
+							this->vy = -MARIO_DIE_DEFLECT_SPEED;
 							mb->vy = QUESTION_BRICK_SPEED_UP/2;
 							lastStandingY = y;
 						}

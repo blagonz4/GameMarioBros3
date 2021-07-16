@@ -27,7 +27,7 @@ void Map::DrawMap() {
 	float FirstColumn = floor(CamX / TILE_WIDTH);
 	float LastColumn = ceil((CamX + CGame::GetInstance()->GetScreenWidth()) / TILE_WIDTH);
 	if (LastColumn >= ColumnMap)
-		LastColumn = ColumnMap - 1;
+		LastColumn = (float)ColumnMap - 1.f;
 	for (int CurrentRow = 0; CurrentRow < RowMap; CurrentRow++) {
 		for (int CurrentColumn = 0; CurrentColumn <= LastColumn; CurrentColumn++) {	//2 vong lap ve map
 			int index = TileMap[CurrentRow][CurrentColumn]-1;
@@ -45,7 +45,7 @@ void Map::GetSpriteTile() {
 		float top = id / ColumnTile * TILE_HEIGHT;
 		float right = left + TILE_WIDTH;
 		float bottom = top + TILE_HEIGHT;
-		LPSPRITE SpriteTile = new CSprite(id, left, top, right, bottom,Tex);
+		LPSPRITE SpriteTile = new CSprite(id, (int)left, (int)top, (int)right, (int)bottom,Tex);
 		this->Tiles.push_back(SpriteTile);
 	}
 

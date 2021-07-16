@@ -18,6 +18,7 @@ CKoopas::CKoopas(float &model, float &direction,CMario* mario)
 
 	eType = Type::KOOPAS;
 	objType = ObjectType::ENEMY;
+	
 }
 
 
@@ -32,7 +33,8 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		mario->GetBoundingBox(mLeft, mTop, mRight, mBottom);
 		GetBoundingBox(oLeft, oTop, oRight, oBottom);
 		if (CheckAABB(mLeft, mTop + TAIL_SIZE, mRight, mBottom)) {
-			this->vy = -MARIO_DIE_DEFLECT_SPEED;
+			this->vy = -KOOPAS_DEFLECT_SPEED;
+			this->vx = mario->nx * KOOPAS_DEFLECT_SPEED;
 			SetState(KOOPAS_STATE_UP_SIDE_DOWN);			
 		}
 	}
@@ -46,9 +48,9 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			vx = -KOOPAS_WALKING_SPEED * dt;
 	}
 
-	if (state == KOOPAS_STATE_FLY) {
-		vy -= KOOPAS_FLY_SPEED;
-	}
+	//if (state == KOOPAS_STATE_FLY) {
+	//	vy -= KOOPAS_FLY_SPEED;
+	//}
 
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
@@ -87,6 +89,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	if (!player->isHolding && isBeingHeld) {
 		isBeingHeld = false;
 		this->nx = player->nx;
+		mario->StartKicking();
 		SetState(KOOPAS_STATE_BALL);
 	}
 
@@ -122,7 +125,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		y += min_ty * dy + ny * 0.4f;
 
 		if (nx != 0) vx = 0;
-		if (ny != 0 && state == KOOPAS_STATE_FLY) vy = -KOOPAS_FLY_SPEED * dt;
+		if (ny != 0 && state == KOOPAS_STATE_FLY) vy = -KOOPAS_FLY_SPEED;
 		else if (ny != 0) vy = 0;
 
 		for (UINT i = 0; i < coEventsResult.size(); i++)
@@ -181,6 +184,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					else if (this->state == KOOPAS_STATE_WALKING) {
 						this->vx = this->nx * KOOPAS_WALKING_SPEED * dt;
 					}
+					this->y -= ENEMY_PUSH_BACK;
 				}
 			}
 			else if (e->obj->GetType() == GOLDBRICK) {
@@ -243,8 +247,9 @@ void CKoopas::Render()
 		else if (state == KOOPAS_STATE_BALL) {
 			ani = KOOPAS_ANI_RED_BALL;
 		}
-
-
+		else if (state == KOOPAS_STATE_UP_SIDE_DOWN) {
+			ani = KOOPAS_ANI_RED_DIE;
+		}
 	}
 
 	else {

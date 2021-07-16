@@ -107,8 +107,11 @@ void FireBall::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					e->obj->GetType() == GOLDBRICK ||
 					e->obj->GetType() == QUESTIONBRICK||
 					e->obj->GetType() == MUSICBRICK) {
-						if (e->nx != 0) 
-							this->isFinish = true;
+				if (defineVy != FIRE_GRAVITY) {
+					x += dx; y += dy;
+				}
+				else if (e->nx != 0) 
+					this->isFinish = true;
 			}			
 			else if (e->obj->GetType() == MARIO) {
 				CMario* mario = dynamic_cast<CMario*>(e->obj);

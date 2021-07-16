@@ -89,7 +89,7 @@ enum ObjectType {
 //----------------------------Camera----------------------------
 #define DISTANCE_TO_MARIO_X					120
 #define DISTANCE_TO_MARIO_Y					5
-#define DISTANCE_MARIO_FLY_THROUGH_SKY_Y	250
+#define DISTANCE_MARIO_FLY_THROUGH_SKY_Y	265
 #define CAMERA_COORDINATE_Y					220
 #define CAMERA_ROOT_Y						0
 //-------------------------------------------------------------

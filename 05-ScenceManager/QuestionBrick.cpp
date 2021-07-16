@@ -25,22 +25,27 @@ void QuestionBrick::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			vy = 0;
 		}
 	}
+
 	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
-	if (mario != NULL && mario->level == MARIO_LEVEL_RACOON && mario->isTurningTail) {
+	if (mario != NULL && mario->level == MARIO_LEVEL_RACOON && mario->isTurningTail && Health == 1) {
 		float mLeft, mTop, mRight, mBottom;
 		float oLeft, oTop, oRight, oBottom;
 		mario->GetBoundingBox(mLeft, mTop, mRight, mBottom);
 		GetBoundingBox(oLeft, oTop, oRight, oBottom);
-		if (mario->nx > 0) {
+		if (mario->nx > 0 ) {
 			if (CheckAABB(mLeft, mTop + TAIL_SIZE, mRight, mBottom)) {
 				isUnbox = true;
 				Health = 0;
+				DebugOut(L"danh 1 lan \n");
+				return;
 			}				
 		}
 		else {
 			if (CheckAABB(mLeft - 6, mTop + TAIL_SIZE, mRight, mBottom)) {
 				isUnbox = true;
 				Health = 0;
+				DebugOut(L"danh 1 lan \n");
+				return;
 			}				
 		}
 	}

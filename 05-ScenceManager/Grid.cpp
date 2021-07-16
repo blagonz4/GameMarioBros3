@@ -109,9 +109,9 @@ void Grid::Get(float camX, float camY, vector<Unit*>&listUnits) {
 	if (endRow > ENDROW) endRow = ENDROW;
 	if (startRow < 0) startRow = 0;
 
-	for (size_t i = startRow; i < endRow; i++)
+	for (int i = startRow; i < endRow; i++)
 	{
-		for (size_t j = startCol; j < endCol; j++)
+		for (int j = startCol; j < endCol; j++)
 		{
 			Unit* unit = cells[i][j];
 			while (unit != NULL) {
@@ -139,9 +139,9 @@ void Grid::Get(float camX, float camY, vector<Unit*>&listUnits) {
 }
 void Grid::Out() {
 	int count = 0;
-	for (size_t i = 0; i < numRows; i++)
+	for (int i = 0; i < numRows; i++)
 	{
-		for (size_t j = 0; j < numCols; j++)
+		for (int j = 0; j < numCols; j++)
 		{
 			Unit* unit = cells[i][j];
 			while (unit) {
@@ -153,9 +153,9 @@ void Grid::Out() {
 }
 
 void Grid::ClearAll() {
-	for (size_t i = 0; i < numRows; i++)
+	for (int i = 0; i < numRows; i++)
 	{
-		for (size_t j = 0; j < numCols; j++)
+		for (int j = 0; j < numCols; j++)
 		{
 			Unit* unit = cells[i][j];
 			while (unit != NULL) {
@@ -185,13 +185,13 @@ Grid::Grid(int gridCols, int gridRows) {
 
 	cells.resize(numRows);
 
-	for (size_t i = 0; i < numRows; i++)
+	for (int i = 0; i < numRows; i++)
 	{
 		cells[i].resize(numCols);
 	}
-	for (size_t i = 0; i < numRows; i++)
+	for (int i = 0; i < numRows; i++)
 	{
-		for (size_t j = 0; j < numCols; j++)
+		for (int j = 0; j < numCols; j++)
 		{
 			cells[i][j] = NULL;
 		}

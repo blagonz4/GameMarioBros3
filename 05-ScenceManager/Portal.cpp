@@ -23,7 +23,7 @@ void CPortal::Update(DWORD dt, vector<LPGAMEOBJECT> *colliable_objects) {
 		mario->GetBoundingBox(mLeft, mTop, mRight, mBottom);
 		GetBoundingBox(oLeft, oTop, oRight, oBottom);
 		if (CheckAABB(mLeft, mTop, mRight, mBottom)) {
-			CGame::GetInstance()->SwitchScene(this->GetSceneId());
+			CGame::GetInstance()->SwitchScene((int)this->GetSceneId());
 		}
 	}
 }

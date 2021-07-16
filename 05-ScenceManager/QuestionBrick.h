@@ -1,7 +1,7 @@
 #pragma once
 #include "GameObject.h"
 #include "define.h"
-#include "PlayScence.h"
+//#include "PlayScence.h"
 class QuestionBrick : public CGameObject
 {
 	float startY;

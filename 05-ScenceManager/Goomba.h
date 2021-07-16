@@ -30,7 +30,7 @@
 #define GOOMBA_ANI_WING_BROWN_FALLING			8
 
 #define GOOMBA_JUMPING_SPEED					0.25f
-#define TIME_TO_DIE								500
+#define TIME_TO_DIE								300
 #define POOP_DELAY_DROP							1000
 class CGoomba : public CGameObject
 {

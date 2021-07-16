@@ -5,7 +5,7 @@ using namespace std;
 
 Board::Board(float X, float Y)
 {
-	this->x = X+10;
+	this->x = X;
 	this->y = Y;
 	Tex = CTextures::GetInstance()->Get(TEXID_BOARD);
 	Sprite = new CSprite(0, 0, 0, 320, 120, Tex);

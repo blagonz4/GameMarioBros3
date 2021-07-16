@@ -487,8 +487,7 @@ void CPlayScene::Update(DWORD dt)
 		if (e->GetType() == BOX) {
 			Box* box = dynamic_cast<Box*>(e);
 			if (box->isUnbox) {
-				//player->SetState(MARIO_STATE_WALK_RIGHT);
-				//player->x++;
+
 			}
 		}
 
@@ -530,7 +529,7 @@ void CPlayScene::GetObjectFromGrid() {
 	}
 }
 void CPlayScene::UpdateGrid() {
-	for (int i = 0; i < units.size(); i++) {
+	for (size_t i = 0; i < units.size(); i++) {
 		LPGAMEOBJECT obj = units[i]->GetObj();
 		float newPosX, newPosY;
 		obj->GetPosition(newPosX, newPosY);
@@ -570,7 +569,6 @@ void CPlayScene::Unload()
 	objects.clear();
 	//units.clear();
 	player = NULL;
-
 	DebugOut(L"[INFO] Scene %s unloaded! \n", sceneFilePath);
 }
 
@@ -715,21 +713,42 @@ void CPlayScene::ShowEffectPoint(CGameObject* obj, float model) {
 
 void CPlayScene::AnnounceSceneEnd(int boxState) {
 	text = new Font();
-	text->Draw(2635, 275, "COURSE CLEAR !");
-	text->Draw(2620, 300, "YOU GOT A CARD");
-	LPDIRECT3DTEXTURE9 Tex = CTextures::GetInstance()->Get(TEXID_FONT35);
-	if (boxState == BOX_STATE_MUSHROOM) {
-		LPSPRITE SpriteTile = new CSprite(64, 187, 33, 211, 61, Tex);
-		SpriteTile->Draw(2750, 290);
+	if (game->GetScene() == SCENE_TEST) {
+		text->Draw(MAP_1_COURSE_CLEAR_X, MAP_1_COURSE_CLEAR_Y, "COURSE CLEAR !");
+		text->Draw(MAP_1_YGAC_X, MAP_1_YGAC_Y, "YOU GOT A CARD");
+		LPDIRECT3DTEXTURE9 Tex = CTextures::GetInstance()->Get(TEXID_FONT35);
+		if (boxState == BOX_STATE_MUSHROOM) {
+			LPSPRITE SpriteTile = new CSprite(64, 187, 33, 211, 61, Tex);
+			SpriteTile->Draw(MAP_1_CARD_X, MAP_1_CARD_Y);
+		}
+		else if (boxState == BOX_STATE_FLOWER) {
+			LPSPRITE SpriteTile = new CSprite(65, 211, 33, 235, 61, Tex);
+			SpriteTile->Draw(MAP_1_CARD_X, MAP_1_CARD_Y);
+		}
+		else if (boxState == BOX_STATE_STAR) {
+			LPSPRITE SpriteTile = new CSprite(66, 235, 33, 259, 61, Tex);
+			SpriteTile->Draw(MAP_1_CARD_X, MAP_1_CARD_Y);
+		}
 	}
-	else if (boxState == BOX_STATE_FLOWER) {
-		LPSPRITE SpriteTile = new CSprite(65, 211, 33, 235, 61, Tex);
-		SpriteTile->Draw(2750, 290);
+	else // map
+	{
+		text->Draw(MAP_3_COURSE_CLEAR_X, MAP_1_COURSE_CLEAR_Y, "COURSE CLEAR !");
+		text->Draw(MAP_3_YGAC_X, MAP_1_YGAC_Y, "YOU GOT A CARD");
+		LPDIRECT3DTEXTURE9 Tex = CTextures::GetInstance()->Get(TEXID_FONT35);
+		if (boxState == BOX_STATE_MUSHROOM) {
+			LPSPRITE SpriteTile = new CSprite(64, 187, 33, 211, 61, Tex);
+			SpriteTile->Draw(MAP_3_CARD_X, MAP_1_CARD_Y);
+		}
+		else if (boxState == BOX_STATE_FLOWER) {
+			LPSPRITE SpriteTile = new CSprite(65, 211, 33, 235, 61, Tex);
+			SpriteTile->Draw(MAP_3_CARD_X, MAP_1_CARD_Y);
+		}
+		else if (boxState == BOX_STATE_STAR) {
+			LPSPRITE SpriteTile = new CSprite(66, 235, 33, 259, 61, Tex);
+			SpriteTile->Draw(MAP_3_CARD_X, MAP_1_CARD_Y);
+		}
 	}
-	else if (boxState == BOX_STATE_STAR) {
-		LPSPRITE SpriteTile = new CSprite(66, 235, 33, 259, 61, Tex);
-		SpriteTile->Draw(2750, 290);
-	}
+	
 }
 
 void CPlayScene::TurnIntoUnit(CGameObject* obj) {

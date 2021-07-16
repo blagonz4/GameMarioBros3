@@ -80,7 +80,7 @@ void Poop::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				CMario* mario = dynamic_cast<CMario*>(e->obj);
 				if (mario->untouchable == 0) {	
 					this->isAttach = true;
-					mario->limitJumpVelocity = 0.05f;
+					mario->limitJumpVelocity = LIMIT_JUMP_VELOCITY;
 					
 				}
 			}
