@@ -561,9 +561,9 @@ void CPlayScene::Render()
 */
 void CPlayScene::Unload()
 {
-	for (size_t i = 0; i < objects.size(); i++)
-		delete objects[i];
-
+	//for (size_t i = 0; i < objects.size(); i++)
+	//	delete objects[i];
+	objects.clear();
 	if (grid != NULL)
 		grid->ClearAll();
 	objects.clear();

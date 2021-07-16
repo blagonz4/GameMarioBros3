@@ -230,10 +230,9 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					isFlying = false;
 				}
 
-				if (this != NULL && e->obj != NULL) {
-					GetBoundingBox(mLeft, mTop, mRight, mBottom);
-					e->obj->GetBoundingBox(oLeft, oTop, oRight, oBottom);
-				}
+				DebugOut(L"e->obj: %d \n", e->obj->GetType());
+				GetBoundingBox(mLeft, mTop, mRight, mBottom);
+				e->obj->GetBoundingBox(oLeft, oTop, oRight, oBottom);
 				
 				if (e->obj->GetType() == PLATFORM) {
 					if (e->ny < 0)
@@ -700,6 +699,18 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			for (UINT i = 0; i < coEventsResult.size(); i++)
 			{
 				LPCOLLISIONEVENT e = coEventsResult[i];
+				if (e->ny != 0) {
+					isOnGround = true;
+					isJumping = false;
+					isChangeDirection = false;
+					isReadyToSit = true;
+					isFlying = false;
+				}
+
+				if (this != NULL && e->obj != NULL) {
+					GetBoundingBox(mLeft, mTop, mRight, mBottom);
+					e->obj->GetBoundingBox(oLeft, oTop, oRight, oBottom);
+				}
 				if (e->obj->GetType() == GOOMBA) // if e->obj is Goomba 
 			{
 				CGoomba *goomba = dynamic_cast<CGoomba *>(e->obj);
@@ -756,7 +767,32 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					x += dx;
 				}
 				else if (e->obj->GetType() == PLATFORM) {
-					isOnGround = true;
+					if (e->ny < 0)
+					{
+						vy = 0;
+						lastStandingY = y;
+
+					}
+					if (e->ny > 0)
+					{
+						vy = 0;
+						ay = MARIO_GRAVITY;
+						isReadyToJump = false;
+					}
+					if (e->nx != 0)
+					{
+						if (ceil(mBottom) != oTop)
+						{
+							vx = 0;
+							if (isRunning)
+								StopRunning();
+							if (x < game->GetCamX())
+							{
+								SetState(MARIO_STATE_DIE);
+								return;
+							}
+						}
+					}
 				}
 				else if (e->obj->GetType() == MUSHROOM_POWER || e->obj->GetType() == MUSHROOM_1_UP)
 				{

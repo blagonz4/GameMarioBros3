@@ -13,17 +13,17 @@ void Curtain::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	timeChange += dt;
 
 	if (timeChange > 2000 && timeChange < 5000) {
-		this->vy = -BACKGROUND_SPEED_Y * dt;
+		this->vy = -BACKGROUND_SPEED_Y;
 	}
 		
 	else if (timeChange > 5000 && timeChange < 8000) {
-		this->vy = BACKGROUND_SPEED_Y * dt;
+		this->vy = BACKGROUND_SPEED_Y;
 		SetState(BACKGROUND_STATE_BLACK);
 	}
-	else if (timeChange > 8000 && timeChange < 13800) {
+	else if (timeChange > 8000 && timeChange < 13000) {
 		this->vy = 0;
 	}
-	else if (timeChange > 13800) {
+	else if (timeChange > 13000) {
 		SetState(BACKGROUND_STATE_COLOR);
 	}
 		

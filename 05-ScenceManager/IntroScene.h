@@ -19,6 +19,10 @@
 #include "Leaf.h"
 #include "Arrow.h"
 #include "ShiningThree.h"
+
+#define ONE_PLAYER_POS	160
+#define TWO_PLAYER_POS	180
+
 class IntroScene : public CScene
 {
 private:

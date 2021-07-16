@@ -265,16 +265,16 @@ void IntroScene::Update(DWORD dt)
 				curtain->Update(dt, &coObjects);
 			}
 		}
-		else if (introTime > 5500 && introTime < 8000) {		
+		else if (introTime > 5900 && introTime < 8000) {		
 			if (e->GetType() == MARIO)
 			{
 				CMario* mario = dynamic_cast<CMario*>(e);
 				mario->Update(dt, &coObjects);			
-				if (introTime > 6900 && introTime < 7400) {
+				if (introTime > 7600 && introTime < 7900) {
 					mario->SetState(MARIO_STATE_JUMP);
-					mario->vy = -MARIO_JUMP_SPEED_MIN * dt;
+					//mario->vy = -MARIO_JUMP_SPEED_MIN;
 				}
-				else if (introTime > 7400) {
+				else if (introTime > 7900) {
 					mario->vx = 0;
 					mario->SetState(MARIO_STATE_IDLE);
 				}
@@ -322,28 +322,22 @@ void IntroScene::Update(DWORD dt)
 				if (introTime < 9700) {
 					mario->vx = 0;
 					mario->SetState(MARIO_STATE_IDLE);
-					if (introTime > 9200) {
+					if (introTime > 9500) {
 						mario->SetState(MARIO_STATE_JUMP);
-						mario->vy = -MARIO_JUMP_SPEED_MIN * dt;
+						//mario->vy = -MARIO_JUMP_SPEED_MIN ;
 					}				
 				}
-				if (introTime > 9700 && introTime < 11500) {
-					mario->vy += MARIO_GRAVITY * dt;
+				if (introTime > 10000 && introTime < 11000) {
 					mario->SetState(MARIO_STATE_WALK_LEFT);
 				}
-				if (introTime > 11500 && introTime < 13000) {
+				if (introTime > 11000) {
 					mario->SetState(MARIO_STATE_WALK_RIGHT);
-					mario->vx += MARIO_WALKING_SPEED * dt;
 				}
-				if (introTime > 13000 && introTime < 13800)
-					mario->SetState(MARIO_STATE_WALK_LEFT);
-				if (introTime > 13800)
-					mario->SetState(MARIO_STATE_IDLE);
 			}
 			if (e->GetType() == KOOPAS) {
 				CKoopas* koopa = dynamic_cast<CKoopas*>(e);
-				if (introTime > 10500 && introTime < 12000) {
-					koopa->vx = -KOOPAS_BALL_SPEED * dt;
+				if (introTime > 10500 && introTime < 11500) {
+					//koopa->vx = -KOOPAS_BALL_SPEED * dt;
 					koopa->SetState(KOOPAS_STATE_BALL);
 				}	
 			}
@@ -381,10 +375,11 @@ void IntroScene::Render()
 				CMario* mario = dynamic_cast<CMario*>(e);
 				mario->Render();
 			}
-			if (e->GetType() == GOOMBA) {
-				CGoomba* goomba = dynamic_cast<CGoomba*>(e);
-				goomba->Render();
-			}
+			if (introTime >6000)
+				if (e->GetType() == GOOMBA) {
+					CGoomba* goomba = dynamic_cast<CGoomba*>(e);
+					goomba->Render();
+				}
 		}
 		else if (introTime > 8000 && introTime < 14000) {
 			if (e->GetType() != ARROW && e->GetType() != SHININGTHREE)
@@ -417,14 +412,14 @@ void IntroSceneKeyHandler::OnKeyDown(int KeyCode)
 		switch (KeyCode)
 		{
 		case DIK_DOWN:
-			arrow->y = 180;
+			arrow->y = TWO_PLAYER_POS;
 			break;
 		case DIK_UP:
-			arrow->y = 160;
+			arrow->y = ONE_PLAYER_POS;
 			break;
-		case DIK_E:
-			if (arrow->y == 160)
-				CGame::GetInstance()->SwitchScene(0);
+		case DIK_S:
+			if (arrow->y == ONE_PLAYER_POS)
+				CGame::GetInstance()->SwitchScene(WORLDMAP);
 			break;
 		}
 	}
