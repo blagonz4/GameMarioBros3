@@ -40,6 +40,7 @@
 #include "MusicBrick.h"
 #include "BoomerangBrother.h"
 #include "Grid.h"
+#include "BackUp.h"
 class WorldMap : public CScene
 {
 private:
@@ -71,6 +72,8 @@ public:
 	void QuestionBrickDropItem(float model, float x, float y);
 	void ShowEffectPoint(CGameObject* obj, float model);
 	void AnnounceSceneEnd(int boxState);
+	void BackUpPlayer();
+	void LoadBackUp();
 	CMario * GetPlayer() { return player; }
 
 	//friend class CPlayScenceKeyHandler;

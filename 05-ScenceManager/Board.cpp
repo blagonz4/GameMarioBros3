@@ -18,83 +18,71 @@ string Board::FillNumber(string s, UINT amountOfNumber) {
 	return s;
 }
 
-
 void Board::Render(CMario * mario, int RemainingTime) {
-	Sprite->Draw(x+155, y);
+	Sprite->Draw(x+ HUD_POS_X, y);
 	//Map
-	if (CGame::GetInstance()->GetScene() == SCENE_TEST || CGame::GetInstance()->GetScene() == MAP1_1_1) {
-		font.Draw(x + 53, y + 12, FillNumber(std::to_string(1), 1));
-	}
-	else if (CGame::GetInstance()->GetScene() == MAP1_3 || CGame::GetInstance()->GetScene() == MAP1_3_1) {
-		font.Draw(x + 53, y + 12, FillNumber(std::to_string(3), 1));
-	}
+	font.Draw(x + MAP_POS_X, y + MAP_POS_Y, FillNumber(std::to_string(1), 1));
 	//score
-	font.Draw(x + 70, y + 20, FillNumber(std::to_string(mario->GetScore()), 7));
+	font.Draw(x + SCORE_POS_X, y + SCORE_POS_Y, FillNumber(std::to_string(mario->GetScore()), 7));
 	//coin
-	font.Draw(x + 150, y + 12, FillNumber(std::to_string(mario->GetCoinCollect()), 2));
+	font.Draw(x + COIN_POS_X, y + COIN_POS_Y, FillNumber(std::to_string(mario->GetCoinCollect()), 2));
 	//Time
-	font.Draw(x + 140, y + 20, FillNumber(std::to_string(RemainingTime), 3));
+	font.Draw(x + TIME_POS_X, y + TIME_POS_Y, FillNumber(std::to_string(RemainingTime), 3));
 	//Live
-	font.Draw(x + 47, y + 20, FillNumber(std::to_string(3), 1));
+	font.Draw(x + LIVE_POS_X, y + LIVE_POS_Y, FillNumber(std::to_string(3), 1));
 	//Logo
 	LPDIRECT3DTEXTURE9 TexPatch = CTextures::GetInstance()->Get(TEXID_FONT35);
-	if (mario->GetLevel() == MARIO_LEVEL_SMALL) {
-		LPSPRITE SpriteTileLogo = new CSprite(0, 8, 43, 24, 50, TexPatch);
-		SpriteTileLogo->Draw(x + 25, y + 20);
-	}
-	else {
-		LPSPRITE SpriteTileLogo = new CSprite(0, 8, 50, 24, 57, TexPatch);
-		SpriteTileLogo->Draw(x + 25, y + 20);
-	}
+	LPSPRITE SpriteTileLogo = new CSprite(0, 8, 50, 24, 57, TexPatch);
+	SpriteTileLogo->Draw(x + LOGO_POS_X, y + LOGO_POS_Y);
 	//Power
 	if (mario->isRunning || mario->isFlying)
 	{
 		//float marioSpeed = MARIO_RUNNING_MAXSPEED / 7;
 		if (mario->RunningStacks >= 1)
 		{
-			DrawPowerBar(x + 70, y + 12);
+			DrawPowerBar(x + RUNNING_STACK_1_POS_X, y + RUNNING_STACK_POS_Y);
 		}
 		if (mario->RunningStacks >= 2)
 		{
-			DrawPowerBar(x + 78, y + 12);
+			DrawPowerBar(x + RUNNING_STACK_2_POS_X, y + RUNNING_STACK_POS_Y);
 		}
 		if (mario->RunningStacks >= 3)
 		{
-			DrawPowerBar(x + 86, y + 12);
+			DrawPowerBar(x + RUNNING_STACK_3_POS_X, y + RUNNING_STACK_POS_Y);
 		}
 		if (mario->RunningStacks >= 4)
 		{
-			DrawPowerBar(x + 94, y + 12);
+			DrawPowerBar(x + RUNNING_STACK_4_POS_X, y + RUNNING_STACK_POS_Y);
 		}
 		if (mario->RunningStacks >= 5)
 		{
-			DrawPowerBar(x + 102, y + 12);
+			DrawPowerBar(x + RUNNING_STACK_5_POS_X, y + RUNNING_STACK_POS_Y);
 		}
 		if (mario->RunningStacks >= 6)
 		{
-			DrawPowerBar(x + 110, y + 12);
+			DrawPowerBar(x + RUNNING_STACK_6_POS_X, y + RUNNING_STACK_POS_Y);
 		}
 		if (abs(mario->vx) == MARIO_RUNNING_MAXSPEED)
 		{
-			//DrawPowerBar(x + 118, y + 12);
 			LPSPRITE SpriteTilePower = new CSprite(0, 12, 33, 27, 40, TexPatch);
-			SpriteTilePower->Draw(x + 121, y + 12);
+			SpriteTilePower->Draw(x + RUNNING_STACK_7_POS_X, y + RUNNING_STACK_POS_Y);
 		}
 	}
 	//Card
-	if (mario->gotCard) {
+	vector<int> listCards = mario->listCards;
+	for (int i = 0; i < listCards.size();i++) {
 		LPDIRECT3DTEXTURE9 Tex = CTextures::GetInstance()->Get(TEXID_FONT35);
-		if (mario->gotCard == BOX_STATE_MUSHROOM) {
+		if (listCards[i] == BOX_STATE_MUSHROOM) {
 			LPSPRITE SpriteTile = new CSprite(64, 187, 33, 211, 61, Tex);
-			SpriteTile->Draw(x+185, y + 5);
+			SpriteTile->Draw(x + CARD_POS_X + (CARD_DISTANCE * i), y + CARD_POS_Y);
 		}
-		else if (mario->gotCard == BOX_STATE_FLOWER) {
+		else if (listCards[i] == BOX_STATE_FLOWER) {
 			LPSPRITE SpriteTile = new CSprite(65, 211, 33, 235, 61, Tex);
-			SpriteTile->Draw(x + 185, y+5);
+			SpriteTile->Draw(x + CARD_POS_X + (CARD_DISTANCE * i), y + CARD_POS_Y);
 		}
-		else if (mario->gotCard == BOX_STATE_STAR) {
+		else if (listCards[i] == BOX_STATE_STAR) {
 			LPSPRITE SpriteTile = new CSprite(66, 235, 33, 259, 61, Tex);
-			SpriteTile->Draw(x + 185, y + 5);
+			SpriteTile->Draw(x + CARD_POS_X + (CARD_DISTANCE * i), y + CARD_POS_Y);
 		}
 	}
 }

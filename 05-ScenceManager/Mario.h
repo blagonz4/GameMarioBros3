@@ -36,6 +36,7 @@
 #define MARIO_SLOW_FALLING_SPEED			0.03f
 #define MARIO_FLYING_TIME					1500
 #define MARIO_TAIL_FLYING_TIME				250
+#define MARIO_DEFAULT_LIFE					3
 //----------------------Mario------------------------
 #define MARIO_STATE_IDLE					0
 #define MARIO_STATE_WALK_RIGHT				1000
@@ -196,6 +197,7 @@
 #define MARIO_LIMIT_JUMP_TIME				450
 #define MARIO_LIMIT_FLY_TIME				400
 #define ENEMY_PUSH_BACK						3.f
+
 class CMario : public CGameObject {
 	DWORD untouchable_start;
 	DWORD kicking_start;
@@ -219,12 +221,16 @@ public:
 	float lastStandingY = 0;
 	float limitJumpVelocity = MARIO_JUMP_SPEED_MAX;
 	bool isWannaDown = false;
+
 	int score;
+	int life = MARIO_DEFAULT_LIFE;
 	int coinCollect;
-	int turning_state = 0;
 	int gotCard = 0;
-	int RunningStacks = 0;
+	int turning_state = 0;
 	int level;
+	vector <int> listCards;
+
+	int RunningStacks = 0;
 	int prelevel;
 	int untouchable;
 	//state

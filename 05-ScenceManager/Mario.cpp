@@ -230,7 +230,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					isFlying = false;
 				}
 
-				DebugOut(L"e->obj: %d \n", e->obj->GetType());
 				GetBoundingBox(mLeft, mTop, mRight, mBottom);
 				e->obj->GetBoundingBox(oLeft, oTop, oRight, oBottom);
 				
@@ -494,6 +493,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 							gb->isFinish = true;
 							break;
 						case GOLD_BRICK_MODEL_PSWITCH:
+						case GOLD_BRICK_MODEL_MUSHROOM_1_UP:
 							gb->SetState(GOLD_BRICK_STATE_UNBOX);
 							break;
 						}
@@ -607,25 +607,22 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					{
 					case BOX_STATE_FLOWER:
 						box->stateUnbox = box->GetState();
-						this->gotCard = box->stateUnbox;
 						box->isUnbox = true;
 						box->SetState(BOX_STATE_FLOWER_UP);
 						break;
 					case BOX_STATE_MUSHROOM:
 						box->stateUnbox = box->GetState();
-						this->gotCard = box->stateUnbox;
 						box->isUnbox = true;
 						box->SetState(BOX_STATE_MUSHROOM_UP);
 						break;
 					case BOX_STATE_STAR:
 						box->stateUnbox = box->GetState();
-						this->gotCard = box->stateUnbox;
 						box->isUnbox = true;
 						box->SetState(BOX_STATE_MUSHROOM_UP);
 						break;
 					}
-					box->x += 2; //nhich box qua 1 xiu bay len cho dep
-					box->vy = -MARIO_GRAVITY * 2 * dt;
+					this->listCards.push_back(box->stateUnbox);
+					return;
 				}
 				else if (e->obj->GetType() == BOOMERANGBROTHER) {
 					BoomerangBrother *bb = dynamic_cast<BoomerangBrother *>(e->obj);

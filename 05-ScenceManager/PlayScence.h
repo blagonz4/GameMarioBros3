@@ -41,6 +41,7 @@
 #include "MusicBrick.h"
 #include "BoomerangBrother.h"
 #include "Grid.h"
+#include "BackUp.h"
 
 #define MAP_1_COURSE_CLEAR_X	2635
 #define MAP_1_COURSE_CLEAR_Y	275
@@ -92,6 +93,8 @@ public:
 	Grid* GetGrid() { return grid; }
 	void GetObjectFromGrid();
 	void UpdateGrid();
+	void LoadBackUp();
+	void BackUpPlayer();
 	//friend class CPlayScenceKeyHandler;
 };
 

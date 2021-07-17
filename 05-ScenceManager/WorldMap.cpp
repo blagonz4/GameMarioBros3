@@ -252,8 +252,14 @@ void WorldMap::Load()
 
 	f.close();
 
+	BackUp* backup = BackUp::GetInstance();
 	CTextures::GetInstance()->Add(ID_TEX_BBOX, L"textures\\bbox.png", D3DCOLOR_XRGB(255, 255, 255));
-
+	for (size_t i = 1; i < objects.size(); i++)
+		if (objects[i]->GetType() == PORTAL) {
+			CPortal* portal = dynamic_cast<CPortal*>(objects[i]);
+			if (portal->GetSceneId() == backup->scene && backup->scene != 0)
+				player->SetPosition(objects[i]->x, objects[i]->y);
+		}			
 	DebugOut(L"[INFO] Done loading scene resources %s\n", sceneFilePath);
 }
 
@@ -368,4 +374,16 @@ void WorldMapKeyHandler::OnKeyUp(int KeyCode) {
 		break;
 	}
 
+}
+
+void WorldMap::LoadBackUp() {
+	BackUp* backup = BackUp::GetInstance();
+	backup->LoadBackUp(player);
+}
+
+void WorldMap::BackUpPlayer() {
+	if (player != NULL) {
+		BackUp* backup = BackUp::GetInstance();
+		backup->BackUpMario(player);
+	}
 }

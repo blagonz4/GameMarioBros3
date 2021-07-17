@@ -351,6 +351,9 @@
     <ClCompile Include="WorldMap.cpp">
       <Filter>FrameWork\SceneManager\WorldMap</Filter>
     </ClCompile>
+    <ClCompile Include="BackUp.cpp">
+      <Filter>Game Object\Player</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animations.h">
@@ -508,6 +511,9 @@
     </ClInclude>
     <ClInclude Include="WorldMap.h">
       <Filter>FrameWork\SceneManager\WorldMap</Filter>
+    </ClInclude>
+    <ClInclude Include="BackUp.h">
+      <Filter>Game Object\Player</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

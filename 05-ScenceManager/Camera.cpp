@@ -13,7 +13,7 @@ void Camera::Update(DWORD dt) {
 	mw = map->GetMapWidth();
 	mh = map->GetMapHeight();
 
-	if (game->GetScene() == SCENE_TEST || game->GetScene() == MAP1_3 || game->GetScene() == MAP1_3_1) {
+	if (game->GetScene() == MAP1_1 || game->GetScene() == MAP1_3 || game->GetScene() == MAP1_3_1) {
 
 		if (mario == NULL) return;
 
@@ -27,11 +27,11 @@ void Camera::Update(DWORD dt) {
 		if (__cy > mh - sh && !mario->isFlying)
 			isTurnOn = false;
 
-		if (isTurnOn) {
+		if (isTurnOn && py > 190) {
 			if (__cy >= CAMERA_COORDINATE_Y - 170)
 				__cy-=20;
 		}		
-		else if (py < 175)  __cy = CAMERA_COORDINATE_Y - 170;
+		else if (py < 190)  __cy = 0;
 		else __cy = CAMERA_COORDINATE_Y;
 
 		if (__cy <= 0)

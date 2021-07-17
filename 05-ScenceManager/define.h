@@ -141,7 +141,7 @@ enum ObjectType {
 
 #define MAX_SCENE_LINE					1024
 #define WORLDMAP						0
-#define SCENE_TEST						1
+#define MAP1_1							1
 #define MAP1_1_1						2
 #define	MAP1_3							3
 #define MAP1_3_1						4

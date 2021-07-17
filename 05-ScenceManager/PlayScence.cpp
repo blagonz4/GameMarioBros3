@@ -406,11 +406,14 @@ void CPlayScene::Update(DWORD dt)
 			}
 			if (gb->state == GOLD_BRICK_STATE_UNBOX)
 			{
-				if (!isHavePSwitch) {
+				if (!isHavePSwitch && gb->model == GOLD_BRICK_MODEL_PSWITCH) {
 					PSwitch* pswitch = new PSwitch(gb->x, gb->y - QUESTION_BRICK_BBOX_HEIGHT);
-					//TurnIntoUnit(pswitch);
 					objects.push_back(pswitch);
 					isHavePSwitch = true;
+				}
+				if (!gb->isUnbox && gb->model == GOLD_BRICK_MODEL_MUSHROOM_1_UP) {
+					QuestionBrickDropItem(gb->model, gb->x, gb->y);
+					gb->isUnbox = true;
 				}
 			}
 		}
@@ -692,6 +695,7 @@ void CPlayScene::QuestionBrickDropItem(float model, float x, float y) {
 	case QUESTION_BRICK_MODEL_COIN:
 		break;
 	case QUESTION_BRICK_MODEL_POWER_UP:
+	case GOLD_BRICK_MODEL_MUSHROOM_1_UP:
 		if (player->GetLevel() == MARIO_LEVEL_SMALL) {
 			Mushroom* mr = new Mushroom(x, y, MUSHROOM_MODEL_RED);
 			objects.push_back(mr);
@@ -713,7 +717,7 @@ void CPlayScene::ShowEffectPoint(CGameObject* obj, float model) {
 
 void CPlayScene::AnnounceSceneEnd(int boxState) {
 	text = new Font();
-	if (game->GetScene() == SCENE_TEST) {
+	if (game->GetScene() == MAP1_1) {
 		text->Draw(MAP_1_COURSE_CLEAR_X, MAP_1_COURSE_CLEAR_Y, "COURSE CLEAR !");
 		text->Draw(MAP_1_YGAC_X, MAP_1_YGAC_Y, "YOU GOT A CARD");
 		LPDIRECT3DTEXTURE9 Tex = CTextures::GetInstance()->Get(TEXID_FONT35);
@@ -753,4 +757,16 @@ void CPlayScene::AnnounceSceneEnd(int boxState) {
 
 void CPlayScene::TurnIntoUnit(CGameObject* obj) {
 	//Unit* unit = new Unit(grid, obj, obj->x, obj->y);
+}
+
+void CPlayScene::LoadBackUp() {
+	BackUp* backup = BackUp::GetInstance();
+	backup->LoadBackUp(player);
+}
+
+void CPlayScene::BackUpPlayer() {
+	if (player != NULL) {
+		BackUp* backup = BackUp::GetInstance();
+		backup->BackUpMario(player);
+	}
 }

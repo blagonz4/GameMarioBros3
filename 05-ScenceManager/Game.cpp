@@ -408,6 +408,10 @@ void CGame::SwitchScene(int scene_id)
 {
 	DebugOut(L"[INFO] Switching to scene %d\n", scene_id);
 
+	if (dynamic_cast<CPlayScene*>(scenes[current_scene]))
+		((CPlayScene*)scenes[current_scene])->BackUpPlayer();
+	if (dynamic_cast<WorldMap*>(scenes[current_scene]))
+		((WorldMap*)scenes[current_scene])->BackUpPlayer();
 	scenes[current_scene]->Unload();
 
 	CTextures::GetInstance()->Clear();
@@ -418,4 +422,8 @@ void CGame::SwitchScene(int scene_id)
 	LPSCENE s = scenes[scene_id];
 	CGame::GetInstance()->SetKeyHandler(s->GetKeyEventHandler());
 	s->Load();
+	if (dynamic_cast<CPlayScene*>(scenes[current_scene]))
+		((CPlayScene*)scenes[current_scene])->LoadBackUp();
+	if (dynamic_cast<WorldMap*>(scenes[current_scene]))
+		((WorldMap*)scenes[current_scene])->LoadBackUp();
 }

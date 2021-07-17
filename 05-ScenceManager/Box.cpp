@@ -20,12 +20,13 @@ void Box::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 
 	CGameObject::Update(dt, coObjects);
-	y += dy;
+	y += dy; x += dx;
 
 	if (!isUnbox) {
 		int stateBox = (rand() % 3 + 1) * 100;
 		SetState(stateBox);
 	}
+	else vy = -0.05f;
 
 }
 
