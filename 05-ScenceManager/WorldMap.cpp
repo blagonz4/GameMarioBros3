@@ -57,7 +57,7 @@ void WorldMap::_ParseSection_ANIMATIONS(string line)
 
 	if (tokens.size() < 3) return; // skip invalid lines - an animation must at least has 1 frame and 1 frame time
 
-	//DebugOut(L"--> %s\n",ToWSTR(line).c_str());
+	DebugOut(L"--> %s\n",ToWSTR(line).c_str());
 
 	LPANIMATION ani = new CAnimation();
 
@@ -113,7 +113,7 @@ void WorldMap::_ParseSection_OBJECTS(string line)
 		DebugOut(L"--> %s\n", ToWSTR(line).c_str());
 
 		if (line[0] == '#') continue;
-		//if (tokens.size() < 3) continue; // skip invalid lines - an object set must have at least id, x, y
+		if (tokens.size() < 3) continue; // skip invalid lines - an object set must have at least id, x, y
 
 		int object_type = atoi(tokens[0].c_str());
 		float x = (float)atof(tokens[1].c_str());
@@ -154,17 +154,31 @@ void WorldMap::_ParseSection_OBJECTS(string line)
 		case OBJECT_TYPE_BUSH:
 			obj = new Bush();
 			break;
-		case OBJECT_TYPE_CARD:
-			obj = new Card();
-			break;
-		case OBJECT_TYPE_START:
-			obj = new Start();
-			break;
-		case OBJECT_TYPE_SCENE: {
-			float model = (float)atof(tokens[4].c_str());
-			obj = new Scene(model);
-			break;
+		case OBJECT_TYPE_CARD:{
+			float cgLeft = (float)atof(tokens[5].c_str());
+			float cgUp = (float)atof(tokens[6].c_str());
+			float cgRight = (float)atof(tokens[7].c_str());
+			float cgDown = (float)atof(tokens[8].c_str());
+			obj = new Card(cgLeft, cgUp, cgRight, cgDown);
+			break; 
 		}
+		case OBJECT_TYPE_START: {
+			float cgLeft = (float)atof(tokens[5].c_str());
+			float cgUp = (float)atof(tokens[6].c_str());
+			float cgRight = (float)atof(tokens[7].c_str());
+			float cgDown = (float)atof(tokens[8].c_str());
+			obj = new Start(cgLeft, cgUp, cgRight, cgDown);
+			break;
+		}		
+		case OBJECT_TYPE_SCENE: {
+			float cgLeft = (float)atof(tokens[5].c_str());
+			float cgUp = (float)atof(tokens[6].c_str());
+			float cgRight = (float)atof(tokens[7].c_str());
+			float cgDown = (float)atof(tokens[8].c_str());
+			float model = (float)atof(tokens[4].c_str());
+			obj = new Scene(model, cgLeft, cgUp, cgRight, cgDown);
+			break;
+		}			
 		default:
 			DebugOut(L"[ERR] Invalid object type: %d\n", object_type);
 			return;
@@ -208,7 +222,6 @@ void WorldMap::Load()
 	ifstream f;
 	f.open(sceneFilePath);
 
-	// current resource section flag
 	int section = SCENE_SECTION_UNKNOWN;
 
 	char str[MAX_SCENE_LINE];
@@ -235,10 +248,7 @@ void WorldMap::Load()
 			section = SCENE_SECTION_DRAWMAP; continue;
 		}
 		if (line[0] == '[') { section = SCENE_SECTION_UNKNOWN; continue; }
-
-		//
-		// data section
-		//
+		
 		switch (section)
 		{
 		case SCENE_SECTION_TEXTURES: _ParseSection_TEXTURES(line); break;
@@ -265,15 +275,13 @@ void WorldMap::Load()
 
 void WorldMap::Update(DWORD dt)
 {
-	// We know that Mario is the first object in the list hence we won't add him into the colliable object list
-	// TO-DO: This is a "dirty" way, need a more organized way 
 	CGameObject* obj = NULL;
 
 	vector<LPGAMEOBJECT> coObjects;
 
 	playTime -= dt;
 
-	for (size_t i = 1; i < objects.size(); i++)
+	for (size_t i = 0; i < objects.size(); i++)
 	{
 		coObjects.push_back(objects[i]);
 	}
@@ -283,18 +291,10 @@ void WorldMap::Update(DWORD dt)
 		LPGAMEOBJECT e = objects[i];
 		if (objects[i]->CheckObjectInCamera())
 			objects[i]->Update(dt, &coObjects);
-		else objects[i]->Update(0, &coObjects);
 
 	}
-
-	for (size_t i = 0; i < objects.size(); i++) {
-		if (objects.at(i)->isFinish)
-			objects.erase(objects.begin() + i);
-	}
-
 	Camera* camera = new Camera(player, game, map);
 	camera->Update(dt);
-
 
 	//skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
 	if (player == NULL) return;
@@ -305,10 +305,7 @@ void WorldMap::Render()
 {
 	map->DrawMap();
 	for (size_t i = 0; i < objects.size(); i++) {
-
-		if (objects[i]->CheckObjectInCamera())
 			objects[i]->Render();
-
 	}
 	Board* board = new Board(CGame::GetInstance()->GetCamX(), CGame::GetInstance()->GetCamY() + SCREEN_HEIGHT - DISTANCE_FROM_BOTTOM_CAM_TO_TOP_BOARD);
 	board->Render(player, playTime);
@@ -331,48 +328,45 @@ void WorldMap::Unload()
 
 void WorldMapKeyHandler::OnKeyDown(int KeyCode)
 {
+	CMario* player = ((WorldMap*)scence)->GetPlayer();
+	if (player != NULL)
+	{
+		switch (KeyCode)
+		{
+		case DIK_RIGHT:
+			if (player->cgRight) {
+				player->vx = PLAYER_SPEED;
+				player->vy = 0;
+			}			
+			break;
+		case DIK_LEFT:
+			if (player->cgLeft) {
+				player->vx = -PLAYER_SPEED;
+				player->vy = 0;
+			}
+			break;
+		case DIK_UP:
+			if (player->cgUp) {
+				player->vx = 0;
+				player->vy = -PLAYER_SPEED;
+			}
+			break;
+		case DIK_DOWN:
+			if (player->cgDown) {
+				player->vx = 0;
+				player->vy = PLAYER_SPEED;
+			}
+			break;
+		}
+	}
 }
 
 void WorldMapKeyHandler::KeyState(BYTE *states)
 {
-	CGame *game = CGame::GetInstance();
-	CMario *mario = ((WorldMap*)scence)->GetPlayer();
-	// disable control key when Mario die 
-	if (mario->GetState() == MARIO_STATE_DIE) return;
-	//--------------------RUN/TURN/FLY/WALK----------------------------
-
-	if (game->IsKeyDown(DIK_RIGHT)) {
-		mario->vx += MARIO_INTRO_WALKING_SPEED;
-	}
-	if (game->IsKeyDown(DIK_LEFT)) {
-		mario->vx -= MARIO_INTRO_WALKING_SPEED;
-	}
-	if (game->IsKeyDown(DIK_UP)) {
-		mario->vy -= MARIO_INTRO_WALKING_SPEED;
-	}
-	if (game->IsKeyDown(DIK_DOWN)) {
-		mario->vy += MARIO_INTRO_WALKING_SPEED;
-	}
 
 }
 
 void WorldMapKeyHandler::OnKeyUp(int KeyCode) {
-	CMario *mario = ((WorldMap*)scence)->GetPlayer();
-
-	switch (KeyCode) {
-	case DIK_RIGHT:
-		mario->vx = 0;
-		break;
-	case DIK_LEFT:
-		mario->vx = 0;
-		break;
-	case DIK_UP:
-		mario->vy = 0;
-		break;
-	case DIK_DOWN:
-		mario->vy = 0;
-		break;
-	}
 
 }
 

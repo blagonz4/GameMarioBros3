@@ -31,9 +31,6 @@
     <Filter Include="FrameWork\SceneManager">
       <UniqueIdentifier>{df119769-2eae-4e06-ab4e-d36ca29b6638}</UniqueIdentifier>
     </Filter>
-    <Filter Include="FrameWork\Sound">
-      <UniqueIdentifier>{d56b8275-0c04-4ef3-b16a-d8a8d4e11354}</UniqueIdentifier>
-    </Filter>
     <Filter Include="FrameWork\Sprites">
       <UniqueIdentifier>{a506713a-9010-4278-9d64-a05f17914b33}</UniqueIdentifier>
     </Filter>
@@ -132,9 +129,6 @@
     </Filter>
     <Filter Include="FrameWork\HUD\Font">
       <UniqueIdentifier>{8fc94b85-3c71-45d0-bbeb-69054cb9ee39}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="FrameWork\HUD\Power">
-      <UniqueIdentifier>{5e1808c9-325a-41ee-9f3e-7d4ecff45c8b}</UniqueIdentifier>
     </Filter>
     <Filter Include="Game Object\ObjetWorldMap">
       <UniqueIdentifier>{a74154bb-948f-4139-a69e-8e0932f64a2c}</UniqueIdentifier>

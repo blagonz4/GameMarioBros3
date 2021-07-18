@@ -65,6 +65,10 @@ enum Type {
 	MUSHROOM_1_UP = 51,
 	PORTAL = 52,
 	BRICK = 57,
+	BUSH = 58,
+	SCENE = 59,
+	START = 60,
+	CARD = 61,
 
 //----------INTRO---------------
 	GROUND = 58,
@@ -137,6 +141,7 @@ enum ObjectType {
 #define OBJECT_TYPE_INTRO_CURTAIN		59
 #define OBJECT_TYPE_INTRO_ARROW			60
 #define OBJECT_TYPE_INTRO_SHININGTHREE	61
+#define OBJECT_TYPE_STOPPOINT			62
 #define GRID							999
 
 #define MAX_SCENE_LINE					1024
@@ -148,6 +153,8 @@ enum ObjectType {
 #define INTRO							5
 #define TEXID_FONT35					35
 #define GAME_TIME_LIMIT					999999
+
+#define OBJECT_BBOX_WIDTH				4
 //-------------------------------Board-------------------
 #define TEXID_BOARD								45
 #define DISTANCE_FROM_BOTTOM_CAM_TO_TOP_BOARD	90.f

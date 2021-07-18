@@ -1,9 +1,14 @@
 #include "Scene.h"
 
 
-Scene::Scene(float model)
+Scene::Scene(float model,float cgLeft, float cgTop, float cgRight, float cgBottom)
 {
 	this->model = model;
+	this->cgLeft = cgLeft;
+	this->cgUp = cgTop;
+	this->cgRight = cgRight;
+	this->cgDown = cgBottom;
+	eType = Type::SCENE;
 }
 
 void Scene::Render()
@@ -29,11 +34,19 @@ void Scene::Render()
 		ani = SCENE_ANI_6;
 		break;
 	}
-	animation_set->at(ani)->Render(x, y);
+	if (ani != -1)
+		animation_set->at(ani)->Render(x, y);
 }
-void Scene::GetBoundingBox(float& l, float& t, float& r, float& b)
+
+void Scene::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 {
-	l = t = r = b = 0;
+	if (eType != BUSH)
+	{
+		left = x + 2;
+		top = y + 2;
+		right = left + OBJECT_BBOX_WIDTH;
+		bottom = top + OBJECT_BBOX_WIDTH;
+	}
 }
 
 Scene::~Scene()

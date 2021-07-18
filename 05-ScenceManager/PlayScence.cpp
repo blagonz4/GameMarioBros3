@@ -210,17 +210,6 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		case OBJECT_TYPE_BUSH:
 			obj = new Bush();
 			break;
-		case OBJECT_TYPE_CARD:
-			obj = new Card();
-			break;
-		case OBJECT_TYPE_START:
-			obj = new Start();
-			break;
-		case OBJECT_TYPE_SCENE: {
-			float model = (float)atof(tokens[4].c_str());
-			obj = new Scene(model);
-			break;
-		}
 		case OBJECT_TYPE_MUSIC_BRICK: {
 			float model = (float)atof(tokens[4].c_str());
 			obj = new MusicBrick(x, y, model);
@@ -366,7 +355,7 @@ void CPlayScene::Update(DWORD dt)
 
 		if (objects[i]->CheckObjectInCamera())
 			objects[i]->Update(dt, &coObjects);
-		else objects[i]->Update(0, &coObjects);
+		//else objects[i]->Update(0, &coObjects);
 
 		if (e->GetType() == QUESTIONBRICK)
 		{
@@ -391,7 +380,6 @@ void CPlayScene::Update(DWORD dt)
 				Leaf* leaf = new Leaf(brick->x, brick->y - 10);
 				//TurnIntoUnit(leaf);
 				objects.push_back(leaf);
-
 				return;
 			}
 		}
@@ -487,13 +475,6 @@ void CPlayScene::Update(DWORD dt)
 				ShowEffectPoint(plant, POINT_EFFECT_MODEL_200);
 			}
 		}
-		if (e->GetType() == BOX) {
-			Box* box = dynamic_cast<Box*>(e);
-			if (box->isUnbox) {
-
-			}
-		}
-
 	}
 
 	for (size_t i = 0; i < objects.size(); i++) {

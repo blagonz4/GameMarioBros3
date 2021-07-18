@@ -48,7 +48,7 @@ protected:
 	Type eType;
 	ObjectType objType;
 public:
-
+	float cgLeft, cgRight, cgUp, cgDown;
 	float x; 
 	float y;
 
@@ -118,7 +118,20 @@ public:
 
 	Type GetType() { return this->eType; };
 	ObjectType GetObjectType() { return this->objType; };
-
+	void SetMove(bool cLeft, bool cUp, bool cRight, bool cDown)
+	{
+		cgLeft = cLeft;
+		cgRight = cRight;
+		cgUp = cUp;
+		cgDown = cDown;
+	};
+	void GetMove(bool& cLeft, bool& cUp, bool& cRight, bool& cDown)
+	{
+		cLeft = cgLeft;
+		cRight = cgRight;
+		cUp = cgUp;
+		cDown = cgDown;
+	};
 	~CGameObject();
 };
 

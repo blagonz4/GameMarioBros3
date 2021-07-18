@@ -18,7 +18,7 @@ CMario::CMario(float x, float y)
 	start_y = y;
 	this->x = x;
 	this->y = y;
-
+	SetMove(false, false, true, false);
 	RunningStacks = 0;
 	eType = Type::MARIO;
 }
@@ -221,7 +221,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			{
 				CPlayScene* scene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
 				LPCOLLISIONEVENT e = coEventsResult[i];
-
 				if (e->ny != 0) {
 					isOnGround = true;
 					isJumping = false;
@@ -232,13 +231,13 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 				GetBoundingBox(mLeft, mTop, mRight, mBottom);
 				e->obj->GetBoundingBox(oLeft, oTop, oRight, oBottom);
-				
+
 				if (e->obj->GetType() == PLATFORM) {
 					if (e->ny < 0)
 					{
 						vy = 0;
 						lastStandingY = y;
-						
+
 					}
 					if (e->ny > 0)
 					{
@@ -316,7 +315,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 									SetState(MARIO_STATE_DIE);
 							}
 						}
-						else { goomba->x += goomba->nx * ENEMY_PUSH_BACK/2; this->x += dx; }
+						else { goomba->x += goomba->nx * ENEMY_PUSH_BACK / 2; this->x += dx; }
 					}
 				}
 				else if (e->obj->GetType() == KOOPAS)
@@ -363,7 +362,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 								this->isHolding = true;
 								koopa->isBeingHeld = true;
 							}
-						}				
+						}
 						else if (koopa->GetState() == KOOPAS_STATE_DEFEND)
 						{
 							this->SetState(MARIO_STATE_KICK);
@@ -483,7 +482,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						lastStandingY = y;
 					}
 				}
-				else if (e->obj->GetType() == GOLDBRICK) { 
+				else if (e->obj->GetType() == GOLDBRICK) {
 					GoldBrick* gb = dynamic_cast<GoldBrick*>(e->obj);
 					int model = (int)gb->model;
 					if (e->ny > 0)
@@ -518,17 +517,17 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 								mb->vy = QUESTION_BRICK_SPEED_UP / 2;
 								lastStandingY = y;
 								if (game->IsKeyDown(DIK_S)) {
-									this->vy -= MARIO_FLY_SPEED * 5*dt; //nhay qua map phu
+									this->vy -= MARIO_FLY_SPEED * 5 * dt; //nhay qua map phu
 									mb->vy = QUESTION_BRICK_SPEED_UP;
 								}
 							}
 						}
 						else {
 							this->vy = -MARIO_DIE_DEFLECT_SPEED;
-							mb->vy = QUESTION_BRICK_SPEED_UP/2;
+							mb->vy = QUESTION_BRICK_SPEED_UP / 2;
 							lastStandingY = y;
 						}
-						
+
 					}
 					else if (e->ny > 0) {//nhay tu duoi len
 						if (mb->GetModel() == MUSIC_BRICK_MODEL_HIDDEN)
@@ -539,7 +538,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 							ay = MARIO_GRAVITY;
 							isReadyToJump = false;
 							this->vy = MARIO_JUMP_SPEED_MAX;
-						}					
+						}
 					}
 					if (e->nx != 0)
 					{
@@ -688,7 +687,33 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						else SetState(MARIO_STATE_DIE);
 					}
 				}
-				else if (e->obj->GetType() == POOP) {
+				else if (e->obj->GetType() == POOP) {}
+				else if (e->obj->GetType() == SCENE) {
+					x = e->obj->x;
+					y = e->obj->y;
+					this->vx = this->vy = 0;
+					Scene* tmp = dynamic_cast<Scene*>(e->obj);
+					bool cl, cr, cu, cd;
+					tmp->GetMove(cl, cu, cr, cd);
+					SetMove(cl, cu, cr, cd);
+				}
+				else if (e->obj->GetType() == CARD) {
+					x = e->obj->x;
+					y = e->obj->y;
+					this->vx = this->vy = 0;
+					Card* tmp = dynamic_cast<Card*>(e->obj);
+					bool cl, cr, cu, cd;
+					tmp->GetMove(cl, cu, cr, cd);
+					SetMove(cl, cu, cr, cd);
+				}
+				else if (e->obj->GetType() == START) {
+					x = e->obj->x;
+					y = e->obj->y;
+					this->vx = this->vy = 0;
+					Start* tmp = dynamic_cast<Start*>(e->obj);
+					bool cl, cr, cu, cd;
+					tmp->GetMove(cl, cu, cr, cd);
+					SetMove(cl, cu, cr, cd);
 				}
 			}
 		}

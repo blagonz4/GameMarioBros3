@@ -37,6 +37,7 @@
 #define MARIO_FLYING_TIME					1500
 #define MARIO_TAIL_FLYING_TIME				250
 #define MARIO_DEFAULT_LIFE					3
+#define PLAYER_SPEED						0.1f
 //----------------------Mario------------------------
 #define MARIO_STATE_IDLE					0
 #define MARIO_STATE_WALK_RIGHT				1000
@@ -56,6 +57,7 @@
 #define MARIO_STATE_SPIN					15000	//racoon
 #define MARIO_STATE_RUN_MAXSPEED			16000
 #define MARIO_STATE_WORLD_MAP				17000
+
 //----------------------Mario SMALL------------------------
 #define MARIO_ANI_SMALL_IDLE_RIGHT			0
 #define MARIO_ANI_SMALL_IDLE_LEFT			1
@@ -216,6 +218,7 @@ class CMario : public CGameObject {
 public:
 	float start_x;			// initial position of Mario at scene
 	float start_y;
+	bool cgLeft, cgRight, cgUp, cgDown;
 	vector <LPGAMEOBJECT> listFire;
 	vector <LPGAMEOBJECT> listEffect;
 	float lastStandingY = 0;
@@ -323,4 +326,19 @@ public:
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
 	void Reset();
 	void ShowEffectPoint(CGameObject* obj, float model);
+
+	void SetMove(bool cLeft, bool cUp, bool cRight, bool cDown)
+	{
+		cgLeft = cLeft;
+		cgRight = cRight;
+		cgUp = cUp;
+		cgDown = cDown;
+	};
+	void GetMove(bool& cLeft, bool& cUp, bool& cRight, bool& cDown)
+	{
+		cLeft = cgLeft;
+		cRight = cgRight;
+		cUp = cgUp;
+		cDown = cgDown;
+	};
 };
