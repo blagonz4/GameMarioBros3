@@ -1,7 +1,6 @@
 #include "Poop.h"
 #include "Leaf.h"
 
-
 Poop::Poop(float X, float Y,CMario* mario)
 {
 	this->x = X; this->y = Y;

@@ -1,7 +1,6 @@
 #include "FireBall.h"
 #include "Mario.h"
 #include "PlayScence.h"
-#include "Scence.h"
 
 FireBall::FireBall(float X, float Y,float defineVx, float defineVy)
 {
@@ -18,8 +17,8 @@ void FireBall::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	if ( defineVy == FIRE_GRAVITY )
 		vy += defineVy * dt;
-	else vy = defineVy * dt;
-	vx = nx * defineVx*dt;
+	else vy = defineVy;
+	vx = nx * defineVx;
 
 	CGameObject::Update(dt, coObjects);
 
@@ -91,7 +90,7 @@ void FireBall::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			{
 				if (defineVy == FIRE_GRAVITY) {
 					e->obj->nx = this->nx;
-					e->obj->SetState(BOOM_BROTHER_STATE_DIE);
+					e->obj->SetState(BOOMERANG_BROTHER_STATE_DIE);
 					this->isFinish = true;
 				}
 				else {

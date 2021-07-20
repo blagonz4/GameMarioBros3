@@ -1,10 +1,9 @@
-#include"Mario.h"
+#include "Mario.h"
 #include "EffectPoint.h"
 #include "EffectDisappear.h"
 #include "EffectTailHit.h"
 #include "EffectBrokenBrick.h"
 #include "PlayScence.h"
-
 
 CMario::CMario(float x, float y) 
 {
@@ -94,14 +93,9 @@ void CMario::TimingFlag()
 }
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
-
 	CGame *game = CGame::GetInstance();
-	// Calculate dx, dy 
 	CGameObject::Update(dt);
-	//if (vx * nx < 0 && !isJumping) {
-	//	SetState(MARIO_STATE_TURN);
-	//}
-	// Simple fall down
+
 	if (CGame::GetInstance()->GetScene() != WORLDMAP)
 	{
 		if (vx * ax < 0 && abs(vx) > MARIO_WALKING_MAXSPEED
@@ -271,8 +265,9 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 							{
 								if (goomba->Health == 2) {
 									goomba->Health = 1;
+									goomba->SetState(GOOMBA_STATE_WALKING);
 									if (goomba->model == GOOMBA_MODEL_WING_BROWN)
-										goomba->model = 1;
+										goomba->model = GOOMBA_MODEL_NORMAL;
 									ShowEffectPoint(goomba, POINT_EFFECT_MODEL_100);
 									PlusScore(100);
 								}
@@ -513,25 +508,38 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						if (mb->GetModel() == MUSIC_BRICK_MODEL_HIDDEN) {
 							if (mb->isHidden) { x += dx; y += dy; }
 							else {
-								this->vy = -MARIO_DIE_DEFLECT_SPEED;
-								mb->vy = QUESTION_BRICK_SPEED_UP / 2;
-								lastStandingY = y;
-								if (game->IsKeyDown(DIK_S)) {
-									this->vy -= MARIO_FLY_SPEED * 5 * dt; //nhay qua map phu
-									mb->vy = QUESTION_BRICK_SPEED_UP;
-								}
+								mb->y += MUSIC_BRICK_POS_BOUND;
+								mb->vy = -MUSIC_BRICK_GRAVITY;
+								if (mb->y >= mb->maxY) {
+									if (game->IsKeyDown(DIK_S)) {
+										this->vy = -MARIO_CHANGE_SCENE_SPEED*dt; //nhay qua map phu
+									}
+									else this->vy = -MARIO_DEFLECT_MUSIC_BRICK;
+								}									
+								lastStandingY = y;								
 							}
 						}
 						else {
-							this->vy = -MARIO_DIE_DEFLECT_SPEED;
-							mb->vy = QUESTION_BRICK_SPEED_UP / 2;
+							mb->y += MUSIC_BRICK_POS_BOUND;
+							mb->vy = -MUSIC_BRICK_GRAVITY;
+							if (mb->y >= mb->maxY) {
+								if (game->IsKeyDown(DIK_S)) {
+									this->vy = -MARIO_DEFLECT_MUSIC_BRICK;
+								}
+								this->vy = -MARIO_DEFLECT_MUSIC_BRICK;
+							}	
 							lastStandingY = y;
 						}
-
 					}
 					else if (e->ny > 0) {//nhay tu duoi len
-						if (mb->GetModel() == MUSIC_BRICK_MODEL_HIDDEN)
+						if (mb->GetModel() == MUSIC_BRICK_MODEL_HIDDEN && mb->isHidden) {
+							mb->vy = -QUESTION_BRICK_SPEED_UP;
+							vy = 0;
+							ay = MARIO_GRAVITY;
+							isReadyToJump = false;
+							this->vy = MARIO_JUMP_SPEED_MAX;
 							mb->isHidden = false;
+						}							
 						else {
 							mb->vy = -QUESTION_BRICK_SPEED_UP;
 							vy = 0;
@@ -627,9 +635,9 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					BoomerangBrother *bb = dynamic_cast<BoomerangBrother *>(e->obj);
 					if (e->ny < 0)
 					{
-						if (bb->GetState() != BOOM_BROTHER_STATE_DIE)
+						if (bb->GetState() != BOOMERANG_BROTHER_STATE_DIE)
 						{
-							bb->SetState(BOOM_BROTHER_STATE_DIE);
+							bb->SetState(BOOMERANG_BROTHER_STATE_DIE);
 							bb->ListBoomerang.clear();
 						}
 					}
@@ -638,13 +646,13 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						if (isTurningTail && level == MARIO_LEVEL_RACOON) {
 							bb->vx += this->nx * MARIO_DIE_DEFLECT_SPEED * 2;
 							bb->vy = -MARIO_DIE_DEFLECT_SPEED;
-							bb->SetState(BOOM_BROTHER_STATE_DIE);
+							bb->SetState(BOOMERANG_BROTHER_STATE_DIE);
 							EffectTailHit* effectTailHit = new EffectTailHit(bb->x, bb->y);
 							listEffect.push_back(effectTailHit);
 						}
 						else if (untouchable == 0)
 						{
-							if (bb->GetState() != BOOM_BROTHER_STATE_DIE)
+							if (bb->GetState() != BOOMERANG_BROTHER_STATE_DIE)
 							{
 								if (level > MARIO_LEVEL_SMALL)
 								{
@@ -992,7 +1000,7 @@ void CMario::Render()
 					RenderJumping(ani,MARIO_ANI_BIG_FLY_RIGHT,MARIO_ANI_BIG_FLY_LEFT,MARIO_ANI_BIG_FLY_RIGHT,MARIO_ANI_BIG_FLY_LEFT);
 				}
 				else
-					RenderJumping(ani,MARIO_ANI_BIG_JUMP_RIGHT,MARIO_ANI_BIG_JUMP_LEFT,MARIO_ANI_BIG_JUMP_RIGHT,MARIO_ANI_BIG_JUMP_LEFT);
+					RenderJumping(ani,MARIO_ANI_BIG_JUMP_RIGHT,MARIO_ANI_BIG_JUMP_LEFT,MARIO_ANI_BIG_JUMP_RIGHT_DOWN,MARIO_ANI_BIG_JUMP_LEFT_DOWN);
 			}
 			else
 				RenderJumping(ani,MARIO_ANI_BIG_HOLD_JUMP_RIGHT,MARIO_ANI_BIG_HOLD_JUMP_LEFT,MARIO_ANI_BIG_HOLD_JUMP_RIGHT,MARIO_ANI_BIG_HOLD_JUMP_LEFT);
@@ -1016,7 +1024,7 @@ void CMario::Render()
 				}
 				BasicRenderLogicsForAllLevel(ani,
 					MARIO_ANI_BIG_IDLE_RIGHT, MARIO_ANI_BIG_IDLE_LEFT,
-					MARIO_ANI_BIG_JUMP_RIGHT, MARIO_ANI_BIG_JUMP_LEFT,			
+					MARIO_ANI_BIG_JUMP_RIGHT_DOWN, MARIO_ANI_BIG_JUMP_LEFT_DOWN,			
 					MARIO_ANI_BIG_TURN_RIGHT, MARIO_ANI_BIG_TURN_LEFT,
 					ani_go_right, ani_go_left, MARIO_ANI_BIG_KICK_RIGHT, MARIO_ANI_BIG_KICK_LEFT);
 			}
@@ -1048,7 +1056,7 @@ void CMario::Render()
 					RenderJumping(ani,MARIO_ANI_RACOON_FLY_RIGHT,MARIO_ANI_RACOON_FLY_LEFT,MARIO_ANI_RACOON_FLY_RIGHT,MARIO_ANI_RACOON_FLY_LEFT);
 				}
 				else
-					RenderJumping(ani,MARIO_ANI_RACOON_JUMP_RIGHT,MARIO_ANI_RACOON_JUMP_LEFT,MARIO_ANI_RACOON_JUMP_RIGHT,MARIO_ANI_RACOON_JUMP_LEFT);
+					RenderJumping(ani,MARIO_ANI_RACOON_JUMP_RIGHT,MARIO_ANI_RACOON_JUMP_LEFT,MARIO_ANI_RACOON_JUMP_RIGHT_DOWN,MARIO_ANI_RACOON_JUMP_LEFT_DOWN);
 			}
 			else
 				RenderJumping(ani,MARIO_ANI_RACOON_HOLD_JUMP_RIGHT,MARIO_ANI_RACOON_HOLD_JUMP_LEFT,MARIO_ANI_RACOON_HOLD_JUMP_RIGHT,MARIO_ANI_RACOON_HOLD_JUMP_LEFT);
@@ -1086,7 +1094,7 @@ void CMario::Render()
 				}
 				BasicRenderLogicsForAllLevel(ani,
 					MARIO_ANI_RACOON_IDLE_RIGHT, MARIO_ANI_RACOON_IDLE_LEFT,
-					MARIO_ANI_RACOON_JUMP_RIGHT, MARIO_ANI_RACOON_JUMP_LEFT,
+					MARIO_ANI_RACOON_JUMP_RIGHT_DOWN, MARIO_ANI_RACOON_JUMP_LEFT_DOWN,
 					MARIO_ANI_RACOON_TURN_RIGHT, MARIO_ANI_RACOON_TURN_LEFT,
 					ani_go_right, ani_go_left, MARIO_ANI_RACOON_KICK_RIGHT, MARIO_ANI_RACOON_KICK_LEFT);
 			}
@@ -1125,7 +1133,7 @@ void CMario::Render()
 					RenderJumping(ani,MARIO_ANI_FIRE_FLY_RIGHT,MARIO_ANI_FIRE_FLY_LEFT,MARIO_ANI_FIRE_FLY_RIGHT,MARIO_ANI_FIRE_FLY_LEFT);
 				}
 				else
-					RenderJumping(ani,MARIO_ANI_FIRE_JUMP_RIGHT,MARIO_ANI_FIRE_JUMP_LEFT,MARIO_ANI_FIRE_JUMP_RIGHT,MARIO_ANI_FIRE_JUMP_LEFT);
+					RenderJumping(ani,MARIO_ANI_FIRE_JUMP_RIGHT,MARIO_ANI_FIRE_JUMP_LEFT,MARIO_ANI_FIRE_JUMP_RIGHT_DOWN,MARIO_ANI_FIRE_JUMP_LEFT_DOWN);
 			}
 			else
 				RenderJumping(ani,MARIO_ANI_FIRE_HOLD_JUMP_RIGHT,MARIO_ANI_FIRE_HOLD_JUMP_LEFT,MARIO_ANI_FIRE_HOLD_JUMP_RIGHT,MARIO_ANI_FIRE_HOLD_JUMP_LEFT);
@@ -1149,7 +1157,7 @@ void CMario::Render()
 				}
 				BasicRenderLogicsForAllLevel(ani,
 					MARIO_ANI_FIRE_IDLE_RIGHT, MARIO_ANI_FIRE_IDLE_LEFT,
-					MARIO_ANI_FIRE_JUMP_RIGHT, MARIO_ANI_FIRE_JUMP_LEFT,
+					MARIO_ANI_FIRE_JUMP_RIGHT_DOWN, MARIO_ANI_FIRE_JUMP_LEFT_DOWN,
 					MARIO_ANI_FIRE_TURN_RIGHT, MARIO_ANI_FIRE_TURN_LEFT,
 					ani_go_right, ani_go_left, MARIO_ANI_FIRE_KICK_RIGHT, MARIO_ANI_FIRE_KICK_LEFT);
 			}
@@ -1310,5 +1318,4 @@ void CMario::ShowEffectPoint(CGameObject* obj, float model) {
 	EffectPoint* effectPoint = new EffectPoint(obj->x, obj->y, model);
 	CPlayScene* scene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
 	listEffect.push_back(effectPoint);
-	//scene->TurnIntoUnit(effectPoint);
 }

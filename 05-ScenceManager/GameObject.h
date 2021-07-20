@@ -59,7 +59,7 @@ public:
 
 	float vx;
 	float vy;
-
+	bool isAppear = false;
 	float nx;	 
 	float width;
 	float height;

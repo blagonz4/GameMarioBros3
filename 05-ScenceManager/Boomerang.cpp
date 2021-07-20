@@ -1,117 +1,112 @@
 #include "Boomerang.h"
+#include "Mario.h"
+#include "PlayScence.h"
 
-
-Boomerang::Boomerang(float X, float Y, float dir, LPGAMEOBJECT bb)
+CBoomerang::CBoomerang(float X, float Y, float dir)
 {
 	this->x = X; this->y = Y;
 	this->startY = Y;
 	eType = Type::BOOMERANG;
 	this->nx = dir;
-	this->boomerangbrother = bb;
+	SetState(BOOMERANG_STATE_IDLE);
 	SetAnimationSet(CAnimationSets::GetInstance()->Get(LOAD_BOOMERANG_FROM_TXT));
 }
 
-void Boomerang::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
+void CBoomerang::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	CGameObject::Update(dt, coObjects);
 
-	//if (this->boomerangbrother->isFinish || !this->CheckObjectInCamera()) {
-	//	this->isFinish = true;
-	//	return;
-	//}
-
-	if (startY - y < BOOMERANG_FLY_MIN_HEIGHT && !isTurning) {
-		vx = nx * BOOMERANG_SPEED_X * dt;
-		vy = -BOOMERANG_SPEED_Y *dt;
-		isTurning = true;
-	}
-	if (startY - y > BOOMERANG_FLY_MIN_HEIGHT)
+	if (!isAppear)
+		return;
+	CGameObject::Update(dt);
+	//update speed
+	x += dx;
+	y += dy;
+	if (state_start != 0)
+		state_start += dt;
+	if (state == 1 && state_start >= BOOMERANG_CHANGE_STATE_TIME)
 	{
-		vx = nx * BOOMERANG_SPEED_X * dt;
-		vy = BOOMERANG_SPEED_Y *dt;
+		state_start = 1;
+		SetState(state + 1);
 	}
-	if (isComingBack)
-		vx = nx * BOOMERANG_SPEED_X *dt;
-
-	vector<LPCOLLISIONEVENT> coEvents;
-	vector<LPCOLLISIONEVENT> coEventsResult;
-
-	coEvents.clear();
-	CalcPotentialCollisions(coObjects, coEvents);
-
-	if (coEvents.size() == 0)
+	if (state > BOOMERANG_STATE_1 && state <= BOOMERANG_STATE_6 && state_start >= BOOMERANG_CHANGE_STATE_TIME / BOOMERANG_DIFF)
 	{
-		x += dx;
-		y += dy;
+		state_start = 1;
+		SetState(state + 1);
 	}
-	else
+	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+	float mLeft, mTop, mRight, mBottom;
+	float oLeft, oTop, oRight, oBottom;
+	if (mario != NULL && state != BOOMERANG_STATE_IDLE)
 	{
-		float min_tx, min_ty, nx = 0, ny;
-		float rdx = 0;
-		float rdy = 0;
-		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
-		x += min_tx * dx + nx * 0.4f;
-		y += min_ty * dy + ny * 0.1f;
-
-		if (nx != 0) x+=dx;
-		if (ny != 0) y+=dy;
-
-		for (UINT i = 0; i < coEventsResult.size(); i++)
+		if (mario->untouchable == 0)
 		{
-			LPCOLLISIONEVENT e = coEventsResult[i];
-			if (e->obj->GetType() == PLATFORM) {
-				this->isComingBack = true;
-				this->nx *= -1; vx = 0; vy = 0;
-			}
-			else if (e->obj->GetType() == COLORBLOCK || 
-							e->obj->GetType() == GOLDBRICK ||
-							e->obj->GetType() == QUESTIONBRICK ||
-							e->obj->GetType() == MUSICBRICK ||
-							e->obj->GetType() == KOOPAS || 
-							e->obj->GetType() == GOOMBA ) {
-					this->x += dx; 
-					this->y += dy;
-			}
-			else if (e->obj->GetType() == MARIO) {
-				CMario* mario = dynamic_cast<CMario*>(e->obj);
-				if (mario->untouchable == 0) {
-					if (mario->level > MARIO_LEVEL_SMALL)
-					{
-						if (mario->level > MARIO_LEVEL_BIG) {
-							mario->level = MARIO_LEVEL_BIG;
-							mario->StartUntouchable();
-						}
-						else
-						{
-							mario->level = MARIO_LEVEL_SMALL;
-							mario->StartUntouchable();
-						}
-					}
-					else
-						mario->SetState(MARIO_STATE_DIE);
+			mario->GetBoundingBox(mLeft, mTop, mRight, mBottom);
+			GetBoundingBox(oLeft, oTop, oRight, oBottom);
+			if (CheckAABB(floor(mLeft), floor(mTop), ceil(mRight), ceil(mBottom)))
+			{
+				mario->StartUntouchable();
+				if (mario->level == MARIO_LEVEL_SMALL)
+				{
+					mario->SetState(MARIO_STATE_DIE);
+					return;
 				}
-			}
-			else if (e->obj->GetType() == BOOMERANGBROTHER) {
-				this->isFinish = true;
+				if (mario->level == MARIO_LEVEL_RACOON || mario->level == MARIO_LEVEL_FIRE)
+					mario->SetLevel(MARIO_LEVEL_BIG);
+				else if (mario->level == MARIO_LEVEL_BIG)
+					mario->SetLevel(MARIO_LEVEL_SMALL);
 			}
 		}
 	}
-
-	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
 }
-
-void Boomerang::Render()
+void CBoomerang::SetState(int state)
 {
-	int ani = BOOMERANG_ANI;
-	animation_set->at(ani)->Render(x, y);
+	CGameObject::SetState(state);
+	switch (state)
+	{
+	case BOOMERANG_STATE_IDLE:
+		vx = vy = 0;
+		break;
+	case BOOMERANG_STATE_1:
+		vx = nx * BOOMERANG_SPEED_X;
+		vy = -BOOMERANG_SPEED_Y;
+		StartChangState();
+		break;
+	case BOOMERANG_STATE_2:
+		vy = 0;
+		break;
+	case BOOMERANG_STATE_3:
+		vy = BOOMERANG_SPEED_Y;
+		break;
+	case BOOMERANG_STATE_4:
+		vx = 0;
+		vy = BOOMERANG_SPEED_Y * BOOMERANG_SPEED_DIFF;
+		break;
+	case BOOMERANG_STATE_5:
+		vy = BOOMERANG_SPEED_Y;
+		vx = -nx * BOOMERANG_SPEED_X;
+		break;
+	case BOOMERANG_STATE_6:
+		vx = -nx * BOOMERANG_SPEED_X;
+		vy = 0;
+		break;
+	}
 }
-void Boomerang::GetBoundingBox(float& left, float& top, float& right, float& bottom)
+void CBoomerang::Render()
+{
+	if (!isAppear)
+		return;
+	int ani = BOOMERANG_ANI;
+	animation_set->at(0)->Render(x - BOOMERANG_DIFF, y - BOOMERANG_DIFF);
+	//RenderBoundingBox();
+}
+void CBoomerang::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 {
 	left = x;
 	top = y;
 	right = x + BOOMERANG_BBOX_WIDTH;
 	bottom = y + BOOMERANG_BBOX_HEIGHT;
 }
-Boomerang::~Boomerang()
+CBoomerang::~CBoomerang()
 {
 }

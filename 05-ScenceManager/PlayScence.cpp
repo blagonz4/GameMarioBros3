@@ -185,7 +185,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		}
 		case OBJECT_TYPE_FIRE_PLANT: {
 			float model = (float)atof(tokens[4].c_str());
-			obj = new FirePlant(player, model);
+			obj = new FirePlant(x, y, player, model);
 			break;
 		}
 		case OBJECT_TYPE_QUESTION_BRICK: {
@@ -217,7 +217,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		}
 		case OBJECT_TYPE_BOOMERANG_BROTHER: {
 			float dir = (float)atof(tokens[4].c_str());
-			obj = new BoomerangBrother(player, dir);
+			obj = new BoomerangBrother(x,y, dir);
 			break;
 		}
 		case OBJECT_TYPE_MUSHROOM: {

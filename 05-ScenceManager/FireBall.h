@@ -1,13 +1,8 @@
 #pragma once
 #include "GameObject.h"
 #include "define.h"
-#include "Koopas.h"
-#include "Goomba.h"
-#include "Pipe.h"
-#include "BoomerangBrother.h"
-
 //----------------------FIRE BALL-------------------
-#define FIRE_SPEED						0.008f
+#define FIRE_SPEED						0.08f
 #define FIRE_GRAVITY					0.0006f
 #define FIRE_BOUNCE_SPEED_Y				0.15f
 #define FIRE_BBOX_WIDTH					8
