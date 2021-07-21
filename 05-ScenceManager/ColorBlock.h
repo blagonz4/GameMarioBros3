@@ -5,6 +5,7 @@ class ColorBlock : public CGameObject
 {
 	CMario *player;
 public:
+	float width, height = 0;
 	ColorBlock(float w, float h,CMario* mario);
 	virtual void Render();
 	virtual void SetState(int state);

@@ -932,13 +932,13 @@ void CMario::Render()
 			{
 				if (isFlying)
 				{
-					RenderJumping(ani,MARIO_ANI_SMALL_FLY_RIGHT,MARIO_ANI_SMALL_FLY_LEFT,MARIO_ANI_SMALL_FLY_RIGHT,MARIO_ANI_SMALL_FLY_LEFT);
+					RenderJumping(ani, MARIO_ANI_SMALL_FLY_RIGHT, MARIO_ANI_SMALL_FLY_LEFT, MARIO_ANI_SMALL_FLY_RIGHT, MARIO_ANI_SMALL_FLY_LEFT);
 				}
 				else
-					RenderJumping(ani,MARIO_ANI_SMALL_JUMP_RIGHT,MARIO_ANI_SMALL_JUMP_LEFT,MARIO_ANI_SMALL_JUMP_RIGHT,MARIO_ANI_SMALL_JUMP_LEFT);
+					RenderJumping(ani, MARIO_ANI_SMALL_JUMP_RIGHT, MARIO_ANI_SMALL_JUMP_LEFT, MARIO_ANI_SMALL_JUMP_RIGHT, MARIO_ANI_SMALL_JUMP_LEFT);
 			}
 			else
-				RenderJumping(ani,MARIO_ANI_SMALL_HOLD_JUMP_RIGHT,MARIO_ANI_SMALL_HOLD_JUMP_LEFT,MARIO_ANI_SMALL_HOLD_JUMP_RIGHT,MARIO_ANI_SMALL_HOLD_JUMP_LEFT);
+				RenderJumping(ani, MARIO_ANI_SMALL_HOLD_JUMP_RIGHT, MARIO_ANI_SMALL_HOLD_JUMP_LEFT, MARIO_ANI_SMALL_HOLD_JUMP_RIGHT, MARIO_ANI_SMALL_HOLD_JUMP_LEFT);
 		}
 		else
 		{
@@ -973,17 +973,11 @@ void CMario::Render()
 		if (state == MARIO_STATE_WORLD_MAP)
 			ani = MARIO_ANI_SMALL_WORLD_MAP;
 
-	for (size_t i = 0; i < listFire.size(); i++)
-	{
-		listFire[i]->Render();
+		for (size_t i = 0; i < listFire.size(); i++)
+			listFire[i]->Render();
+		for (size_t i = 0; i < listEffect.size(); i++)
+			listEffect[i]->Render();
 	}
-
-	for (size_t i = 0; i < listEffect.size(); i++)
-	{
-		listEffect[i]->Render();
-	}
-	RenderBoundingBox();
-}
 	else if (level == MARIO_LEVEL_BIG)
 	{
 		if (state == MARIO_STATE_SIT)
