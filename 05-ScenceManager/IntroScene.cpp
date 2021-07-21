@@ -130,12 +130,14 @@ void IntroScene::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_GOOMBA: {
 		float model = (float)atof(tokens[4].c_str());
 		float direction = (float)atof(tokens[5].c_str());
-		obj = new CGoomba(player, model, direction); break;
+		obj = new CGoomba(player, model, direction); 
+		break;
 	}
 	case OBJECT_TYPE_KOOPAS: {
 		float model = (float)atof(tokens[4].c_str());
 		float direction = (float)atof(tokens[5].c_str());
-		obj = new CKoopas(model, direction, player); break;
+		obj = new CKoopas(model);
+		break;
 	}
 	case OBJECT_TYPE_PLATFORM: {
 		float w = (float)atof(tokens[4].c_str());
@@ -294,7 +296,7 @@ void IntroScene::Update(DWORD dt)
 			objects[i]->Update(dt, &coObjects);
 			if (e->GetType() == KOOPAS) {
 				CKoopas* koopa = dynamic_cast<CKoopas*>(e);
-				koopa->SetState(KOOPAS_STATE_DEFEND);
+				koopa->SetState(KOOPAS_STATE_IN_SHELL);
 			}
 			if (e->GetType() == MUSHROOM_1_UP) {
 				Mushroom* mushroom = dynamic_cast<Mushroom*>(e);
@@ -338,7 +340,7 @@ void IntroScene::Update(DWORD dt)
 				CKoopas* koopa = dynamic_cast<CKoopas*>(e);
 				if (introTime > 10500 && introTime < 11500) {
 					//koopa->vx = -KOOPAS_BALL_SPEED * dt;
-					koopa->SetState(KOOPAS_STATE_BALL);
+					koopa->SetState(KOOPAS_STATE_SPINNING);
 				}	
 			}
 			

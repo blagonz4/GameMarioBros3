@@ -196,14 +196,11 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		float min_tx, min_ty, nx = 0, ny;
 		float rdx = 0;
 		float rdy = 0;
-
+		float x0 = x, y0 = y;
 		// TODO: This is a very ugly designed function!!!!
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
-		x += min_tx * dx + nx * 0.4f;
-		y += min_ty * dy + ny * 0.4f;
-
-		//if (nx != 0) vx = 0;
-		//if (ny != 0) vy = 0;
+		x = x0 + min_tx * dx + nx * 0.4f;
+		y = y0 + min_ty * dy + ny * 0.4f;
 
 		float oLeft, oTop, oRight, oBottom;
 		float mLeft, mTop, mRight, mBottom;
@@ -315,79 +312,54 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				}
 				else if (e->obj->GetType() == KOOPAS)
 				{
-					CKoopas *koopa = dynamic_cast<CKoopas *>(e->obj);
-					if (e->ny < 0)
-					{
-						if (untouchable == 0) {
-							e->obj->y -= ENEMY_PUSH_BACK;
-							if (koopa->model == KOOPAS_MODEL_GREEN_WING) {
-								koopa->model = KOOPAS_MODEL_GREEN;
-								ShowEffectPoint(koopa, POINT_EFFECT_MODEL_100);
-								PlusScore(100);
-								if (koopa->GetState() == KOOPAS_STATE_FLY)
-									koopa->SetState(KOOPAS_STATE_WALKING);
-							}
-
-							if (koopa->GetState() == KOOPAS_STATE_DEFEND) {
-								vy = -MARIO_JUMP_DEFLECT_SPEED;
-								koopa->SetState(KOOPAS_STATE_BALL);
-							}
-							else if (koopa->GetState() != KOOPAS_STATE_DIE)
-							{
-								ShowEffectPoint(koopa, POINT_EFFECT_MODEL_100);
-								PlusScore(100);
-								vy = -MARIO_JUMP_DEFLECT_SPEED;
-								koopa->SetState(KOOPAS_STATE_DEFEND);
-							}
+					CKoopas* koopas = dynamic_cast<CKoopas*>(e->obj);
+					if (e->ny < 0) {
+						PlusScore(100);
+						vy = -1.5f * MARIO_JUMP_DEFLECT_SPEED;
+						if (this->nx > 0)
+						{
+							if (vx < MARIO_WALKING_SPEED_MIN * 2)
+								vx = MARIO_WALKING_SPEED_MIN * 2;
 						}
-						else { koopa->y -= ENEMY_PUSH_BACK; this->x += dx; }
+						else
+						{
+							if (vx > -MARIO_WALKING_SPEED_MIN * 2)
+								vx = -MARIO_WALKING_SPEED_MIN * 2;
+						}
+						if (koopas->model == KOOPAS_GREEN_PARA)
+							koopas->model = KOOPAS_GREEN;
+						else if (koopas->GetState() != KOOPAS_STATE_IN_SHELL && koopas->GetState() != KOOPAS_STATE_SHELL_UP)
+							koopas->SetState(KOOPAS_STATE_IN_SHELL);
+						else
+							koopas->SetState(KOOPAS_STATE_SPINNING);
 					}
-					else if (e->nx != 0)
+					else
 					{
-						if (game->IsKeyDown(DIK_A)) {
-							if (isTurningTail && level == MARIO_LEVEL_RACOON) {
-
-								if (koopa->GetState() == KOOPAS_STATE_WALKING)
-									koopa->SetState(KOOPAS_STATE_DEFEND);
-
-								EffectTailHit* effectTailHit = new EffectTailHit(koopa->x, koopa->y);
-								listEffect.push_back(effectTailHit);
-							}
-							else if (koopa->state == KOOPAS_STATE_DEFEND || koopa->state == KOOPAS_STATE_UP_SIDE_DOWN) {
-								this->isHolding = true;
-								koopa->isBeingHeld = true;
-							}
-						}
-						else if (koopa->GetState() == KOOPAS_STATE_DEFEND)
+						if (e->ny > 0)
+							y = y0;
+						if (untouchable != 0)
 						{
-							this->SetState(MARIO_STATE_KICK);
-							this->StartKicking();
-							koopa->nx = this->nx;
-							koopa->SetState(KOOPAS_STATE_BALL);
+							x = x0 + dx;
+							//koopas->x = koopas->x0 + koopas->dx;
+							if (e->ny > 0 && vy < 0)
+								y = y0 + dy;
 						}
-						else if (untouchable == 0)
+						if (koopas->GetState() == KOOPAS_STATE_IN_SHELL || koopas->GetState() == KOOPAS_STATE_SHELL_UP)
 						{
-							if (koopa->GetState() != KOOPAS_STATE_DIE)
+							if (isReadyToHold)
 							{
-								if (level > MARIO_LEVEL_SMALL)
-								{
-									if (level > MARIO_LEVEL_BIG) {
-										level = MARIO_LEVEL_BIG;
-										EffectDisappear* effectDisappear = new EffectDisappear(this->x, this->y);
-										listEffect.push_back(effectDisappear);
-										StartUntouchable();
-									}
-									else
-									{
-										level = MARIO_LEVEL_SMALL;
-										StartUntouchable();
-									}
-								}
-								else
-									SetState(MARIO_STATE_DIE);
+								koopas->SetIsBeingHeld(true);
+								isHolding = true;
+							}
+							else
+							{
+								StartKicking();
+								koopas->nx = this->nx;
+								koopas->SetState(KOOPAS_STATE_SPINNING);
 							}
 						}
-						else { this->x += dx; koopa->x += koopa->nx * ENEMY_PUSH_BACK + dx; }
+						else if (untouchable == 0 && (koopas->GetState() == KOOPAS_STATE_SPINNING || koopas->GetState() == KOOPAS_STATE_WALKING))
+							Attacked();
 					}
 				}
 				else if (e->obj->GetType() == COLORBLOCK)
@@ -1318,4 +1290,17 @@ void CMario::ShowEffectPoint(CGameObject* obj, float model) {
 	EffectPoint* effectPoint = new EffectPoint(obj->x, obj->y, model);
 	CPlayScene* scene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
 	listEffect.push_back(effectPoint);
+}
+void CMario::Attacked()
+{
+	StartUntouchable();
+	if (level == MARIO_LEVEL_SMALL)
+	{
+		SetState(MARIO_STATE_DIE);
+		return;
+	}
+	if (level == MARIO_LEVEL_RACOON || level == MARIO_LEVEL_FIRE)
+		SetLevel(MARIO_LEVEL_BIG);
+	else if (level == MARIO_LEVEL_BIG)
+		SetLevel(MARIO_LEVEL_SMALL);
 }

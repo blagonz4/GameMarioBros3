@@ -21,6 +21,7 @@
 #define TIME_SPINNING						500
 #define TIME_TRANSFORM						200
 #define TAIL_SIZE							15
+#define MARIO_WALKING_SPEED_MIN				0.05f
 #define MARIO_RUNNING_STACK_TIME			250
 #define MARIO_SLOW_TIME						800
 #define MARIO_ACCELERATION					0.0003f
@@ -307,6 +308,7 @@ public:
 	void StartKicking() { kicking_start = GetTickCount(); isKicking = true; }
 	void StartRunning() { running_start = GetTickCount(); isRunning = true; }
 	void StopRunning() { running_stop = GetTickCount(); isRunning = false; }
+	void SetIsHolding(bool m) { this->isHolding = m; }
 	void StartShooting() { shooting_start = GetTickCount(); isShooting = true; }
 	void StartSlowDown() { slow_start = GetTickCount(); isReadyToRun = false; }
 	void StartTurning() { 
@@ -336,6 +338,7 @@ public:
 	void Reset();
 	void ShowEffectPoint(CGameObject* obj, float model);
 
+	void Attacked();
 	void SetMove(bool cLeft, bool cUp, bool cRight, bool cDown)
 	{
 		cgLeft = cLeft;

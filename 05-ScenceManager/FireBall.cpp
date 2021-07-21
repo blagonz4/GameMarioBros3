@@ -68,7 +68,7 @@ void FireBall::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			{
 				if (defineVy == FIRE_GRAVITY) {
 					e->obj->nx = this->nx;
-					e->obj->SetState(KOOPAS_STATE_DIE);
+					e->obj->SetState(KOOPAS_STATE_DEATH);
 					this->isFinish = true;
 				}
 				else {
@@ -133,8 +133,6 @@ void FireBall::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			}
 			else if (e->obj->GetType() == PLATFORM || e->obj->GetType() == COLORBLOCK) {
 				if (defineVy != FIRE_GRAVITY) {
-					//if ( e->nx != 0 || e->ny != 0 )	this->isFinish = true;
-					//else { x += dx;	y += dy; }
 					x += dx; y += dy;
 				}	
 			}
