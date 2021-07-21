@@ -197,10 +197,13 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		float rdx = 0;
 		float rdy = 0;
 
-		float x0 = x, y0 = y;
+		// TODO: This is a very ugly designed function!!!!
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
-		x = x0 + min_tx * dx + nx * 0.4f;
-		y = y0 + min_ty * dy + ny * 0.4f;
+		x += min_tx * dx + nx * 0.4f;
+		y += min_ty * dy + ny * 0.4f;
+
+		//if (nx != 0) vx = 0;
+		//if (ny != 0) vy = 0;
 
 		float oLeft, oTop, oRight, oBottom;
 		float mLeft, mTop, mRight, mBottom;
@@ -384,7 +387,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 									SetState(MARIO_STATE_DIE);
 							}
 						}
-						else { this->x += dx; }
+						else { this->x += dx; koopa->x += koopa->nx * ENEMY_PUSH_BACK + dx; }
 					}
 				}
 				else if (e->obj->GetType() == COLORBLOCK)
@@ -1179,7 +1182,7 @@ void CMario::Render()
 	{
 		listEffect[i]->Render();
 	}
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 void CMario::SetState(int state)
 {
