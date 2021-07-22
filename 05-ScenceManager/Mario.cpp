@@ -96,8 +96,30 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	CGame *game = CGame::GetInstance();
 	CGameObject::Update(dt);
 
-	if (CGame::GetInstance()->GetScene() != WORLDMAP)
-	{
+	if (CGame::GetInstance()->GetScene() != WORLDMAP || CGame::GetInstance()->GetScene() != INTRO)
+	{ 
+		float mw = ((CPlayScene*)game->GetCurrentScene())->GetMap()->GetMapWidth();
+		float mh = ((CPlayScene*)game->GetCurrentScene())->GetMap()->GetMapHeight();
+
+		//limit X
+		if (x >= mw - MARIO_BIG_BBOX_WIDTH)//Right edge
+			x = mw - MARIO_BIG_BBOX_WIDTH;
+		else if (x <= 0)//Left edge
+			x = 0;
+
+		if (game->GetScene() == MAP1_3_1)
+		{
+			if (x - 20.f <= game->GetCamX())
+			{
+				SetState(MARIO_STATE_WALK_RIGHT);
+				vx = 0.1f;
+				nx = 1;
+			}
+			if (x >= game->GetCamX() + game->GetScreenWidth() - MARIO_BIG_BBOX_WIDTH)
+				x = game->GetCamX() + game->GetScreenWidth() - MARIO_BIG_BBOX_WIDTH;
+		}
+
+
 		if (vx * ax < 0 && abs(vx) > MARIO_WALKING_MAXSPEED
 			&& (state == MARIO_STATE_WALK_LEFT || state == MARIO_STATE_WALK_RIGHT))
 		{
@@ -197,13 +219,10 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		float rdx = 0;
 		float rdy = 0;
 
-		// TODO: This is a very ugly designed function!!!!
+		float x0 = x, y0 = y;
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
-		x += min_tx * dx + nx * 0.4f;
-		y += min_ty * dy + ny * 0.4f;
-
-		//if (nx != 0) vx = 0;
-		//if (ny != 0) vy = 0;
+		x =x0+ min_tx * dx + nx * 0.4f;
+		y =y0 + min_ty * dy + ny * 0.4f;
 
 		float oLeft, oTop, oRight, oBottom;
 		float mLeft, mTop, mRight, mBottom;
@@ -226,7 +245,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				GetBoundingBox(mLeft, mTop, mRight, mBottom);
 				e->obj->GetBoundingBox(oLeft, oTop, oRight, oBottom);
 
-				if (e->obj->GetType() == PLATFORM) {
+				if (e->obj->GetType() == PLATFORM || e->obj->GetType() == PIPE) {
 					if (e->ny < 0)
 					{
 						vy = 0;
@@ -280,7 +299,32 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						}
 						else { goomba->y -= ENEMY_PUSH_BACK; this->x += dx; }
 					}
-					else if (e->nx != 0 || e->ny > 0)
+					else if (e->ny > 0) {
+						if (untouchable == 0)
+						{
+							if (goomba->GetState() != KOOPAS_STATE_DIE)
+							{
+								if (level > MARIO_LEVEL_SMALL)
+								{
+									if (level > MARIO_LEVEL_BIG) {
+										level = MARIO_LEVEL_BIG;
+										EffectDisappear* effectDisappear = new EffectDisappear(this->x, this->y);
+										listEffect.push_back(effectDisappear);
+										StartUntouchable();
+									}
+									else
+									{
+										level = MARIO_LEVEL_SMALL;
+										StartUntouchable();
+									}
+								}
+								else
+									SetState(MARIO_STATE_DIE);
+							}
+						}
+						else { this->x = x0 + dx; this->y = y0; }
+					}
+					else if (e->nx != 0)
 					{
 						if (isTurningTail && level == MARIO_LEVEL_RACOON) {
 							goomba->nx = this->nx;
@@ -341,6 +385,31 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 							}
 						}
 						else { koopa->y -= ENEMY_PUSH_BACK; this->x += dx; }
+					}
+					else if (e->ny > 0) {
+						if (untouchable == 0)
+						{
+							if (koopa->GetState() != KOOPAS_STATE_DIE)
+							{
+								if (level > MARIO_LEVEL_SMALL)
+								{
+									if (level > MARIO_LEVEL_BIG) {
+										level = MARIO_LEVEL_BIG;
+										EffectDisappear* effectDisappear = new EffectDisappear(this->x, this->y);
+										listEffect.push_back(effectDisappear);
+										StartUntouchable();
+									}
+									else
+									{
+										level = MARIO_LEVEL_SMALL;
+										StartUntouchable();
+									}
+								}
+								else
+									SetState(MARIO_STATE_DIE);
+							}
+						}
+						else { this->x = x0 + dx; this->y = y0; }
 					}
 					else if (e->nx != 0)
 					{
@@ -435,7 +504,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						if (isTurningTail && level == MARIO_LEVEL_RACOON) {
 							plant->isFinish = true;
 							EffectTailHit* effectTailHit = new EffectTailHit(plant->x, plant->y);
-							//scene->TurnIntoUnit(effectTailHit);
 							listEffect.push_back(effectTailHit);
 						}
 						if (level > MARIO_LEVEL_SMALL)
@@ -455,51 +523,61 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						else
 							SetState(MARIO_STATE_DIE);
 					}
-					else { this->x += dx; this->y += dy; }
+					else { this->x = x0 + dx; this->y = y0 + dy; }
 				}
 				else if (e->obj->GetType() == QUESTIONBRICK) { // if e->obj is fireball 
 					QuestionBrick* qb = dynamic_cast<QuestionBrick*>(e->obj);
 					if (e->ny > 0)
 					{
-						if (qb->Health == 1)
 						{
-							qb->vy = -QUESTION_BRICK_SPEED_UP;
-							qb->Health = 0;
-							qb->isUnbox = true;
+							if (qb->Health == 1)
+							{
+								qb->vy = -QUESTION_BRICK_SPEED_UP;
+								qb->Health = 0;
+								qb->isUnbox = true;
+							}
+							ay = MARIO_GRAVITY;
+							isReadyToJump = false;
+							this->vy = MARIO_JUMP_SPEED_MAX;
 						}
-						ay = MARIO_GRAVITY;
-						isReadyToJump = false;
-						this->vy = MARIO_JUMP_SPEED_MAX;
 					}
 					if (e->ny < 0)
-					{
-						vy = 0;
-						lastStandingY = y;
-					}
+						{
+							vy = 0;
+							lastStandingY = y;
+						}
 				}
 				else if (e->obj->GetType() == GOLDBRICK) {
 					GoldBrick* gb = dynamic_cast<GoldBrick*>(e->obj);
 					int model = (int)gb->model;
-					if (e->ny > 0)
-					{
-						switch (model) {
-						case GOLD_BRICK_MODEL_COIN:
-							gb->isFinish = true;
-							break;
-						case GOLD_BRICK_MODEL_PSWITCH:
-						case GOLD_BRICK_MODEL_MUSHROOM_1_UP:
-							gb->SetState(GOLD_BRICK_STATE_UNBOX);
-							break;
+					if (e->ny > 0) {
+						if ((this->nx > 0 && mRight + 0.4f > oRight) || (this->nx < 0 && mLeft + 2.f < oRight))
+						{
+							switch (model) {
+							case GOLD_BRICK_MODEL_COIN:
+								if (level > MARIO_LEVEL_SMALL)
+									gb->isFinish = true;
+								else {
+									gb->vy = -QUESTION_BRICK_SPEED_UP;
+								}
+								break;
+							case GOLD_BRICK_MODEL_PSWITCH:
+							case GOLD_BRICK_MODEL_MUSHROOM_1_UP:
+								gb->SetState(GOLD_BRICK_STATE_UNBOX);
+								break;
+							}
+							ay = MARIO_GRAVITY;
+							isReadyToJump = false;
+							this->vy = MARIO_JUMP_SPEED_MAX;
 						}
-						ay = MARIO_GRAVITY;
-						isReadyToJump = false;
-						this->vy = MARIO_JUMP_SPEED_MAX;
 					}
+						
 					if (e->ny < 0)
-					{
-						vy = 0;
-						lastStandingY = y;
-					}
+						if ((this->nx > 0 && mRight + 0.4f > oRight) || (this->nx < 0 && mLeft + 2.f < oRight))
+						{
+							vy = 0;
+							lastStandingY = y;
+						}
 				}
 				else if (e->obj->GetType() == MUSICBRICK) {
 					MusicBrick* mb = dynamic_cast<MusicBrick*>(e->obj);
@@ -532,6 +610,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						}
 					}
 					else if (e->ny > 0) {//nhay tu duoi len
+						if ((this->nx > 0 && mRight + 0.4f > oRight) || (this->nx < 0 && mLeft < oRight))
 						if (mb->GetModel() == MUSIC_BRICK_MODEL_HIDDEN && mb->isHidden) {
 							mb->vy = -QUESTION_BRICK_SPEED_UP;
 							vy = 0;
@@ -564,8 +643,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					}
 				}
 				else if (e->obj->GetType() == COIN) {
-					//Coin* coin = dynamic_cast<Coin*>(e->obj);
-					this->x += dx;
 					e->obj->isFinish = true;
 					PlusCoinCollect(1);
 					PlusScore(50);
@@ -1223,7 +1300,7 @@ void CMario::SetState(int state)
 	case MARIO_STATE_JUMP:
 		if (vy > -MARIO_JUMP_SPEED_MIN)
 			vy = -MARIO_JUMP_SPEED_MIN;
-		if (RunningStacks == 7)
+		if (RunningStacks == 7 && vx == MARIO_RUNNING_MAXSPEED)
 		{
 			isFlying = true;
 			StartFlying();

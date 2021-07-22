@@ -70,7 +70,7 @@ void Board::Render(CMario * mario, int RemainingTime) {
 	}
 	//Card
 	vector<int> listCards = mario->listCards;
-	for (int i = 0; i < listCards.size();i++) {
+	for (size_t i = 0; i < listCards.size();i++) {
 		LPDIRECT3DTEXTURE9 Tex = CTextures::GetInstance()->Get(TEXID_FONT35);
 		if (listCards[i] == BOX_STATE_MUSHROOM) {
 			LPSPRITE SpriteTile = new CSprite(64, 187, 33, 211, 61, Tex);

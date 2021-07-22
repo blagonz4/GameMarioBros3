@@ -95,6 +95,7 @@ public:
 	void UpdateGrid();
 	void LoadBackUp();
 	void BackUpPlayer();
+	Map* GetMap() { return map; }
 	//friend class CPlayScenceKeyHandler;
 };
 

@@ -31,7 +31,7 @@
 #define MARIO_SHOOTING_TIME					200
 #define MARIO_TURNING_STATE_TIME			70
 #define MARIO_TURNING_TAIL_TIME				350
-#define MARIO_UNTOUCHABLE_TIME				5000
+#define MARIO_UNTOUCHABLE_TIME				2500
 #define MARIO_FLAPPING_TIME					200
 #define MARIO_SLOW_FALLING_SPEED			0.03f
 #define MARIO_FLYING_TIME					1500
@@ -287,6 +287,7 @@ public:
 	bool transformState = false;
 
 	CMario(float x = 0.0f, float y = 0.0f);
+
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *colliable_objects = NULL);
 	virtual void Render();
 	void CMario::TimingFlag();

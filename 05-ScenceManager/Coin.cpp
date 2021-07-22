@@ -1,8 +1,26 @@
 #include "Coin.h"
+#include "PlayScence.h"
 
 Coin::Coin()
 {
 	eType = Type::COIN;
+}
+void Coin::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects) {
+	if (isFinish) return;
+	y += dy;
+	float mLeft, mTop, mRight, mBottom;
+	float oLeft, oTop, oRight, oBottom;
+	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+	if (mario != NULL) {
+		mario->GetBoundingBox(mLeft, mTop, mRight, mBottom);
+		GetBoundingBox(oLeft, oTop, oRight, oBottom);
+		if (CheckAABB(mLeft, mTop, mRight, mBottom)) {
+			/*mario->x = x0;
+			mario->y = y0;*/
+			this->isFinish = true;
+		}
+	}
+
 }
 
 void Coin::Render()

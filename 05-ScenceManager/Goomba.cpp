@@ -36,12 +36,11 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			SetState(GOOMBA_STATE_RED_JUMPING);
 		}	
 	}
-
 	if (model == GOOMBA_MODEL_WING_BROWN) {
 		if ( y >= DISTANCE_MARIO_FLY_THROUGH_SKY_Y)
 			vy = -MARIO_GRAVITY * 3 * dt ;
 		else vy += MARIO_GRAVITY ;
-
+		TurnAround();
 		if (listPoop.size() < 4) {
 			timeDropDelay += dt;
 			if (timeDropDelay >= POOP_DELAY_DROP) {
@@ -52,7 +51,6 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			}	
 		}
 		else {
-			TurnAround();
 			vy = MARIO_GRAVITY * 3 * dt;
 		}
 	}
@@ -90,26 +88,24 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		x0 = x;
 		y0 = y;
 
-		x += min_tx * dx + nx * 0.4f;
-		y += min_ty * dy + ny * 0.4f;
+		x = x0 + min_tx * dx + nx * 0.4f;
+		y = y0 + min_ty * dy + ny * 0.4f;
 
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{
 			LPCOLLISIONEVENT e = coEventsResult[i];
-			//if (e->obj != NULL)
-			//	if (e->obj->isFinish == true)
-			//		continue;
+
 			if (e->obj->GetType() == COLORBLOCK || e->obj->GetObjectType() == ENEMY) {
 				x = x0 + dx;
-				y = y0;			
+				if (this->model == GOOMBA_MODEL_WING || this->model == GOOMBA_MODEL_WING_BROWN)
+					y = y0 + dy;
+				else y = y0;
 			}
 			if (e->obj->GetType() == PIPE ||
 				e->obj->GetType() == QUESTIONBRICK ||
 				e->obj->GetType() == GOLDBRICK ||
 				e->obj->GetType() == BRICK||
 				e->obj->GetType() == MUSICBRICK) {
-					/*if (ny != 0)
-						vy = 0;*/
 					this->vx = -this->vx;
 			}
 			if (e->obj->GetType() == PLATFORM)
@@ -145,11 +141,11 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					this->vx = -this->vx;
 				}
 			}
+			if (e->obj->GetType() == COIN) {
+				x = x0 + dx;
+				y = y0 + dy;
+			}
 		}
-	}
-	if (vx < 0 && x <= 0) {
-		x = 0;
-		vx = -vx;
 	}
 
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
@@ -244,8 +240,14 @@ void CGoomba::GetBoundingBox(float &left, float &top, float &right, float &botto
 void CGoomba::TurnAround() {
 	float px, py;
 	mario->GetPosition(px, py);
-	if (px - this->x >20)
-		this->nx = 1;
-	if (this->x - px  > 150)
-		this->nx = -1;
+	if (px - x > 50) {
+		nx = 1;
+		SetState(GOOMBA_STATE_WALKING);
+	}
+		
+	if (x - px > 50) {
+		nx = -1;
+		SetState(GOOMBA_STATE_WALKING);
+	}
+
 }

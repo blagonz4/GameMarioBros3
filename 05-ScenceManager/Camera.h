@@ -12,10 +12,13 @@
 #define CAMERA_ON_CLOUD_SPEED	20
 #define CAMERA_MAP1_1_1_Y		200
 #define CAMERA_MAX				2500
+#define CAMERA_END_GAME_DIFF	7
+#define CAMERA_REFRESH_RATE		10
 using namespace std;
 
 class Camera{
 public:
+	DWORD sum_dt;
 	bool isTurnOn = false;
 	float cxMin,__cx, px, py;
 	int sw, sh; float mw, mh;

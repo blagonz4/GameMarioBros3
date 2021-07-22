@@ -199,11 +199,8 @@ void FirePlant::Render()
 
 	animation_set->at(ani)->Render(x, y);
 	for (size_t i = 0; i < listFire.size(); i++)
-	{
-		//if (!listFire[i]->CheckObjectInCamera() || !listFire.at(i)->isFinish)
-			listFire[i]->Render();
-	}
-
+		listFire[i]->Render();
+	RenderBoundingBox();
 }
 
 void FirePlant::SetState(int state)

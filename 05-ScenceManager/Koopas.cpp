@@ -149,15 +149,18 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				}
 				else
 				{
-					if (e->nx != 0)
+					if (e->nx != 0) {
 						x = x0 + dx;
+					}						
 					if (state == KOOPAS_STATE_DEFEND && e->ny > 0)
 						y = y0 + dy;
 				}
 			}
 			else if (e->obj->GetType() == PIPE)
 			{
-				if (ny != 0) vy = 0;
+				if (ny != 0) {
+					vy = 0;
+				} 
 				if (e->nx != 0) {
 					this->nx *= -1;
 					if (this->state == KOOPAS_STATE_BALL) {
@@ -168,18 +171,14 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					}
 				}
 			}
-			else if (e->obj->GetType() == PLATFORM || e->obj->GetType() == MUSICBRICK) {
-				if (ny != 0) {
-					if (e->obj->GetType() == MUSICBRICK) {
-						MusicBrick* mb = dynamic_cast<MusicBrick*>(e->obj);
-						if (mb->isHidden) {
-							x += dx; y += dy;
-						}
+			else if (e->obj->GetType() == PLATFORM) {
+				if (e->ny != 0) {
+					vy = 0;
+					if (model == KOOPAS_MODEL_GREEN_WING)
+					{
+						y = e->obj->y - KOOPAS_BBOX_HEIGHT;
+						vy = -KOOPAS_FLY_SPEED;
 					}
-					else {
-						x = x0;
-						vy = 0;
-					}				
 				}
 				if (e->nx != 0) {
 					this->nx *= -1;
@@ -188,6 +187,32 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					}
 					else if (this->state == KOOPAS_STATE_WALKING) {
 						this->vx = this->nx * KOOPAS_WALKING_SPEED;
+					}
+				}
+			}
+			else if (e->obj->GetType() == MUSICBRICK) {
+				MusicBrick* mb = dynamic_cast<MusicBrick*>(e->obj);
+				if (e->ny != 0) {
+					if (mb->isHidden) {
+						x += dx; y += dy;
+					}
+					else {
+						x = x0;
+						vy = 0;
+					}
+				}
+				if (e->nx != 0) {
+					if (mb->isHidden) {
+						x += dx; y += dy;
+					}
+					else {
+						this->nx *= -1;
+						if (this->state == KOOPAS_STATE_BALL) {
+							this->vx = this->nx * KOOPAS_BALL_SPEED;
+						}
+						else if (this->state == KOOPAS_STATE_WALKING) {
+							this->vx = this->nx * KOOPAS_WALKING_SPEED;
+						}
 					}
 				}
 			}
@@ -211,6 +236,8 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			}
 			else if (e->obj->GetType() == GOLDBRICK) {
 				GoldBrick* gb = dynamic_cast<GoldBrick*>(e->obj);
+				GetBoundingBox(mLeft, mTop, mRight, mBottom);
+				e->obj->GetBoundingBox(oLeft, oTop, oRight, oBottom);
 				if (e->ny < 0)
 				{
 					vy = 0;
@@ -218,7 +245,6 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						vx = 0;
 					if (state == KOOPAS_STATE_WALKING)
 					{
-						e->obj->GetBoundingBox(oLeft, oTop, oRight, oBottom);
 						if (this->nx > 0 && x >= oRight - 5.f)
 							if (CalTurnable(e->obj, coObjects))
 							{
@@ -238,14 +264,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						vy = -KOOPAS_FLY_SPEED;
 					}
 				}
-				else
-				{
-					if (e->nx != 0)
-						x = x0 + dx;
-					if (state == KOOPAS_STATE_DEFEND && e->ny > 0)
-						y = y0 + dy;
-				}
-				if (e->nx != 0) {
+				if (e->nx != 0 && mBottom + 0.4f > oTop) {
 					this->nx *= -1;
 					if (state == KOOPAS_STATE_WALKING)
 						this->vx = this->nx * KOOPAS_WALKING_SPEED;
