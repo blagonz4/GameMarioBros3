@@ -114,7 +114,7 @@ void FireBall::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			}			
 			else if (e->obj->GetType() == MARIO) {
 				CMario* mario = dynamic_cast<CMario*>(e->obj);
-				if (mario->untouchable == 0) {
+				if (mario->untouchable == 0 && defineVy == FIRE_GRAVITY) {
 					if (mario->level > MARIO_LEVEL_SMALL)
 					{
 						if (mario->level > MARIO_LEVEL_BIG) {

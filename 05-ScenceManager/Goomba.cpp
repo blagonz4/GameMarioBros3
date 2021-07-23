@@ -16,6 +16,7 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
 	CGameObject::Update(dt);
 	vy += ay * dt;
+
 	if (vy < -GOOMBA_JUMP_SPEED && state == GOOMBA_STATE_RED_JUMPING)
 	{
 		vy = -GOOMBA_JUMP_SPEED;

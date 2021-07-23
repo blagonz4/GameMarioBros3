@@ -79,6 +79,8 @@ protected:
 	Grid* grid;
 public: 
 	int section;
+	bool isEndScene_1 = false;
+	bool isEndScene_2 = false;
 	CPlayScene(int id, LPCWSTR filePath);
 	virtual void Load();
 	virtual void Update(DWORD dt);

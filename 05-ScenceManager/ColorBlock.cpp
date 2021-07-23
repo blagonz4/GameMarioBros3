@@ -21,6 +21,7 @@ void ColorBlock::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 }
 void ColorBlock::Render()
 {
+	//RenderBoundingBox();
 }
 void ColorBlock::SetState(int state) {
 
@@ -32,5 +33,5 @@ void ColorBlock::GetBoundingBox(float& l, float& t, float& r, float& b)
 	l = x;
 	t = y;
 	r = x + width;
-	b = y;
+	b = y+1;
 }

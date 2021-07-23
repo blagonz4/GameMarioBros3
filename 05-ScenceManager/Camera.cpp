@@ -43,7 +43,10 @@ void Camera::Update(DWORD dt) {
 
 
 		game->SetCamPos((int)__cx, (int)__cy);
-		map->SetCamPos((int)__cx, (int)__cy);
+		map->SetCamPos(__cx, (float)__cy);
+		//game->SetCamPos(__cx, __cy);
+		//map->SetCamPos((int)__cx, (int)__cy);
+
 	}
 	else if (game->GetScene() == MAP1_1_1)
 	{
@@ -62,7 +65,8 @@ void Camera::Update(DWORD dt) {
 			__cx = mw - sw;//khong cho qua ben phai cuoi map
 
 		game->SetCamPos((int)__cx, (int)__cy);
-		map->SetCamPos((int)__cx, (int)__cy);
+		map->SetCamPos(__cx, (float)__cy);
+		//map->SetCamPos((int)__cx, (int)__cy);
 
 	}
 	else if (game->GetScene() == MAP1_3_1) {
@@ -70,10 +74,8 @@ void Camera::Update(DWORD dt) {
 
 		mario->GetPosition(px, py);
 
-		//if (__cx <= px - DISTANCE_TO_MARIO_X)
-		//	__cx = px - DISTANCE_TO_MARIO_X;
-
 		sum_dt += dt;
+		DebugOut(L"camX: %f \n", game->GetCamX());
 		__cx = game->GetCamX();
 		if (sum_dt > CAMERA_REFRESH_RATE) {
 			sum_dt = 0;
@@ -100,7 +102,8 @@ void Camera::Update(DWORD dt) {
 
 
 		game->SetCamPos((int)__cx, (int)__cy);
-		map->SetCamPos((int)__cx, (int)__cy);
+		map->SetCamPos(__cx, (float)__cy);
+		//map->SetCamPos((int)__cx, (int)__cy);
 	}
 	else if (game->GetScene() == WORLDMAP){
 
@@ -112,7 +115,8 @@ void Camera::Update(DWORD dt) {
 		__cy = -WORLD_MAP_CAM_POS_Y;	
 
 		game->SetCamPos((int)__cx, (int)__cy);
-		map->SetCamPos((int)__cx, (int)__cy);
+		map->SetCamPos(__cx, (float)__cy);
+		//map->SetCamPos((int)__cx, (int)__cy);
 }
 
 }

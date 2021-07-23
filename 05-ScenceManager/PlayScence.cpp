@@ -357,6 +357,12 @@ void CPlayScene::Update(DWORD dt)
 			objects[i]->Update(dt, &coObjects);
 		//else objects[i]->Update(0, &coObjects);
 
+
+		if (isEndScene_1 && player != NULL) {
+			player->SetState(MARIO_STATE_WALK_RIGHT);
+			player->vx = 0.1f;
+		}
+
 		if (e->GetType() == QUESTIONBRICK)
 		{
 			QuestionBrick* qb = dynamic_cast<QuestionBrick*>(e);
@@ -547,6 +553,8 @@ void CPlayScene::Unload()
 {
 	//for (size_t i = 0; i < objects.size(); i++)
 	//	delete objects[i];
+	isEndScene_1 = false;
+	game->SetCamPos(0, 100); //Set cam tu map 1_3 qua map phu 
 	objects.clear();
 	if (grid != NULL)
 		grid->ClearAll();
@@ -577,28 +585,50 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 		case DIK_R:
 			mario->Reset();
 			break;
-		case DIK_F1:
+		case DIK_1:
+			mario->SetLevel(MARIO_LEVEL_SMALL);
+			break;
+		case DIK_2:
 			mario->y -= 20;
 			mario->SetLevel(MARIO_LEVEL_BIG);
 			break;
-		case DIK_F2:
-			mario->SetLevel(MARIO_LEVEL_SMALL);
-			break;
-		case DIK_F3:
-			mario->y -= 20;
-			mario->SetLevel(MARIO_LEVEL_FIRE);
-			break;
-		case DIK_F4:
+		case DIK_3:
 			mario->y -= 20;
 			mario->SetLevel(MARIO_LEVEL_RACOON);
 			break;
-		case DIK_F5:
-			mario->SetPosition(2256, 30);
+		case DIK_4:
+			mario->y -= 20;
+			mario->SetLevel(MARIO_LEVEL_FIRE);
 			break;
-		case DIK_T:
-			float x, y;
-			mario->GetPosition(x, y);
-			mario->SetPosition(x + 500, y - 50);
+		case DIK_5:
+			if (game->GetInstance()->GetScene() == MAP1_1)
+				mario->SetPosition(480, 300);
+			if (game->GetInstance()->GetScene() == MAP1_3)
+				mario->SetPosition(530, 300);
+			break;
+		case DIK_6:
+			if (game->GetInstance()->GetScene() == MAP1_1)
+				mario->SetPosition(2020, 300);
+			if (game->GetInstance()->GetScene() == MAP1_3)
+				mario->SetPosition(1088, 300);
+			break;
+		case DIK_7:
+			if (game->GetInstance()->GetScene() == MAP1_1)
+				mario->SetPosition(1414, 50);
+			if (game->GetInstance()->GetScene() == MAP1_3)
+				mario->SetPosition(500, 10);
+			break;
+		case DIK_8:
+			if (game->GetInstance()->GetScene() == MAP1_1)
+			mario->SetPosition(2256, 30);
+			if (game->GetInstance()->GetScene() == MAP1_3)
+				mario->SetPosition(1600, 300);
+			break;
+		case DIK_9:
+			if (game->GetInstance()->GetScene() == MAP1_1)
+				mario->SetPosition(2500, 300);
+			if (game->GetInstance()->GetScene() == MAP1_3)
+				mario->SetPosition(2300, 300);
 			break;
 		case DIK_DOWN:
 			mario->isWannaDown = true;

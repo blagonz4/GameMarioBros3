@@ -272,7 +272,6 @@ void IntroScene::Update(DWORD dt)
 				mario->Update(dt, &coObjects);			
 				if (introTime > 7600 && introTime < 7900) {
 					mario->SetState(MARIO_STATE_JUMP);
-					//mario->vy = -MARIO_JUMP_SPEED_MIN;
 				}
 				else if (introTime > 7900) {
 					mario->vx = 0;
@@ -292,6 +291,10 @@ void IntroScene::Update(DWORD dt)
 		}
 		else if (introTime > 8000){
 			objects[i]->Update(dt, &coObjects);
+			if (e->GetType() == GOOMBA) {
+				CGoomba* goomba = dynamic_cast<CGoomba*>(e);
+				//goomba->SetState(GOOMBA_STATE_WALKING);
+			}
 			if (e->GetType() == KOOPAS) {
 				CKoopas* koopa = dynamic_cast<CKoopas*>(e);
 				koopa->SetState(KOOPAS_STATE_DEFEND);
@@ -324,7 +327,6 @@ void IntroScene::Update(DWORD dt)
 					mario->SetState(MARIO_STATE_IDLE);
 					if (introTime > 9500) {
 						mario->SetState(MARIO_STATE_JUMP);
-						//mario->vy = -MARIO_JUMP_SPEED_MIN ;
 					}				
 				}
 				if (introTime > 10000 && introTime < 11000) {

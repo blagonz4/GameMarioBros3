@@ -988,9 +988,9 @@
 #========GROUND========	
 58	142	230	24
 7	-30	230	24	600	246
-#========GOOBA==========
+#========GOOMBA==========
 #type   x       y    ani_set_id model    direction
-2	10	210	2	1	1
+2	42	210	2	1	1
 #========MUSHROOM==========
 #type   x       y    ani_set_id model    direction
 11	40	0	12	1	1

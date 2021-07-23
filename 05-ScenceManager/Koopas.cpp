@@ -108,16 +108,15 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		float rdx = 0;
 		float rdy = 0;
 
-		// TODO: This is a very ugly designed function!!!!
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
 		x0 = x; y0 = y;
-		x =x0+ min_tx * dx + nx * 0.4f;
-		y =y0+ min_ty * dy + ny * 0.4f;
+		x =x0 + min_tx * dx + nx * 0.4f;
+		y =y0 + min_ty * dy + ny * 0.4f;
 
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{
 			LPCOLLISIONEVENT e = coEventsResult[i];
-
+			GetBoundingBox(mLeft, mTop, mRight, mBottom);
 			if (e->obj->GetType() == COLORBLOCK)
 			{
 				if (e->ny < 0)
@@ -171,8 +170,8 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					}
 				}
 			}
-			else if (e->obj->GetType() == PLATFORM) {
-				if (e->ny != 0) {
+			else if (e->obj->GetType() == PLATFORM ) {
+				if (e->ny != 0 && mBottom - 0.4f > e->obj->x) {
 					vy = 0;
 					if (model == KOOPAS_MODEL_GREEN_WING)
 					{
@@ -226,6 +225,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						{
 							qb->vy = -QUESTION_BRICK_SPEED_UP;
 							qb->Health = 0;
+							qb->isUnbox = true;
 						}
 					}
 					else if (this->state == KOOPAS_STATE_WALKING) {
@@ -352,7 +352,7 @@ void CKoopas::Render()
 	
 	animation_set->at(ani)->Render(x, y);
 
-	//RenderBoundingBox();
+	RenderBoundingBox();
 }
 
 void CKoopas::SetState(int state)
@@ -403,7 +403,7 @@ bool CKoopas::CalTurnable(LPGAMEOBJECT object, vector<LPGAMEOBJECT>* coObjects)
 	if (!CheckObjectInCamera())
 		return false;
 	for (UINT i = 0; i < coObjects->size(); i++)
-		if (dynamic_cast<Platform*>(coObjects->at(i)) || dynamic_cast<ColorBlock*>(coObjects->at(i)) || dynamic_cast<GoldBrick*>(coObjects->at(i)))
+		if (dynamic_cast<ColorBlock*>(coObjects->at(i)) || dynamic_cast<GoldBrick*>(coObjects->at(i)))
 			if (abs(coObjects->at(i)->y == object->y))
 			{
 				if (nx > 0)
