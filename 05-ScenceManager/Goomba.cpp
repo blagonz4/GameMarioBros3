@@ -17,6 +17,23 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	CGameObject::Update(dt);
 	vy += ay * dt;
 
+	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+	if (mario != NULL) {
+		float mLeft, mTop, mRight, mBottom;
+		float oLeft, oTop, oRight, oBottom;
+		mario->GetBoundingBox(mLeft, mTop, mRight, mBottom);
+		GetBoundingBox(oLeft, oTop, oRight, oBottom);
+		int mWidth = (int)mRight - (int)mLeft;
+		if (mario->level == MARIO_LEVEL_RACOON && mario->isTurningTail) {
+			if (CheckAABB(mLeft, mTop + TAIL_SIZE, mRight, mBottom))
+				this->SetState(GOOMBA_STATE_DIE);
+		}
+	}
+
+
+
+	float mLeft, mTop, mRight, mBottom;
+	float oLeft, oTop, oRight, oBottom;
 	if (vy < -GOOMBA_JUMP_SPEED && state == GOOMBA_STATE_RED_JUMPING)
 	{
 		vy = -GOOMBA_JUMP_SPEED;
@@ -92,10 +109,13 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		x = x0 + min_tx * dx + nx * 0.4f;
 		y = y0 + min_ty * dy + ny * 0.4f;
 
+		if (nx != 0) this->nx = -this->nx;
+		if (ny != 0) vy = 0;
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{
 			LPCOLLISIONEVENT e = coEventsResult[i];
-
+			GetBoundingBox(mLeft, mTop, mRight, mBottom);
+			e->obj->GetBoundingBox(oLeft, oTop, oRight, oBottom);
 			if (e->obj->GetType() == COLORBLOCK || e->obj->GetObjectType() == ENEMY) {
 				x = x0 + dx;
 				if (this->model == GOOMBA_MODEL_WING || this->model == GOOMBA_MODEL_WING_BROWN)
@@ -107,7 +127,8 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				e->obj->GetType() == GOLDBRICK ||
 				e->obj->GetType() == BRICK||
 				e->obj->GetType() == MUSICBRICK) {
-					this->vx = -this->vx;
+				
+					this->vx = -this->vx;				
 			}
 			if (e->obj->GetType() == PLATFORM)
 			{
@@ -139,7 +160,11 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						ay = GOOMBA_GRAVITY;
 				}
 				if (e->nx != 0) {
-					this->vx = -this->vx;
+					if (ceil(mBottom) != oTop)
+					{
+						vx = -vx;
+						this->nx = -this->nx;
+					}
 				}
 			}
 			if (e->obj->GetType() == COIN) {

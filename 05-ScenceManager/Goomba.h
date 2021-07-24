@@ -2,7 +2,8 @@
 #include "GameObject.h"
 #include "define.h"
 #include "Poop.h"
-
+#include "PlayScence.h"
+#include "Mario.h"
 //-----------------------------Goomba---------------------------
 #define GOOMBA_WALKING_SPEED			0.035f
 #define GOOMBA_GRAVITY					0.002f

@@ -1,5 +1,5 @@
 [SETTINGS]
-start	5
+start	1
 #scene list	path				type
 [SCENES]
 0	Tilemap/Worldmap/worldmap_script.txt	0

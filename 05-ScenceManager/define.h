@@ -24,7 +24,7 @@ using namespace std;
 #define SCREEN_WIDTH 300  
 #define SCREEN_HEIGHT 300
 
-#define MAX_FRAME_RATE 120
+#define MAX_FRAME_RATE 144
 
 
 //------------------------ENUM TYPE---------------------------------

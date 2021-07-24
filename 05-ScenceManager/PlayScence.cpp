@@ -137,13 +137,13 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 
 			DebugOut(L"[INFO] Player object created!\n");
 			break;
-		//case GRID: {
-		//	//DebugOut(L"object: %d \n", atoi(tokens[0].c_str()));
-		//	int gridRows = atoi(tokens[1].c_str());
-		//	int gridCols = atoi(tokens[2].c_str());
-		//	grid = new Grid(gridCols, gridRows);
-		//	break;
-		//}
+		case GRID: {
+			//DebugOut(L"object: %d \n", atoi(tokens[0].c_str()));
+			int gridRows = atoi(tokens[1].c_str());
+			int gridCols = atoi(tokens[2].c_str());
+			grid = new Grid(gridCols, gridRows);
+			break;
+		}
 		case OBJECT_TYPE_GOOMBA: {
 			float model = (float)atof(tokens[4].c_str());
 			float direction = (float)atof(tokens[5].c_str());
@@ -229,20 +229,20 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 			DebugOut(L"[ERR] Invalid object type: %d\n", object_type);
 			return;
 		}
-		//if (object_type != GRID) {// General object setup
-		//	LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);
-		//	obj->SetPosition(x, y);
-		//	obj->SetAnimationSet(ani_set);
+		if (object_type != GRID) {// General object setup
+			LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);
+			obj->SetPosition(x, y);
+			obj->SetAnimationSet(ani_set);
 
-		//	if (object_type == OBJECT_TYPE_MARIO || object_type == OBJECT_TYPE_PLATFORM)
-		//		objects.push_back(obj);
+			if (object_type == OBJECT_TYPE_MARIO || object_type == OBJECT_TYPE_PLATFORM)
+				objects.push_back(obj);
 
-		//}
-		//if (object_type != OBJECT_TYPE_MARIO && object_type != GRID && object_type != OBJECT_TYPE_PLATFORM) {
-		//	int gridCol = (int)atoi(tokens[tokens.size() - 1].c_str());
-		//	int gridRow = (int)atoi(tokens[tokens.size() - 2].c_str());
-		//	Unit* unit = new Unit(grid, obj, gridRow, gridCol);
-		//}
+		}
+		if (object_type != OBJECT_TYPE_MARIO && object_type != GRID && object_type != OBJECT_TYPE_PLATFORM) {
+			int gridCol = (int)atoi(tokens[tokens.size() - 1].c_str());
+			int gridRow = (int)atoi(tokens[tokens.size() - 2].c_str());
+			Unit* unit = new Unit(grid, obj, gridRow, gridCol);
+		}
 
 		LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);
 		obj->SetPosition(x, y);
@@ -252,7 +252,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	}
 
 	f.close();
-	////grid->Out();
+	grid->Out();
 }
 
 void CPlayScene::_ParseSection_TILEMAP(string line) {	//doc map tu file txt
