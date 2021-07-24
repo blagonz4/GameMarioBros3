@@ -13,7 +13,10 @@ BoomerangBrother::BoomerangBrother(float x, float y,float direction)
 	StartReload();
 	for (int i = 0; i < BOOMERANG_BROTHER_BOOMERANGS; i++)
 	{
-		ListBoomerang.push_back(new CBoomerang(x,y, direction));
+		CBoomerang* boomerang = new CBoomerang(x,y, direction);
+		CPlayScene* scene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
+		ListBoomerang.push_back(boomerang);
+		scene->TurnIntoUnit(boomerang);
 	}
 }
 
@@ -45,13 +48,6 @@ void BoomerangBrother::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				ListBoomerang[i]->nx = nx;
 	}
 
-	for (size_t i = 0; i < ListBoomerang.size(); i++)
-	{
-		ListBoomerang[i]->Update(dt, coObjects);
-		/*if (!ListBoomerang[i]->CheckObjectInCamera() || ListBoomerang.at(i)->isFinish) {
-			ListBoomerang.erase(ListBoomerang.begin() + i);
-		}*/
-	}
 	for (size_t i = 0; i < ListBoomerang.size(); i++)
 	{
 		if (ListBoomerang[i]->state >= BOOMERANG_STATE_2)

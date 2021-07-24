@@ -116,6 +116,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{
 			LPCOLLISIONEVENT e = coEventsResult[i];
+			e->obj->GetBoundingBox(oLeft, oTop, oRight, oBottom);
 			GetBoundingBox(mLeft, mTop, mRight, mBottom);
 			if (e->obj->GetType() == COLORBLOCK)
 			{
@@ -171,7 +172,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				}
 			}
 			else if (e->obj->GetType() == PLATFORM ) {
-				if (e->ny != 0 && mBottom - 0.4f > e->obj->x) {
+				if (e->ny != 0) {
 					vy = 0;
 					if (model == KOOPAS_MODEL_GREEN_WING)
 					{
@@ -179,13 +180,39 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						vy = -KOOPAS_FLY_SPEED;
 					}
 				}
-				if (e->nx != 0) {
-					this->nx *= -1;
-					if (this->state == KOOPAS_STATE_BALL) {
-						this->vx = this->nx * KOOPAS_BALL_SPEED;
+				if (e->ny < 0)
+				{
+					vy = 0;
+					if (state == KOOPAS_STATE_DEFEND)
+						vx = 0;
+					if (state == KOOPAS_STATE_WALKING)
+					{
+						e->obj->GetBoundingBox(oLeft, oTop, oRight, oBottom);
+						if (this->nx > 0 && x >= oRight - 10.f)
+							if (CalTurnable(e->obj, coObjects))
+							{
+								this->nx = -1;
+								vx = this->nx * KOOPAS_WALKING_SPEED;
+							}
+						if (this->nx < 0 && x <= e->obj->x - 10.f)
+							if (CalTurnable(e->obj, coObjects))
+							{
+								this->nx = 1;
+								vx = this->nx * KOOPAS_WALKING_SPEED;
+							}
 					}
-					else if (this->state == KOOPAS_STATE_WALKING) {
-						this->vx = this->nx * KOOPAS_WALKING_SPEED;
+					if (model == KOOPAS_MODEL_GREEN_WING)
+					{
+						y = e->obj->y - KOOPAS_BBOX_HEIGHT;
+						vy = -KOOPAS_FLY_SPEED;
+					}
+				}
+				if (e->nx != 0)
+				{
+					if (ceil(mBottom) != oTop)
+					{
+						vx = -vx;
+						this->nx = -this->nx;
 					}
 				}
 			}
@@ -403,7 +430,7 @@ bool CKoopas::CalTurnable(LPGAMEOBJECT object, vector<LPGAMEOBJECT>* coObjects)
 	if (!CheckObjectInCamera())
 		return false;
 	for (UINT i = 0; i < coObjects->size(); i++)
-		if (dynamic_cast<ColorBlock*>(coObjects->at(i)) || dynamic_cast<GoldBrick*>(coObjects->at(i)))
+		if (dynamic_cast<Platform*>(coObjects->at(i)) || dynamic_cast<ColorBlock*>(coObjects->at(i)) || dynamic_cast<GoldBrick*>(coObjects->at(i)))
 			if (abs(coObjects->at(i)->y == object->y))
 			{
 				if (nx > 0)

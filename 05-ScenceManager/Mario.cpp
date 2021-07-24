@@ -277,85 +277,39 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				if (e->obj->GetType() == GOOMBA) // if e->obj is Goomba 
 				{
 					CGoomba *goomba = dynamic_cast<CGoomba *>(e->obj);
-
 					if (e->ny < 0)
 					{
-						if (untouchable == 0) {
-							if (goomba->GetState() != GOOMBA_STATE_DIE)
-							{
-								if (goomba->Health == 2) {
-									goomba->Health = 1;
-									goomba->SetState(GOOMBA_STATE_WALKING);
-									if (goomba->model == GOOMBA_MODEL_WING_BROWN)
-										goomba->model = GOOMBA_MODEL_NORMAL;
-									ShowEffectPoint(goomba, POINT_EFFECT_MODEL_100);
-									PlusScore(100);
-								}
-								else
-								{
-									goomba->SetState(GOOMBA_STATE_DIE);
-								}
-								this->vy = -MARIO_JUMP_DEFLECT_SPEED;
-							}
-						}
-						else { goomba->y -= ENEMY_PUSH_BACK; this->x += dx; }
-					}
-					else if (e->ny > 0) {
-						if (untouchable == 0)
+						if (goomba->GetState() != GOOMBA_STATE_DIE)
 						{
-							if (goomba->GetState() != KOOPAS_STATE_DIE)
-							{
-								if (level > MARIO_LEVEL_SMALL)
-								{
-									if (level > MARIO_LEVEL_BIG) {
-										level = MARIO_LEVEL_BIG;
-										EffectDisappear* effectDisappear = new EffectDisappear(this->x, this->y);
-										listEffect.push_back(effectDisappear);
-										StartUntouchable();
-									}
-									else
-									{
-										level = MARIO_LEVEL_SMALL;
-										StartUntouchable();
-									}
-								}
-								else
-									SetState(MARIO_STATE_DIE);
+							if (goomba->Health == 2) {
+								goomba->Health = 1;
+								goomba->SetState(GOOMBA_STATE_WALKING);
+								ShowEffectPoint(goomba, POINT_EFFECT_MODEL_100);
+								PlusScore(100);
 							}
+							else
+							{
+								goomba->SetState(GOOMBA_STATE_DIE);
+							}
+							this->vy = -MARIO_JUMP_DEFLECT_SPEED;
 						}
-						else { this->x = x0 + dx; this->y = y0; }
 					}
-					else if (e->nx != 0)
+					else
 					{
 						if (isTurningTail && level == MARIO_LEVEL_RACOON) {
-							goomba->nx = this->nx;
-							goomba->SetState(GOOMBA_STATE_DIE);
 							EffectTailHit* effectTailHit = new EffectTailHit(goomba->x, goomba->y);
 							listEffect.push_back(effectTailHit);
 						}
 						if (untouchable == 0)
 						{
 							if (goomba->GetState() != GOOMBA_STATE_DIE)
-							{
-								if (level > MARIO_LEVEL_SMALL)
-								{
-									if (level > MARIO_LEVEL_BIG) {
-										level = MARIO_LEVEL_BIG;
-										EffectDisappear* effectDisappear = new EffectDisappear(this->x, this->y);
-										listEffect.push_back(effectDisappear);
-										StartUntouchable();
-									}
-									else
-									{
-										level = MARIO_LEVEL_SMALL;
-										StartUntouchable();
-									}
-								}
-								else
-									SetState(MARIO_STATE_DIE);
-							}
+								BeingAttacked();
 						}
-						else { goomba->x += goomba->nx * ENEMY_PUSH_BACK / 2; this->x += dx; }
+						else {
+							x = x0 + dx;
+							y = y0;
+							goomba->x += goomba->dx;
+						}
 					}
 				}
 				else if (e->obj->GetType() == KOOPAS)
@@ -363,58 +317,25 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					CKoopas *koopa = dynamic_cast<CKoopas *>(e->obj);
 					if (e->ny < 0)
 					{
-						if (untouchable == 0) {
-							e->obj->y -= ENEMY_PUSH_BACK;
-							if (koopa->model == KOOPAS_MODEL_GREEN_WING) {
-								koopa->model = KOOPAS_MODEL_GREEN;
-								ShowEffectPoint(koopa, POINT_EFFECT_MODEL_100);
-								PlusScore(100);
-								if (koopa->GetState() == KOOPAS_STATE_FLY)
-									koopa->SetState(KOOPAS_STATE_WALKING);
-							}
-
-							if (koopa->GetState() == KOOPAS_STATE_DEFEND) {
-								vy = -MARIO_JUMP_DEFLECT_SPEED;
-								koopa->SetState(KOOPAS_STATE_BALL);
-							}
-							else if (koopa->GetState() != KOOPAS_STATE_DIE)
-							{
-								ShowEffectPoint(koopa, POINT_EFFECT_MODEL_100);
-								PlusScore(100);
-								vy = -MARIO_JUMP_DEFLECT_SPEED;
-								koopa->SetState(KOOPAS_STATE_DEFEND);
-							}
+						PlusScore(100);
+						ShowEffectPoint(koopa, POINT_EFFECT_MODEL_100);
+						vy = -MARIO_JUMP_DEFLECT_SPEED;
+						koopa->y = koopa->y0 - 0.4f;
+						if (koopa->model == KOOPAS_MODEL_GREEN_WING) {
+							koopa->model = KOOPAS_MODEL_GREEN;
+							if (koopa->GetState() == KOOPAS_STATE_FLY)
+								koopa->SetState(KOOPAS_STATE_WALKING);
 						}
-						else { koopa->y -= ENEMY_PUSH_BACK; this->x += dx; }
-					}
-					else if (e->ny > 0) {
-						DebugOut(L"2 \n");
-						if (untouchable == 0)
+						if (koopa->GetState() == KOOPAS_STATE_DEFEND) {
+							koopa->SetState(KOOPAS_STATE_BALL);
+						}
+						else if (koopa->GetState() != KOOPAS_STATE_DIE)
 						{
-							if (koopa->GetState() != KOOPAS_STATE_DIE)
-							{
-								if (level > MARIO_LEVEL_SMALL)
-								{
-									if (level > MARIO_LEVEL_BIG) {
-										level = MARIO_LEVEL_BIG;
-										EffectDisappear* effectDisappear = new EffectDisappear(this->x, this->y);
-										listEffect.push_back(effectDisappear);
-										StartUntouchable();
-									}
-									else
-									{
-										level = MARIO_LEVEL_SMALL;
-										StartUntouchable();
-									}
-								}
-								else
-									SetState(MARIO_STATE_DIE);
-							}
+							koopa->SetState(KOOPAS_STATE_DEFEND);
 						}
-						else { this->x = x0 + dx; this->y = y0; }
+
 					}
-					else if (e->nx != 0)
-					{
+					else {
 						if (game->IsKeyDown(DIK_A)) {
 							if (isTurningTail && level == MARIO_LEVEL_RACOON) {
 
@@ -436,29 +357,15 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 							koopa->nx = this->nx;
 							koopa->SetState(KOOPAS_STATE_BALL);
 						}
-						else if (untouchable == 0)
+						else if (untouchable == 0 && (koopa->GetState() == KOOPAS_STATE_BALL || koopa->GetState() == KOOPAS_STATE_WALKING || koopa->GetState() == KOOPAS_STATE_FLY))
 						{
-							if (koopa->GetState() != KOOPAS_STATE_DIE)
-							{
-								if (level > MARIO_LEVEL_SMALL)
-								{
-									if (level > MARIO_LEVEL_BIG) {
-										level = MARIO_LEVEL_BIG;
-										EffectDisappear* effectDisappear = new EffectDisappear(this->x, this->y);
-										listEffect.push_back(effectDisappear);
-										StartUntouchable();
-									}
-									else
-									{
-										level = MARIO_LEVEL_SMALL;
-										StartUntouchable();
-									}
-								}
-								else
-									SetState(MARIO_STATE_DIE);
-							}
+							BeingAttacked();
 						}
-						else { this->x += dx; koopa->x += koopa->nx * ENEMY_PUSH_BACK + dx; }
+						else {
+							x = x0 + dx;
+							y = y0;
+							koopa->x += koopa->dx;
+						}
 					}
 				}
 				else if (e->obj->GetType() == COLORBLOCK)
@@ -793,7 +700,12 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						else SetState(MARIO_STATE_DIE);
 					}
 				}
-				else if (e->obj->GetType() == POOP) {}
+				else if (e->obj->GetType() == POOP) {
+					Poop *poop = dynamic_cast<Poop *>(e->obj);
+					x += dx;
+					y += dy;
+					poop->isAttach = true;
+				}
 				else if (e->obj->GetType() == SCENE) {
 					x = e->obj->x;
 					y = e->obj->y;
@@ -1442,4 +1354,22 @@ void CMario::ShowEffectPoint(CGameObject* obj, float model) {
 	EffectPoint* effectPoint = new EffectPoint(obj->x, obj->y, model);
 	CPlayScene* scene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
 	listEffect.push_back(effectPoint);
+}
+void CMario::BeingAttacked() {
+	if (level > MARIO_LEVEL_SMALL)
+	{
+		if (level > MARIO_LEVEL_BIG) {
+			level = MARIO_LEVEL_BIG;
+			EffectDisappear* effectDisappear = new EffectDisappear(this->x, this->y);
+			listEffect.push_back(effectDisappear);
+			StartUntouchable();
+		}
+		else
+		{
+			level = MARIO_LEVEL_SMALL;
+			StartUntouchable();
+		}
+	}
+	else
+		SetState(MARIO_STATE_DIE);
 }

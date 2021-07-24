@@ -2,7 +2,7 @@
 #include "GameObject.h"
 #include "define.h"
 #include "Poop.h"
-
+#include "PlayScence.h"
 //-----------------------------Goomba---------------------------
 #define GOOMBA_WALKING_SPEED			0.035f
 #define GOOMBA_GRAVITY					0.002f
@@ -21,6 +21,8 @@
 #define GOOMBA_STATE_RED_JUMPING		400
 #define GOOMBA_STATE_RED_HIGHJUMPING	450
 #define GOOMBA_STATE_RED_WINGSWALKING	500
+#define GOOMBA_STATE_BROWN_FLYING		600
+#define GOOMBA_STATE_BROWN_WALKING		700
 
 #define GOOMBA_BBOX_WIDTH						16
 #define GOOMBA_WING_BBOX_WIDTH					20
@@ -33,35 +35,41 @@
 #define GOOMBA_MODEL_WING						2
 #define GOOMBA_MODEL_WING_BROWN					3
 
+#define TIME_FLYING									7000
+#define TIME_WALKING								5000
 
+#define GOOMBA_ANI_DIE								0
+#define GOOMBA_ANI_WING_DIE							1
+#define GOOMBA_ANI_WALKING							2
+#define GOOMBA_ANI_WING_WALKING_WITH_OUT_WING		3
+#define GOOMBA_ANI_WING_WALKING						4
+#define GOOMBA_ANI_WING_JUMPING						5
+#define GOOMBA_ANI_WING_FALLING						6
+#define GOOMBA_ANI_WING_BROWN_FLYING				7
+#define GOOMBA_ANI_WING_BROWN_WALKING_WITH_WING		8
+#define GOOMBA_ANI_WING_BROWN_WALKING_WITHOUT_WING	9
 
-#define GOOMBA_ANI_DIE							0
-#define GOOMBA_ANI_WING_DIE						1
-#define GOOMBA_ANI_WALKING						2
-#define GOOMBA_ANI_WING_WALKING_WITH_OUT_WING	3
-#define GOOMBA_ANI_WING_WALKING					4
-#define GOOMBA_ANI_WING_JUMPING					5
-#define GOOMBA_ANI_WING_FALLING					6
-#define GOOMBA_ANI_WING_BROWN_JUMPING			7
-#define GOOMBA_ANI_WING_BROWN_FALLING			8
-
+#define GOOMBA_FLYING_SPEED						0.15f
 #define GOOMBA_JUMPING_SPEED					0.25f
 #define TIME_TO_DIE								300
-#define POOP_DELAY_DROP							1000
+#define POOP_DELAY_DROP							1500
 class CGoomba : public CGameObject
 {
 	DWORD timeDropDelay;
+	DWORD timeWalking;
+	DWORD timeFlying;
 	DWORD timeToDie;
 	DWORD walking_start = 0;
 	bool isWalking = false;
 	bool isJumping = false;
+	bool isFlying = false;
 	bool isHighJumping = false;
 	int jumping_stacks = 0;
 public: 	
 	CMario* mario;
 	float model;
 	float x0, y0;
-	vector<LPGAMEOBJECT> listPoop;
+	vector<Poop*> listPoop;
 	int Health;
 	CGoomba(CMario* mario,float model, float direction);
 	virtual void SetState(int state);
@@ -71,4 +79,5 @@ public:
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects);
 	virtual void Render();
 	void StartWalking() { walking_start = GetTickCount(); isWalking = true; }
+	void StartFlying() { timeFlying = GetTickCount(); isFlying = true; }
 };

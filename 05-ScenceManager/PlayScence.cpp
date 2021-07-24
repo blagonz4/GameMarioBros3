@@ -137,13 +137,13 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 
 			DebugOut(L"[INFO] Player object created!\n");
 			break;
-		//case GRID: {
-		//	//DebugOut(L"object: %d \n", atoi(tokens[0].c_str()));
-		//	int gridRows = atoi(tokens[1].c_str());
-		//	int gridCols = atoi(tokens[2].c_str());
-		//	grid = new Grid(gridCols, gridRows);
-		//	break;
-		//}
+		case GRID: {
+			//DebugOut(L"object: %d \n", atoi(tokens[0].c_str()));
+			int gridRows = atoi(tokens[1].c_str());
+			int gridCols = atoi(tokens[2].c_str());
+			grid = new Grid(gridCols, gridRows);
+			break;
+		}
 		case OBJECT_TYPE_GOOMBA: {
 			float model = (float)atof(tokens[4].c_str());
 			float direction = (float)atof(tokens[5].c_str());
@@ -159,9 +159,9 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 			break;
 		}
 		case OBJECT_TYPE_PLATFORM: {
-			float w = (float)atof(tokens[4].c_str());
-			float h = (float)atof(tokens[5].c_str());
-			obj = new Platform(w, h);
+			float w = (float)atof(tokens[3].c_str());
+			float h = (float)atof(tokens[4].c_str());
+			obj = new Platform();
 			break;
 		}
 		case OBJECT_TYPE_COLOR_BLOCK: {
@@ -229,30 +229,21 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 			DebugOut(L"[ERR] Invalid object type: %d\n", object_type);
 			return;
 		}
-		//if (object_type != GRID) {// General object setup
-		//	LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);
-		//	obj->SetPosition(x, y);
-		//	obj->SetAnimationSet(ani_set);
+		if (object_type != GRID) {// General object setup
+			LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);
+			obj->SetPosition(x, y);
+			obj->SetAnimationSet(ani_set);
 
-		//	if (object_type == OBJECT_TYPE_MARIO || object_type == OBJECT_TYPE_PLATFORM)
-		//		objects.push_back(obj);
-
-		//}
-		//if (object_type != OBJECT_TYPE_MARIO && object_type != GRID && object_type != OBJECT_TYPE_PLATFORM) {
-		//	int gridCol = (int)atoi(tokens[tokens.size() - 1].c_str());
-		//	int gridRow = (int)atoi(tokens[tokens.size() - 2].c_str());
-		//	Unit* unit = new Unit(grid, obj, gridRow, gridCol);
-		//}
-
-		LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);
-		obj->SetPosition(x, y);
-		obj->SetAnimationSet(ani_set);
-		objects.push_back(obj);
-
+		}
+		if (object_type != OBJECT_TYPE_MARIO && object_type != GRID) {
+			int gridCol = (int)atoi(tokens[tokens.size() - 1].c_str());
+			int gridRow = (int)atoi(tokens[tokens.size() - 2].c_str());
+			Unit* unit = new Unit(grid, obj, gridRow, gridCol);
+		}
 	}
 
 	f.close();
-	////grid->Out();
+	grid->Out();
 }
 
 void CPlayScene::_ParseSection_TILEMAP(string line) {	//doc map tu file txt
@@ -273,8 +264,6 @@ void CPlayScene::_ParseSection_TILEMAP(string line) {	//doc map tu file txt
 	map->GetSpriteTile();
 	map->SetMap(tileMapData);
 }
-
-
 
 void CPlayScene::Load()
 {
@@ -334,13 +323,12 @@ void CPlayScene::Load()
 
 void CPlayScene::Update(DWORD dt)
 {
-	// We know that Mario is the first object in the list hence we won't add him into the colliable object list
-	// TO-DO: This is a "dirty" way, need a more organized way 
-	CGameObject* obj = NULL;
 
+	if (player == NULL) return;
+	CGameObject* obj = NULL;
 	vector<LPGAMEOBJECT> coObjects;
 	coObjects.clear();
-	//GetObjectFromGrid();
+	GetObjectFromGrid();
 
 	playTime -= dt;
 
@@ -348,14 +336,14 @@ void CPlayScene::Update(DWORD dt)
 	{
 		coObjects.push_back(objects[i]);
 	}
-
+	player->Update(dt, &coObjects);
 	for (size_t i = 0; i < objects.size(); i++)
 	{
 		LPGAMEOBJECT e = objects[i];
 
 		if (objects[i]->CheckObjectInCamera())
 			objects[i]->Update(dt, &coObjects);
-		//else objects[i]->Update(0, &coObjects);
+		else objects[i]->Update(0, &coObjects);
 
 
 		if (isEndScene_1 && player != NULL) {
@@ -371,7 +359,8 @@ void CPlayScene::Update(DWORD dt)
 				if (qb->model == QUESTION_BRICK_MODEL_COIN) {
 					EffectCoin* effectCoin = new EffectCoin(qb->x, qb->y - 10);
 					player->PlusCoinCollect(1);
-					objects.push_back(effectCoin);		
+					//objects.push_back(effectCoin);
+					TurnIntoUnit(effectCoin);
 				}
 				QuestionBrickDropItem(qb->GetModel(), qb->x, qb->y);
 				qb->isUnbox = false;
@@ -384,8 +373,8 @@ void CPlayScene::Update(DWORD dt)
 			{
 				brick->isUnbox = 2;
 				Leaf* leaf = new Leaf(brick->x, brick->y - 10);
-				//TurnIntoUnit(leaf);
-				objects.push_back(leaf);
+				TurnIntoUnit(leaf);
+				//objects.push_back(leaf);
 				return;
 			}
 		}
@@ -393,16 +382,21 @@ void CPlayScene::Update(DWORD dt)
 		{
 			GoldBrick* gb = dynamic_cast<GoldBrick*>(e);
 			if (gb->isFinish) {
-				objects.push_back(new EffectBrokenBrick(gb->x, gb->y, 2));	//he so nx de hieu ung bay cho dep 
-				objects.push_back(new EffectBrokenBrick(gb->x, gb->y, 5));
-				objects.push_back(new EffectBrokenBrick(gb->x, gb->y, -2));
-				objects.push_back(new EffectBrokenBrick(gb->x, gb->y, -5));
+				//objects.push_back(new EffectBrokenBrick(gb->x, gb->y, 2));	//he so nx de hieu ung bay cho dep 
+				//objects.push_back(new EffectBrokenBrick(gb->x, gb->y, 5));
+				//objects.push_back(new EffectBrokenBrick(gb->x, gb->y, -2));
+				//objects.push_back(new EffectBrokenBrick(gb->x, gb->y, -5));
+				TurnIntoUnit(new EffectBrokenBrick(gb->x, gb->y, 2));
+				TurnIntoUnit(new EffectBrokenBrick(gb->x, gb->y, 5));
+				TurnIntoUnit(new EffectBrokenBrick(gb->x, gb->y, -2));
+				TurnIntoUnit(new EffectBrokenBrick(gb->x, gb->y, -2));
 			}
 			if (gb->state == GOLD_BRICK_STATE_UNBOX)
 			{
 				if (!isHavePSwitch && gb->model == GOLD_BRICK_MODEL_PSWITCH) {
 					PSwitch* pswitch = new PSwitch(gb->x, gb->y - QUESTION_BRICK_BBOX_HEIGHT);
-					objects.push_back(pswitch);
+					//objects.push_back(pswitch);
+					TurnIntoUnit(pswitch);
 					isHavePSwitch = true;
 				}
 				if (!gb->isUnbox && gb->model == GOLD_BRICK_MODEL_MUSHROOM_1_UP) {
@@ -439,9 +433,9 @@ void CPlayScene::Update(DWORD dt)
 				EffectPoint* effectPoint = new EffectPoint(effectCoin->x,
 					effectCoin->y,
 					POINT_EFFECT_MODEL_100);
-				//TurnIntoUnit(effectPoint);
+				TurnIntoUnit(effectPoint);
 				player->PlusScore(100);
-				objects.push_back(effectPoint);
+				//objects.push_back(effectPoint);
 			}
 		}
 		if (e->GetType() == GOOMBA) {
@@ -476,7 +470,8 @@ void CPlayScene::Update(DWORD dt)
 			FirePlant* plant = dynamic_cast<FirePlant*>(e);
 			if (plant->isFinish) {
 				EffectTailHit* effectTailHit = new EffectTailHit(plant->x, plant->y);
-				objects.push_back(effectTailHit);
+				TurnIntoUnit(effectTailHit);
+				//objects.push_back(effectTailHit);
 				player->PlusScore(200);
 				ShowEffectPoint(plant, POINT_EFFECT_MODEL_200);
 			}
@@ -490,7 +485,7 @@ void CPlayScene::Update(DWORD dt)
 
 	Camera* camera = new Camera(player, game, map);
 	camera->Update(dt);
-	//UpdateGrid();
+	UpdateGrid();
 
 	//skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
 	if (player == NULL) return;
@@ -498,12 +493,7 @@ void CPlayScene::Update(DWORD dt)
 
 void CPlayScene::GetObjectFromGrid() {
 	units.clear();
-	for (size_t i = 0; i < objects.size(); i++) {
-		LPGAMEOBJECT e = objects[i];
-		if (e->GetType() != PLATFORM && e->GetType() != MARIO)
-			objects.erase(objects.begin() + i);
-	}
-	//objects.clear();
+	objects.clear();
 
 	CGame* game = CGame::GetInstance();
 	float camX, camY;
@@ -530,6 +520,7 @@ void CPlayScene::UpdateGrid() {
 void CPlayScene::Render()
 {
 	map->DrawMap();
+	player->Render();
 	for (size_t i = 0; i < objects.size(); i++) {
 
 		if (objects[i]->CheckObjectInCamera())
@@ -551,15 +542,13 @@ void CPlayScene::Render()
 */
 void CPlayScene::Unload()
 {
-	//for (size_t i = 0; i < objects.size(); i++)
-	//	delete objects[i];
 	isEndScene_1 = false;
 	game->SetCamPos(0, 100); //Set cam tu map 1_3 qua map phu 
 	objects.clear();
 	if (grid != NULL)
 		grid->ClearAll();
 	objects.clear();
-	//units.clear();
+	units.clear();
 	player = NULL;
 	DebugOut(L"[INFO] Scene %s unloaded! \n", sceneFilePath);
 }
@@ -709,21 +698,21 @@ void CPlayScene::QuestionBrickDropItem(float model, float x, float y) {
 	case GOLD_BRICK_MODEL_MUSHROOM_1_UP:
 		if (player->GetLevel() == MARIO_LEVEL_SMALL) {
 			Mushroom* mr = new Mushroom(x, y, MUSHROOM_MODEL_RED);
-			objects.push_back(mr);
-			//TurnIntoUnit(mr);
+			//objects.push_back(mr);
+			TurnIntoUnit(mr);
 		}
 		if (player->GetLevel() == MARIO_LEVEL_BIG || player->GetLevel() == MARIO_LEVEL_RACOON) {
 			Leaf* leaf = new Leaf(x, y - 10);
-			objects.push_back(leaf);
-			//TurnIntoUnit(leaf);
+			//objects.push_back(leaf);
+			TurnIntoUnit(leaf);
 		}
 	}
 }
 
 void CPlayScene::ShowEffectPoint(CGameObject* obj, float model) {
 	EffectPoint* effectPoint = new EffectPoint(obj->x, obj->y, model);
-	//TurnIntoUnit(effectPoint);
-	objects.push_back(effectPoint);
+	TurnIntoUnit(effectPoint);
+	//objects.push_back(effectPoint);
 }
 
 void CPlayScene::AnnounceSceneEnd(int boxState) {
@@ -767,7 +756,7 @@ void CPlayScene::AnnounceSceneEnd(int boxState) {
 }
 
 void CPlayScene::TurnIntoUnit(CGameObject* obj) {
-	//Unit* unit = new Unit(grid, obj, obj->x, obj->y);
+	Unit* unit = new Unit(grid, obj, obj->x, obj->y);
 }
 
 void CPlayScene::LoadBackUp() {

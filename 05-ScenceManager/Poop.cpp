@@ -8,7 +8,7 @@ Poop::Poop(float X, float Y,CMario* mario)
 	eType = Type::POOP;
 	this->mario = mario;
 	limitLeft = X;
-	limitRight = X + LEAF_MAX_RIGHT_X;
+	limitRight = X + LEAF_MAX_RIGHT_X-10;
 }
 
 void Poop::GetBoundingBox(float& left, float& top, float& right, float& bottom)
@@ -25,6 +25,7 @@ void Poop::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	{
 		isFinish = true;
 	}
+	else isFinish = false;
 	x += dx;
 	y += dy;
 
@@ -53,38 +54,7 @@ void Poop::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	vector<LPCOLLISIONEVENT> coEventsResult;
 
 	coEvents.clear();
-	CalcPotentialCollisions(coObjects, coEvents);
 
-	if (coEvents.size() == 0)
-	{
-		x += dx;
-		y += dy;
-	}
-	else
-	{
-		float min_tx, min_ty, nx = 0, ny;
-		float rdx = 0;
-		float rdy = 0;
-		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
-		x += min_tx * dx + nx * 0.4f;
-		y += min_ty * dy + ny * 0.1f;
-
-		if (nx != 0) x += dx;
-		if (ny != 0) y += dy;
-
-		for (UINT i = 0; i < coEventsResult.size(); i++)
-		{
-			LPCOLLISIONEVENT e = coEventsResult[i];
-			if (e->obj->GetType() == MARIO) {
-				CMario* mario = dynamic_cast<CMario*>(e->obj);
-				if (mario->untouchable == 0) {	
-					this->isAttach = true;
-					mario->limitJumpVelocity = LIMIT_JUMP_VELOCITY;
-					
-				}
-			}
-		}
-	}
 }
 void Poop::Render()
 {
@@ -93,6 +63,7 @@ void Poop::Render()
 
 void Poop::AttachToMario()
 {
+
 	this->x = mario->x;
 	this->y = mario->y+12;
 	timeDisappear += dt;

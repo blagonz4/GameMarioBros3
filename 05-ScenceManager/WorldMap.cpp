@@ -138,9 +138,9 @@ void WorldMap::_ParseSection_OBJECTS(string line)
 			DebugOut(L"[INFO] Player object created!\n");
 			break;
 		case OBJECT_TYPE_PLATFORM: {
-			float w = (float)atof(tokens[4].c_str());
-			float h = (float)atof(tokens[5].c_str());
-			obj = new Platform(w, h);
+			float w = (float)atof(tokens[3].c_str());
+			float h = (float)atof(tokens[4].c_str());
+			obj = new Platform();
 			break;
 		}
 		case OBJECT_TYPE_PORTAL:

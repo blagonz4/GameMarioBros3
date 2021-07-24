@@ -2,17 +2,15 @@
 
 
 
-Platform::Platform(float w, float h)
+Platform::Platform()
 {
 	eType = Type::PLATFORM;
-	this->width = w;
-	this->height = h;
 }
 
 void Platform::GetBoundingBox(float& l, float& t, float& r, float& b)
 {
 	l = x;
 	t = y;
-	r = x + width;
-	b = y + height;
+	r = x + BRICK_BBOX_WIDTH;
+	b = y + BRICK_BBOX_HEIGHT;
 }

@@ -91,11 +91,11 @@ void FirePlant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		}
 	}
 
-	for (size_t i = 0; i < listFire.size(); i++) {
-		listFire[i]->Update(dt, coObjects);
-		/*if (!listFire[i]->CheckObjectInCamera() || listFire[i]->isFinish)
-			listFire.erase(listFire.begin() + i);*/
-	}
+	//for (size_t i = 0; i < listFire.size(); i++) {
+	//	listFire[i]->Update(dt, coObjects);
+	//	/*if (!listFire[i]->CheckObjectInCamera() || listFire[i]->isFinish)
+	//		listFire.erase(listFire.begin() + i);*/
+	//}
 
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
@@ -198,8 +198,8 @@ void FirePlant::Render()
 	else return;
 
 	animation_set->at(ani)->Render(x, y);
-	for (size_t i = 0; i < listFire.size(); i++)
-		listFire[i]->Render();
+	//for (size_t i = 0; i < listFire.size(); i++)
+	//	listFire[i]->Render();
 	RenderBoundingBox();
 }
 
@@ -227,12 +227,13 @@ void FirePlant::SetState(int state)
 		case PIRANHAPLANT_STATE_SHOOTING:
 			vy = 0;
 			ShootFire(marioRange);
+			CPlayScene* scene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
 			FireBall *fire = new FireBall(this->x,
 											this->y,
 											this->vxFire,
 											this->vyFire);
 			fire->nx = this->nx;
-			listFire.push_back(fire);
+			scene->TurnIntoUnit(fire);
 			break;
 		}
 }
