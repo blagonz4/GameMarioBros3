@@ -107,18 +107,16 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		float min_tx, min_ty, nx = 0, ny;
 		float rdx = 0;
 		float rdy = 0;
+
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
 		x0 = x; y0 = y;
-		x += min_tx * dx + nx * 0.4f;
-		y += min_ty * dy + ny * 0.4f;
+		x =x0 + min_tx * dx + nx * 0.4f;
+		y =y0 + min_ty * dy + ny * 0.4f;
 
-		if (ny != 0) vy = 0;
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{
 			LPCOLLISIONEVENT e = coEventsResult[i];
-			e->obj->GetBoundingBox(oLeft, oTop, oRight, oBottom);
 			GetBoundingBox(mLeft, mTop, mRight, mBottom);
-
 			if (e->obj->GetType() == COLORBLOCK)
 			{
 				if (e->ny < 0)
@@ -173,16 +171,22 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				}
 			}
 			else if (e->obj->GetType() == PLATFORM ) {
-				vy = 0;
-				y = y0;		
-				if (model == KOOPAS_MODEL_GREEN_WING)
-				{
-					y = e->obj->y - KOOPAS_BBOX_HEIGHT;
-					vy = -KOOPAS_FLY_SPEED;
+				if (e->ny != 0 && mBottom - 0.4f > e->obj->x) {
+					vy = 0;
+					if (model == KOOPAS_MODEL_GREEN_WING)
+					{
+						y = e->obj->y - KOOPAS_BBOX_HEIGHT;
+						vy = -KOOPAS_FLY_SPEED;
+					}
 				}
 				if (e->nx != 0) {
 					this->nx *= -1;
-					this->vx = -this->vx;
+					if (this->state == KOOPAS_STATE_BALL) {
+						this->vx = this->nx * KOOPAS_BALL_SPEED;
+					}
+					else if (this->state == KOOPAS_STATE_WALKING) {
+						this->vx = this->nx * KOOPAS_WALKING_SPEED;
+					}
 				}
 			}
 			else if (e->obj->GetType() == MUSICBRICK) {
@@ -295,7 +299,6 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				x += dx;
 				this->vx = this->nx * KOOPAS_WALKING_SPEED;
 			}
-
 		}
 	}
 

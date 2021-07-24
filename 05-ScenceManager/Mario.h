@@ -351,6 +351,4 @@ public:
 		cUp = cgUp;
 		cDown = cgDown;
 	};
-
-	void BeingAttacked();
 };
