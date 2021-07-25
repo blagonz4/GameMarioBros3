@@ -189,9 +189,7 @@ void WorldMap::_ParseSection_OBJECTS(string line)
 		obj->SetAnimationSet(ani_set);
 		objects.push_back(obj);
 	}
-
 	f.close();
-
 }
 
 void WorldMap::_ParseSection_TILEMAP(string line) {	//doc map tu file txt

@@ -232,6 +232,7 @@ public:
 	vector <LPGAMEOBJECT> listEffect;
 	float lastStandingY = 0;
 	float limitJumpVelocity = MARIO_JUMP_SPEED_MAX;
+	float limitRunSpeed = MARIO_RUNNING_MAXSPEED;
 	bool isWannaDown = false;
 
 	int score;

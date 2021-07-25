@@ -112,29 +112,8 @@ void FireBall::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				else if (e->nx != 0) 
 					this->isFinish = true;
 			}			
-			else if (e->obj->GetType() == MARIO) {
-				CMario* mario = dynamic_cast<CMario*>(e->obj);
-				if (mario->untouchable == 0 && defineVy == FIRE_GRAVITY) {
-					if (mario->level > MARIO_LEVEL_SMALL)
-					{
-						if (mario->level > MARIO_LEVEL_BIG) {
-							mario->level = MARIO_LEVEL_BIG;
-							mario->StartUntouchable();
-						}
-						else
-						{
-							mario->level = MARIO_LEVEL_SMALL;
-							mario->StartUntouchable();
-						}
-					}
-					else
-						mario->SetState(MARIO_STATE_DIE);
-				}
-			}
 			else if (e->obj->GetType() == PLATFORM || e->obj->GetType() == COLORBLOCK) {
 				if (defineVy != FIRE_GRAVITY) {
-					//if ( e->nx != 0 || e->ny != 0 )	this->isFinish = true;
-					//else { x += dx;	y += dy; }
 					x += dx; y += dy;
 				}	
 			}

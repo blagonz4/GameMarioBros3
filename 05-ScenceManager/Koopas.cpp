@@ -33,8 +33,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		mario->GetBoundingBox(mLeft, mTop, mRight, mBottom);
 		GetBoundingBox(oLeft, oTop, oRight, oBottom);
 		if (CheckAABB(mLeft, mTop + TAIL_SIZE, mRight, mBottom)) {
-			this->vy = -KOOPAS_DEFLECT_SPEED;
-			this->vx = mario->nx * KOOPAS_DEFLECT_SPEED;
+			this->vy = -KOOPAS_DEFLECT_SPEED*4;
 			SetState(KOOPAS_STATE_UP_SIDE_DOWN);			
 		}
 	}
@@ -219,26 +218,17 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			else if (e->obj->GetType() == MUSICBRICK) {
 				MusicBrick* mb = dynamic_cast<MusicBrick*>(e->obj);
 				if (e->ny != 0) {
-					if (mb->isHidden) {
-						x += dx; y += dy;
-					}
-					else {
-						x = x0;
-						vy = 0;
-					}
+					vy = 0;
+					x = x0;					
 				}
 				if (e->nx != 0) {
 					if (mb->isHidden) {
-						x += dx; y += dy;
+						x += dx;
 					}
-					else {
-						this->nx *= -1;
-						if (this->state == KOOPAS_STATE_BALL) {
-							this->vx = this->nx * KOOPAS_BALL_SPEED;
-						}
-						else if (this->state == KOOPAS_STATE_WALKING) {
-							this->vx = this->nx * KOOPAS_WALKING_SPEED;
-						}
+					if (ceil(mBottom) != oTop)
+					{
+						vx = -vx;
+						this->nx = -this->nx;
 					}
 				}
 			}
@@ -291,28 +281,28 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						vy = -KOOPAS_FLY_SPEED;
 					}
 				}
-				if (e->nx != 0 && mBottom + 0.4f > oTop) {
-					this->nx *= -1;
-					if (state == KOOPAS_STATE_WALKING)
-						this->vx = this->nx * KOOPAS_WALKING_SPEED;
-					if (state == KOOPAS_STATE_BALL) {
-						this->vx = this->nx * KOOPAS_BALL_SPEED;
-						int model = (int)gb->model;
-						switch (model)
-						{
-						case GOLD_BRICK_MODEL_COIN:
-							//gb->SetState(GOLD_BRICK_STATE_IDLE_COIN);
-							gb->isFinish = true;
-							break;
-						case GOLD_BRICK_MODEL_PSWITCH:
-							gb->SetState(GOLD_BRICK_STATE_UNBOX);
-							break;
+				if (e->nx != 0) {
+					if (ceil(mBottom) != oTop)
+					{
+						vx = -vx;
+						this->nx = -this->nx;
+						if (state == KOOPAS_STATE_BALL) {
+							int model = (int)gb->model;
+							switch (model)
+							{
+							case GOLD_BRICK_MODEL_COIN:
+								//gb->SetState(GOLD_BRICK_STATE_IDLE_COIN);
+								gb->isFinish = true;
+								break;
+							case GOLD_BRICK_MODEL_PSWITCH:
+								gb->SetState(GOLD_BRICK_STATE_UNBOX);
+								break;
+							}
 						}
-					}
+					}					
 				}
 			}
 			else if (e->obj->GetObjectType() == ENEMY) {
-				x += dx;
 				if (this->GetState() == KOOPAS_STATE_BALL) {
 					this->vx = this->nx * KOOPAS_BALL_SPEED;
 					e->obj->isFinish = true;
@@ -379,7 +369,7 @@ void CKoopas::Render()
 	
 	animation_set->at(ani)->Render(x, y);
 
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void CKoopas::SetState(int state)
@@ -417,7 +407,7 @@ void CKoopas::GetBoundingBox(float &left, float &top, float &right, float &botto
 	if (state == KOOPAS_STATE_DEFEND || state == KOOPAS_STATE_BALL || state == KOOPAS_STATE_UP_SIDE_DOWN)
 	{
 		right = left + KOOPAS_DEFEND_HITBOX;
-		bottom = top + KOOPAS_DEFEND_HITBOX;
+		bottom = top + KOOPAS_DEFEND_HITBOX-0.5f;
 	}
 	else
 	{

@@ -1,14 +1,15 @@
 #pragma once
+#include "Poop.h"
 #include "GameObject.h"
 #include "define.h"
-#include "Poop.h"
+#include "Mario.h"
 #include "PlayScence.h"
 //-----------------------------Goomba---------------------------
 #define GOOMBA_WALKING_SPEED			0.035f
 #define GOOMBA_GRAVITY					0.002f
 #define GOOMBA_DIE_DEFLECT_SPEED		0.35f
-#define GOOMBA_JUMP_SPEED				0.125f
-#define GOOMBA_HIGHJUMP_SPEED			0.25f
+#define GOOMBA_JUMP_SPEED				0.13f
+#define GOOMBA_HIGHJUMP_SPEED			0.3f
 
 #define GOOMBA_RED_TIME_WALKING			800
 #define GOOMBA_RED_TIME_HIGHJUMPING		500
@@ -53,6 +54,7 @@
 #define GOOMBA_JUMPING_SPEED					0.25f
 #define TIME_TO_DIE								300
 #define POOP_DELAY_DROP							1500
+#define GOOMBA_FLY_MAX_HEIGHT					245
 class CGoomba : public CGameObject
 {
 	DWORD timeDropDelay;
@@ -71,7 +73,7 @@ public:
 	float x0, y0;
 	vector<Poop*> listPoop;
 	int Health;
-	CGoomba(CMario* mario,float model, float direction);
+	CGoomba(float model, float direction);
 	virtual void SetState(int state);
 	void TurnAround();
 	float GetModel() { return model; }

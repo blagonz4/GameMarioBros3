@@ -34,21 +34,6 @@ void MusicBrick::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		y = startY;
 		boundDown = false;
 	}
-	if (coEvents.size() == 0)
-	{
-		x += dx;
-		y += dy;
-	}
-	else
-	{
-		float min_tx, min_ty, nx = 0, ny;
-		float rdx = 0;
-		float rdy = 0;
-
-		// TODO: This is a very ugly designed function!!!!
-		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
-	}
-	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
 }
 void MusicBrick::Render()
 {

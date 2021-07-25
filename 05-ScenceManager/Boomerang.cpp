@@ -34,30 +34,7 @@ void CBoomerang::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		state_start = 1;
 		SetState(state + 1);
 	}
-	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
-	float mLeft, mTop, mRight, mBottom;
-	float oLeft, oTop, oRight, oBottom;
-	if (mario != NULL && state != BOOMERANG_STATE_IDLE)
-	{
-		if (mario->untouchable == 0)
-		{
-			mario->GetBoundingBox(mLeft, mTop, mRight, mBottom);
-			GetBoundingBox(oLeft, oTop, oRight, oBottom);
-			if (CheckAABB(floor(mLeft), floor(mTop), ceil(mRight), ceil(mBottom)))
-			{
-				mario->StartUntouchable();
-				if (mario->level == MARIO_LEVEL_SMALL)
-				{
-					mario->SetState(MARIO_STATE_DIE);
-					return;
-				}
-				if (mario->level == MARIO_LEVEL_RACOON || mario->level == MARIO_LEVEL_FIRE)
-					mario->SetLevel(MARIO_LEVEL_BIG);
-				else if (mario->level == MARIO_LEVEL_BIG)
-					mario->SetLevel(MARIO_LEVEL_SMALL);
-			}
-		}
-	}
+
 }
 void CBoomerang::SetState(int state)
 {

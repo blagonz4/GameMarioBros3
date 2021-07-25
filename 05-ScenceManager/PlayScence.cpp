@@ -147,7 +147,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		case OBJECT_TYPE_GOOMBA: {
 			float model = (float)atof(tokens[4].c_str());
 			float direction = (float)atof(tokens[5].c_str());
-			obj = new CGoomba(player, model, direction); break;
+			obj = new CGoomba(model, direction); break;
 		}
 		case OBJECT_TYPE_KOOPAS: {
 			float model = (float)atof(tokens[4].c_str());
@@ -435,7 +435,6 @@ void CPlayScene::Update(DWORD dt)
 					POINT_EFFECT_MODEL_100);
 				TurnIntoUnit(effectPoint);
 				player->PlusScore(100);
-				//objects.push_back(effectPoint);
 			}
 		}
 		if (e->GetType() == GOOMBA) {
@@ -460,8 +459,6 @@ void CPlayScene::Update(DWORD dt)
 		if (e->GetType() == BOOMERANGBROTHER) {
 			BoomerangBrother* bb = dynamic_cast<BoomerangBrother*>(e);
 			if (bb->isFinish) {
-				EffectTailHit* effectTailHit = new EffectTailHit(bb->x, bb->y);
-				objects.push_back(effectTailHit);
 				player->PlusScore(200);
 				ShowEffectPoint(bb, POINT_EFFECT_MODEL_200);
 			}
@@ -469,18 +466,10 @@ void CPlayScene::Update(DWORD dt)
 		if (e->GetType() == FIREPLANT) {
 			FirePlant* plant = dynamic_cast<FirePlant*>(e);
 			if (plant->isFinish) {
-				EffectTailHit* effectTailHit = new EffectTailHit(plant->x, plant->y);
-				TurnIntoUnit(effectTailHit);
-				//objects.push_back(effectTailHit);
 				player->PlusScore(200);
 				ShowEffectPoint(plant, POINT_EFFECT_MODEL_200);
 			}
 		}
-	}
-
-	for (size_t i = 0; i < objects.size(); i++) {
-		if (objects.at(i)->isFinish)
-			objects.erase(objects.begin() + i);
 	}
 
 	Camera* camera = new Camera(player, game, map);
@@ -494,7 +483,7 @@ void CPlayScene::Update(DWORD dt)
 void CPlayScene::GetObjectFromGrid() {
 	units.clear();
 	objects.clear();
-
+	
 	CGame* game = CGame::GetInstance();
 	float camX, camY;
 

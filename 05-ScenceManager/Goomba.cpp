@@ -1,9 +1,8 @@
 #include "Goomba.h"
-CGoomba::CGoomba(CMario* mario, float model, float direction)
+CGoomba::CGoomba(float model, float direction)
 {	
 	this->model = model;
 	nx = direction;
-	this->mario = mario;
 	if (this->model == GOOMBA_MODEL_NORMAL)	this->Health = 1;
 	else this->Health = 2;
 	eType = Type::GOOMBA;
@@ -21,6 +20,18 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	vy += ay * dt;
 	float mLeft, mTop, mRight, mBottom;
 	float oLeft, oTop, oRight, oBottom;
+	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+	if (mario != NULL && state != BOOMERANG_BROTHER_STATE_DIE) {
+		if (mario->level == MARIO_LEVEL_RACOON && mario->isTurningTail) {
+			mario->GetBoundingBox(mLeft, mTop, mRight, mBottom);
+			GetBoundingBox(oLeft, oTop, oRight, oBottom);
+			if (CheckAABB(mLeft, mTop + TAIL_SIZE, mRight, mBottom)) {
+				EffectTailHit* effectTailHit = new EffectTailHit(x, y);
+				mario->listEffect.push_back(effectTailHit);
+				isFinish = true;
+			}			
+		}
+	}
 	if (vy < -GOOMBA_JUMP_SPEED && state == GOOMBA_STATE_RED_JUMPING)
 	{
 		vy = -GOOMBA_JUMP_SPEED;
@@ -33,6 +44,7 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	}
 	if (model == GOOMBA_MODEL_WING && Health == 2)
 	{
+		TurnAround();
 		if (GetTickCount() - walking_start >= GOOMBA_RED_TIME_WALKING && isWalking )
 		{
 			isWalking = false;
@@ -61,17 +73,17 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			ay = GOOMBA_GRAVITY;
 		}
 		if (isFlying) {
-			if (y <= DISTANCE_MARIO_FLY_THROUGH_SKY_Y) {
+			if (y <= GOOMBA_FLY_MAX_HEIGHT) {
 				vy = 0;
 				ay = GOOMBA_GRAVITY;
 			}
-			if (y >= DISTANCE_MARIO_FLY_THROUGH_SKY_Y) {
+			if (y >= GOOMBA_FLY_MAX_HEIGHT) {
 				vy = -GOOMBA_FLYING_SPEED;
 				ay = 0;
 			}
 			timeDropDelay += dt;
 			if (timeDropDelay >= POOP_DELAY_DROP) {
-				Poop* poop = new Poop(x, y + 10, mario);
+				Poop* poop = new Poop(x, y + 10);
 				CPlayScene* scene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
 				scene->TurnIntoUnit(poop);
 				timeDropDelay = 0;
@@ -114,7 +126,8 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			e->obj->GetBoundingBox(oLeft, oTop, oRight, oBottom);
 			if (e->obj->GetType() == COLORBLOCK || e->obj->GetObjectType() == ENEMY) {
 				x = x0 + dx;
-				if (this->model == GOOMBA_MODEL_WING || this->model == GOOMBA_MODEL_WING_BROWN)
+				if ((this->model == GOOMBA_MODEL_WING && state >= GOOMBA_STATE_RED_JUMPING) ||
+					(this->model == GOOMBA_MODEL_WING_BROWN && state == GOOMBA_STATE_BROWN_FLYING))
 					y = y0 + dy;
 				else y = y0;
 			}
@@ -183,9 +196,7 @@ void CGoomba::Render()
 	}
 	if (model == GOOMBA_MODEL_WING) {
 		if (Health == 2) {
-			if (vy > 0)
-				ani = GOOMBA_ANI_WING_FALLING;
-			else if (vy < 0)
+			if (state == GOOMBA_STATE_RED_JUMPING || state == GOOMBA_STATE_RED_HIGHJUMPING)
 				ani = GOOMBA_ANI_WING_JUMPING;
 			else ani = GOOMBA_ANI_WING_WALKING;
 		}
@@ -248,9 +259,9 @@ void CGoomba::GetBoundingBox(float &left, float &top, float &right, float &botto
 	top = y;
 	right = x + GOOMBA_BBOX_WIDTH;
 
-	if (model > GOOMBA_MODEL_NORMAL && Health == 2) {
+	if (model > GOOMBA_MODEL_NORMAL && Health == 2){
 		right = x + GOOMBA_WING_BBOX_WIDTH;
-		if (state == GOOMBA_STATE_RED_HIGHJUMPING || isFlying)
+		if (state == GOOMBA_STATE_RED_HIGHJUMPING || state == GOOMBA_STATE_RED_JUMPING || isFlying)
 			bottom = y + GOOMBA_WING_BBOX_HEIGHT;
 		else bottom = y + GOOMBA_WING_BBOX_WALK_HEIGHT;
 	}
@@ -262,6 +273,7 @@ void CGoomba::GetBoundingBox(float &left, float &top, float &right, float &botto
 
 void CGoomba::TurnAround() {
 	float px, py;
+	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 	mario->GetPosition(px, py);
 	if (px - x > 100) {
 		nx = 1;

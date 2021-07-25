@@ -40,8 +40,12 @@ void FirePlant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			SetState(PIRANHAPLANT_STATE_DARTING);
 
 		if (mario->level == MARIO_LEVEL_RACOON && mario->isTurningTail) {
-			if (CheckAABB(mLeft, mTop + TAIL_SIZE, mRight, mBottom))
+			if (CheckAABB(mLeft, mTop + TAIL_SIZE, mRight, mBottom)) {
+				EffectTailHit* effectTailHit = new EffectTailHit(x, y);
+				mario->listEffect.push_back(effectTailHit);
 				isFinish = true;
+			}
+
 		}
 	}
 	//BITE_PLANT
@@ -90,12 +94,6 @@ void FirePlant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				vy = PIRANHAPLANT_DARTING_SPEED;
 		}
 	}
-
-	//for (size_t i = 0; i < listFire.size(); i++) {
-	//	listFire[i]->Update(dt, coObjects);
-	//	/*if (!listFire[i]->CheckObjectInCamera() || listFire[i]->isFinish)
-	//		listFire.erase(listFire.begin() + i);*/
-	//}
 
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
@@ -198,9 +196,8 @@ void FirePlant::Render()
 	else return;
 
 	animation_set->at(ani)->Render(x, y);
-	//for (size_t i = 0; i < listFire.size(); i++)
-	//	listFire[i]->Render();
-	RenderBoundingBox();
+
+	//RenderBoundingBox();
 }
 
 void FirePlant::SetState(int state)

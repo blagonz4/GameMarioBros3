@@ -1,12 +1,12 @@
 #include "Poop.h"
-#include "Leaf.h"
+#include "Mario.h"
+#include "PlayScence.h"
 
-Poop::Poop(float X, float Y,CMario* mario)
+Poop::Poop(float X, float Y)
 {
 	this->x = X; this->y = Y;
 	SetAnimationSet(CAnimationSets::GetInstance()->Get(LOAD_POOP_FROM_TXT));
 	eType = Type::POOP;
-	this->mario = mario;
 	limitLeft = X;
 	limitRight = X + LEAF_MAX_RIGHT_X-10;
 }
@@ -21,6 +21,7 @@ void Poop::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 void Poop::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	CGameObject::Update(dt, coObjects);
+	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 	if (!this->CheckObjectInCamera())
 	{
 		isFinish = true;
@@ -42,12 +43,18 @@ void Poop::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	else vy = LEAF_GRAVITY/2 * dt;
 
 	if (isAttach) {
-		AttachToMario();
+		this->x = mario->x;
+		this->y = mario->y + 12;
+		mario->limitJumpVelocity = LIMIT_JUMP_VELOCITY;
+		mario->limitRunSpeed = LIMIT_RUN_SPEED;
+		timeDisappear += dt;
 		if (timeDisappear > TIME_DISAPPEAR) {
 			mario->limitJumpVelocity = MARIO_JUMP_SPEED_MAX;
+			mario->limitRunSpeed = MARIO_RUNNING_MAXSPEED;
 			isAttach = false;
 			isFinish = true;
-		}		
+			timeDisappear = 0;
+		}
 	}
 
 	vector<LPCOLLISIONEVENT> coEvents;
@@ -64,9 +71,6 @@ void Poop::Render()
 void Poop::AttachToMario()
 {
 
-	this->x = mario->x;
-	this->y = mario->y+12;
-	timeDisappear += dt;
 }
 
 Poop::~Poop()

@@ -75,7 +75,6 @@ void Camera::Update(DWORD dt) {
 		mario->GetPosition(px, py);
 
 		sum_dt += dt;
-		DebugOut(L"camX: %f \n", game->GetCamX());
 		__cx = game->GetCamX();
 		if (sum_dt > CAMERA_REFRESH_RATE) {
 			sum_dt = 0;

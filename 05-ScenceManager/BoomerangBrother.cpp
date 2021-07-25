@@ -13,42 +13,59 @@ BoomerangBrother::BoomerangBrother(float x, float y,float direction)
 	StartReload();
 	for (int i = 0; i < BOOMERANG_BROTHER_BOOMERANGS; i++)
 	{
-		CBoomerang* boomerang = new CBoomerang(x,y, direction);
 		CPlayScene* scene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
-		ListBoomerang.push_back(boomerang);
-		scene->TurnIntoUnit(boomerang);
+		ListBoomerang.push_back(new CBoomerang(x, y, direction));
+		scene->TurnIntoUnit(ListBoomerang[i]);
 	}
 }
 
 void BoomerangBrother::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	CGameObject::Update(dt, coObjects);
+
+	if (isFinish) return;
 	vy += MARIO_GRAVITY * dt;
 	if (x < start_x)
 		vx = BOOMERANG_BROTHER_SPEED;
 	if (x > start_x + BOOMERANG_BROTHER_LIMIT_RANGE)
 		vx = -BOOMERANG_BROTHER_SPEED;
+
+	if (state == BOOMERANG_BROTHER_STATE_DIE)
+	{
+		x += dx;
+		y += dy;
+		for (size_t i = 0; i < ListBoomerang.size(); i++)
+			if (ListBoomerang[i]->state == BOOMERANG_STATE_IDLE)
+			{
+				ListBoomerang[i]->isFinish = true;
+				ListBoomerang[i]->isAppear = false;
+			}
+		return;
+	}
+	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 	float mLeft, mTop, mRight, mBottom;
 	float oLeft, oTop, oRight, oBottom;
-	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+
 	if (mario != NULL && state != BOOMERANG_BROTHER_STATE_DIE){
 		if (mario->level == MARIO_LEVEL_RACOON && mario->isTurningTail) {
-
 			mario->GetBoundingBox(mLeft, mTop, mRight, mBottom);
 			GetBoundingBox(oLeft, oTop, oRight, oBottom);
-			if (CheckAABB(mLeft, mTop + TAIL_SIZE, mRight, mBottom))
-				isFinish = true;
+			if (CheckAABB(mLeft, mTop + TAIL_SIZE, mRight, mBottom)) {
+				EffectTailHit* effectTailHit = new EffectTailHit(x, y);
+				mario->listEffect.push_back(effectTailHit);
+				SetState(BOOMERANG_BROTHER_STATE_DIE);
+			}
 		}
 		if (mario->x > x)
 			nx = 1;
 		else
 			nx = -1;
-		for (size_t i = 0; i < ListBoomerang.size(); i++)
-			if (ListBoomerang[i]->GetState() == BOOMERANG_STATE_IDLE)
+		for (int i = 0; i < BOOMERANG_BROTHER_BOOMERANGS; i++)
+			if (ListBoomerang[i]->state == BOOMERANG_STATE_IDLE)
 				ListBoomerang[i]->nx = nx;
 	}
 
-	for (size_t i = 0; i < ListBoomerang.size(); i++)
+	for (size_t i = 0; i < BOOMERANG_BROTHER_BOOMERANGS; i++)
 	{
 		if (ListBoomerang[i]->state >= BOOMERANG_STATE_2)
 		{
@@ -152,7 +169,10 @@ void BoomerangBrother::SetState(int state)
 		vx = BOOMERANG_BROTHER_SPEED;
 		break;
 	case BOOMERANG_BROTHER_STATE_DIE:
+		for (int i = 0; i < BOOMERANG_BROTHER_BOOMERANGS; i++)
+			ListBoomerang[i]->isFinish = true;
 		vy = -BOOMERANG_BROTHER_DEFLECT_SPEED;
+		isFinish = true;
 		break;
 	}
 }
@@ -177,10 +197,7 @@ void BoomerangBrother::Render()
 	}
 
 	animation_set->at(ani)->Render(x, y);
-
-	for (size_t i = 0; i < ListBoomerang.size(); i++) {
-		ListBoomerang.at(i)->Render();
-	}
+	//RenderBoundingBox();
 }
 float BoomerangBrother::GetMarioRangeCurrent()
 {
