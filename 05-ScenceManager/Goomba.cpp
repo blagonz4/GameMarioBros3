@@ -125,10 +125,10 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			GetBoundingBox(mLeft, mTop, mRight, mBottom);
 			e->obj->GetBoundingBox(oLeft, oTop, oRight, oBottom);
 			if (e->obj->GetType() == COLORBLOCK || e->obj->GetObjectType() == ENEMY) {
-				x = x0 + dx;
-				if ((this->model == GOOMBA_MODEL_WING && state >= GOOMBA_STATE_RED_JUMPING) ||
-					(this->model == GOOMBA_MODEL_WING_BROWN && state == GOOMBA_STATE_BROWN_FLYING))
-					y = y0 + dy;
+				if (e->nx != 0)
+					x = x0 + dx;
+				if (e->ny > 0)
+					y = y0 + dy;					
 				else y = y0;
 			}
 			if (e->obj->GetType() == PIPE ||
@@ -217,7 +217,7 @@ void CGoomba::Render()
 	}
 
 	animation_set->at(ani)->Render(x, y);
-
+	//RenderBoundingBox();
 }
 
 void CGoomba::SetState(int state)
@@ -262,7 +262,7 @@ void CGoomba::GetBoundingBox(float &left, float &top, float &right, float &botto
 	if (model > GOOMBA_MODEL_NORMAL && Health == 2){
 		right = x + GOOMBA_WING_BBOX_WIDTH;
 		if (state == GOOMBA_STATE_RED_HIGHJUMPING || state == GOOMBA_STATE_RED_JUMPING || isFlying)
-			bottom = y + GOOMBA_WING_BBOX_HEIGHT;
+			bottom = y + GOOMBA_WING_BBOX_WALK_HEIGHT;
 		else bottom = y + GOOMBA_WING_BBOX_WALK_HEIGHT;
 	}
 	else if (model == GOOMBA_MODEL_NORMAL || Health == 1)

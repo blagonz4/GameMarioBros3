@@ -53,8 +53,8 @@
 #define GOOMBA_FLYING_SPEED						0.15f
 #define GOOMBA_JUMPING_SPEED					0.25f
 #define TIME_TO_DIE								300
-#define POOP_DELAY_DROP							1500
-#define GOOMBA_FLY_MAX_HEIGHT					245
+#define POOP_DELAY_DROP							2000
+#define GOOMBA_FLY_MAX_HEIGHT					240
 class CGoomba : public CGameObject
 {
 	DWORD timeDropDelay;

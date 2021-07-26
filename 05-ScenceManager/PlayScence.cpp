@@ -531,14 +531,18 @@ void CPlayScene::Render()
 */
 void CPlayScene::Unload()
 {
+	if (player != nullptr)
+		delete player;
+	if (grid != nullptr)
+		grid->ClearAll();
+
 	isEndScene_1 = false;
 	game->SetCamPos(0, 100); //Set cam tu map 1_3 qua map phu 
 	objects.clear();
-	if (grid != NULL)
-		grid->ClearAll();
-	objects.clear();
 	units.clear();
-	player = NULL;
+
+	player = nullptr;
+	grid = nullptr;
 	DebugOut(L"[INFO] Scene %s unloaded! \n", sceneFilePath);
 }
 
@@ -598,7 +602,7 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 			break;
 		case DIK_8:
 			if (game->GetInstance()->GetScene() == MAP1_1)
-			mario->SetPosition(2256, 30);
+			mario->SetPosition(2258, 30);
 			if (game->GetInstance()->GetScene() == MAP1_3)
 				mario->SetPosition(1600, 300);
 			break;

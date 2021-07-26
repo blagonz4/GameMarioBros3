@@ -151,7 +151,8 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					if (e->nx != 0) {
 						x = x0 + dx;
 					}						
-					if (state == KOOPAS_STATE_DEFEND && e->ny > 0)
+					if ((state == KOOPAS_STATE_DEFEND || state == KOOPAS_STATE_UP_SIDE_DOWN) 
+						&& e->ny > 0)
 						y = y0 + dy;
 				}
 			}
@@ -305,16 +306,21 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			else if (e->obj->GetObjectType() == ENEMY) {
 				if (this->GetState() == KOOPAS_STATE_BALL) {
 					this->vx = this->nx * KOOPAS_BALL_SPEED;
-					e->obj->isFinish = true;
+					if (e->obj->GetType() == BOOMERANGBROTHER) {
+						BoomerangBrother* bb = dynamic_cast<BoomerangBrother*>(e->obj);
+						bb->SetState(BOOMERANG_BROTHER_STATE_DIE);
+					}
+					else e->obj->isFinish = true;				
 				}
+				else { y = y0; }
 			}
 			else if (e->obj->GetType() == MUSHROOM_1_UP || e->obj->GetType() == MUSHROOM_POWER) {
 				x += dx;
 				this->vx = this->nx * KOOPAS_BALL_SPEED;
 			}
 			else if (e->obj->GetType() == COIN) {
-				x += dx;
-				this->vx = this->nx * KOOPAS_WALKING_SPEED;
+				x = x0 + dx;
+				//this->vx = -this->vx;
 			}
 		}
 	}

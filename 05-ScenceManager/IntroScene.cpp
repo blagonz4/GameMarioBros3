@@ -257,7 +257,6 @@ void IntroScene::Update(DWORD dt)
 	for (size_t i = 0; i < objects.size(); i++)
 	{
 		LPGAMEOBJECT e = objects[i];
-		
 		if (introTime > 0 && introTime < 5000) {
 			if (e->GetType() == CURTAIN)
 			{
@@ -265,16 +264,12 @@ void IntroScene::Update(DWORD dt)
 				curtain->Update(dt, &coObjects);
 			}
 		}
-		else if (introTime > 5900 && introTime < 8000) {		
+		else if (introTime > 5900 && introTime < 8000) {
 			if (e->GetType() == MARIO)
 			{
 				CMario* mario = dynamic_cast<CMario*>(e);
-				mario->Update(dt, &coObjects);			
-				if (introTime > 7600 && introTime < 7900) {
-					mario->SetState(MARIO_STATE_JUMP);
-				}
-				else if (introTime > 7900) {
-					mario->vx = 0;
+				mario->Update(dt, &coObjects);
+				if (introTime > 7900) {
 					mario->SetState(MARIO_STATE_IDLE);
 				}
 				else mario->SetState(MARIO_STATE_WALK_LEFT);
@@ -289,12 +284,8 @@ void IntroScene::Update(DWORD dt)
 				curtain->Update(dt, &coObjects);
 			}
 		}
-		else if (introTime > 8000){
+		else if (introTime > 8000) {
 			objects[i]->Update(dt, &coObjects);
-			if (e->GetType() == GOOMBA) {
-				CGoomba* goomba = dynamic_cast<CGoomba*>(e);
-				//goomba->SetState(GOOMBA_STATE_WALKING);
-			}
 			if (e->GetType() == KOOPAS) {
 				CKoopas* koopa = dynamic_cast<CKoopas*>(e);
 				koopa->SetState(KOOPAS_STATE_DEFEND);
@@ -327,7 +318,7 @@ void IntroScene::Update(DWORD dt)
 					mario->SetState(MARIO_STATE_IDLE);
 					if (introTime > 9500) {
 						mario->SetState(MARIO_STATE_JUMP);
-					}				
+					}
 				}
 				if (introTime > 10000 && introTime < 11000) {
 					mario->SetState(MARIO_STATE_WALK_LEFT);
@@ -339,27 +330,19 @@ void IntroScene::Update(DWORD dt)
 			if (e->GetType() == KOOPAS) {
 				CKoopas* koopa = dynamic_cast<CKoopas*>(e);
 				if (introTime > 10500 && introTime < 11500) {
-					//koopa->vx = -KOOPAS_BALL_SPEED * dt;
 					koopa->SetState(KOOPAS_STATE_BALL);
-				}	
+				}
 			}
-			
 		}
-			
 		if (objects.at(i)->isFinish)
 			objects.erase(objects.begin() + i);
 	}
-
-	//skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
 	if (player == NULL) return;
-
 }
-
 
 void IntroScene::Render()
 {
 	for (size_t i = 0; i < objects.size(); i++) {
-		//objects[i]->Render();
 		LPGAMEOBJECT e = objects[i];
 		if (introTime > 0 && introTime < 8000) {
 			if (e->GetType() == CURTAIN)

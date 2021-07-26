@@ -287,9 +287,7 @@ void WorldMap::Update(DWORD dt)
 	for (size_t i = 0; i < objects.size(); i++)
 	{
 		LPGAMEOBJECT e = objects[i];
-		if (objects[i]->CheckObjectInCamera())
-			objects[i]->Update(dt, &coObjects);
-
+		objects[i]->Update(dt, &coObjects);
 	}
 	Camera* camera = new Camera(player, game, map);
 	camera->Update(dt);

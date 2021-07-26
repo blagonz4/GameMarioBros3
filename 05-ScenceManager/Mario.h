@@ -32,6 +32,7 @@
 #define MARIO_TURNING_STATE_TIME			70
 #define MARIO_TURNING_TAIL_TIME				350
 #define MARIO_UNTOUCHABLE_TIME				2500
+#define MARIO_PIPE_TIME						1000
 #define MARIO_FLAPPING_TIME					200
 #define MARIO_SLOW_FALLING_SPEED			0.03f
 #define MARIO_FLYING_TIME					1500
@@ -224,6 +225,8 @@ class CMario : public CGameObject {
 	DWORD transforming_start;
 	DWORD fly_start = 0;
 	DWORD delay_jump = 0;
+	DWORD pipedown_start = 0;
+	DWORD pipeup_start = 0;
 public:
 	float start_x;			// initial position of Mario at scene
 	float start_y;
@@ -248,11 +251,13 @@ public:
 	int untouchable;
 	//state
 	bool isOnGround = false;
-	bool isInPipe = false;
-
+	bool lostControl = false;
 	//sit
 	bool isReadyToSit = true;
 	bool isSitting = false;
+	//pipe
+	bool isReadyToPipe = false;
+	bool isPiping = false;
 
 	//high-jump
 	bool isReadyToJump = true;
@@ -334,6 +339,19 @@ public:
 	void StartTransforming() { transforming_start = GetTickCount(); isTransforming = true; }
 	void StartDelayJump() { delay_jump = GetTickCount(); isJumping = false; }
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount(); }
+	void StartPipeDown()
+	{
+		pipedown_start = GetTickCount();
+		ay = 0;
+		vy = 0;
+		isPiping = true;
+	}
+	void StartPipeUp()
+	{
+		pipeup_start = GetTickCount();
+		ay = 0;
+		isPiping = true;
+	}
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
 	void Reset();
 	void ShowEffectPoint(CGameObject* obj, float model);
