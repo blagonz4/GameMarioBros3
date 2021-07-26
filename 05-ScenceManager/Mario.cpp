@@ -650,9 +650,12 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					poop->isAttach = true;
 					y = y0;
 				}
+				//-----------------WORLD MAP---------------------
 				else if (e->obj->GetType() == SCENE) {
 					x = e->obj->x;
-					y = e->obj->y;
+					if (level == MARIO_LEVEL_SMALL)
+						y = e->obj->y;
+					else y = e->obj->y - 7.f;
 					this->vx = this->vy = 0;
 					Scene* tmp = dynamic_cast<Scene*>(e->obj);
 					bool cl, cr, cu, cd;
@@ -661,7 +664,9 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				}
 				else if (e->obj->GetType() == CARD) {
 					x = e->obj->x;
-					y = e->obj->y;
+					if (level == MARIO_LEVEL_SMALL)
+						y = e->obj->y;
+					else y = e->obj->y - 7.f;
 					this->vx = this->vy = 0;
 					Card* tmp = dynamic_cast<Card*>(e->obj);
 					bool cl, cr, cu, cd;
@@ -670,7 +675,9 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				}
 				else if (e->obj->GetType() == START) {
 					x = e->obj->x;
-					y = e->obj->y;
+					if (level == MARIO_LEVEL_SMALL)
+						y = e->obj->y;
+					else y = e->obj->y - 7.f;
 					this->vx = this->vy = 0;
 					Start* tmp = dynamic_cast<Start*>(e->obj);
 					bool cl, cr, cu, cd;

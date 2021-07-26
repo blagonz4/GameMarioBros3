@@ -1,5 +1,6 @@
 #include "Mushroom.h"
-
+#include "PlayScence.h"
+#include "Mario.h"
 
 Mushroom::Mushroom(float X, float Y, float model)
 {
@@ -25,11 +26,28 @@ void Mushroom::GetBoundingBox(float& left, float& top, float& right, float& bott
 void Mushroom::Update(DWORD dt, vector<LPGAMEOBJECT>* listObject)
 {
 	CGameObject::Update(dt);
+
+	float mLeft, mTop, mRight, mBottom;
+	float oLeft, oTop, oRight, oBottom;
 	if (!CheckObjectInCamera())
 	{
 		this->isFinish = true;
 	}
-	
+	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+	if (mario != NULL && mario->level == MARIO_LEVEL_RACOON && mario->isTurningTail) {
+		mario->GetBoundingBox(mLeft, mTop, mRight, mBottom);
+		GetBoundingBox(oLeft, oTop, oRight, oBottom);
+		if (CheckAABB(mLeft, mTop, mRight, mBottom)) {
+			this->isFinish = true;
+			mario->ShowEffectPoint(this, POINT_EFFECT_MODEL_1K);
+			mario->PlusScore(1000);
+			if (this->GetType() == MUSHROOM_POWER) {
+				mario->y -= 20;
+				if (mario->level < MARIO_LEVEL_BIG)
+					mario->SetLevel(MARIO_LEVEL_BIG);
+			}
+		}
+	}
 	if (model == 1) {
 		if (state == MUSHROOM_STATE_APPEAR)
 			vy = -MUSHROOM_SPEED_APPEAR_Y;
@@ -43,7 +61,6 @@ void Mushroom::Update(DWORD dt, vector<LPGAMEOBJECT>* listObject)
 			vy = MUSHROOM_GRAVITY * dt;
 		}
 	}
-
 
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
@@ -72,6 +89,8 @@ void Mushroom::Update(DWORD dt, vector<LPGAMEOBJECT>* listObject)
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{
 			LPCOLLISIONEVENT e = coEventsResult[i];
+			e->obj->GetBoundingBox(oLeft, oTop, oRight, oBottom);
+			GetBoundingBox(mLeft, mTop, mRight, mBottom);
 			if (e->obj->GetType() == COLORBLOCK)
 			{
 				if (e->nx != 0)
@@ -92,10 +111,17 @@ void Mushroom::Update(DWORD dt, vector<LPGAMEOBJECT>* listObject)
 			}
 			if (e->obj->GetType() == PIPE || e->obj->GetType() == PLATFORM)
 			{
+				if (e->ny != 0)
+					vy = 0;
+				if (e->ny < 0)
+					vy = 0;
 				if (e->nx != 0)
 				{
-					this->nx *= -1;
-					vx *= -1;
+					if (ceil(mBottom) != oTop)
+					{
+						vx = -vx;
+						this->nx = -this->nx;
+					}
 				}
 			}
 		}
