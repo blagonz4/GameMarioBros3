@@ -41,12 +41,8 @@ void Camera::Update(DWORD dt) {
 		if (__cx > mw - sw - CAMERA_END_GAME_DIFF)
 			__cx = mw - sw - CAMERA_END_GAME_DIFF;//khong cho qua ben phai cuoi map
 
-
 		game->SetCamPos((int)__cx, (int)__cy);
 		map->SetCamPos(__cx, (float)__cy);
-		//game->SetCamPos(__cx, __cy);
-		//map->SetCamPos((int)__cx, (int)__cy);
-
 	}
 	else if (game->GetScene() == MAP1_1_1)
 	{

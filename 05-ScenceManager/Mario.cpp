@@ -472,6 +472,15 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 							case GOLD_BRICK_MODEL_MUSHROOM_1_UP:
 								gb->SetState(GOLD_BRICK_STATE_UNBOX);
 								break;
+							case GOLD_BRICK_MODEL_MANY_COIN:
+								if (gb->Health != 0) {
+									gb->Health--;
+									PlusScore(100);
+									EffectCoin* effectCoin = new EffectCoin(gb->x, gb->y - 10);
+									scene->TurnIntoUnit(effectCoin);
+									gb->vy = -QUESTION_BRICK_SPEED_UP;
+								}
+								break;
 							}
 							ay = MARIO_GRAVITY;
 							isReadyToJump = false;
@@ -1073,7 +1082,7 @@ void CMario::Render()
 	{
 		listEffect[i]->Render();
 	}
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 void CMario::SetState(int state)
 {

@@ -1,5 +1,6 @@
 #include "Scene.h"
-
+#include "PlayScence.h"
+#include "Mario.h"
 
 Scene::Scene(float model,float cgLeft, float cgTop, float cgRight, float cgBottom)
 {
@@ -36,6 +37,21 @@ void Scene::Render()
 	}
 	if (ani != -1)
 		animation_set->at(ani)->Render(x, y);
+}
+void Scene::Update(DWORD dt, vector<LPGAMEOBJECT> *colliable_objects) {
+	CGame *game = CGame::GetInstance();
+	CMario* mario = ((WorldMap*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+	if (mario != NULL) {
+		float mLeft, mTop, mRight, mBottom;
+		float oLeft, oTop, oRight, oBottom;
+		mario->GetBoundingBox(mLeft, mTop, mRight, mBottom);
+		GetBoundingBox(oLeft, oTop, oRight, oBottom);
+		if (CheckAABB(mLeft, mTop, mRight, mBottom)) {
+			bool cl, cr, cu, cd;
+			GetMove(cl, cu, cr, cd);
+			mario->SetMove(cl, cu, cr, cd);
+		}
+	}
 }
 
 void Scene::GetBoundingBox(float& left, float& top, float& right, float& bottom)

@@ -3,7 +3,8 @@
 GoldBrick::GoldBrick(float x, float y, float model)
 {
 	this->model = model;
-	//this->Health = 1;
+	if (model == QUESTION_BRICK_MODEL_MANY_COIN)
+		this->Health = 9;
 	startX = x; startY = y;
 	minY = y - QUESTION_BRICK_MIN_Y;
 	eType = Type::GOLDBRICK;
@@ -72,8 +73,14 @@ void GoldBrick::Render()
 	if (eType == Type::GOLDBRICK)
 	{
 		ani = GOLD_BRICK_ANI_BOX;
-		if (state == GOLD_BRICK_STATE_UNBOX)
-			ani = GOLD_BRICK_ANI_UNBOX;
+		if (state != GOLD_BRICK_STATE_UNBOX) {
+			if (model == GOLD_BRICK_MODEL_MANY_COIN) {
+				if (Health != 0.f)
+					ani = ani = GOLD_BRICK_ANI_BOX;
+				else ani = GOLD_BRICK_ANI_UNBOX;
+			}
+		}
+		else ani = GOLD_BRICK_ANI_UNBOX;
 	}
 	else if (eType == Type::COIN)
 		ani = GOLD_BRICK_ANI_IDLE_COIN;

@@ -36,7 +36,6 @@ void QuestionBrick::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			if (CheckAABB(mLeft, mTop + TAIL_SIZE, mRight, mBottom)) {
 				isUnbox = true;
 				Health = 0;
-				DebugOut(L"danh 1 lan \n");
 				return;
 			}				
 		}
@@ -44,7 +43,6 @@ void QuestionBrick::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			if (CheckAABB(mLeft - 6, mTop + TAIL_SIZE, mRight, mBottom)) {
 				isUnbox = true;
 				Health = 0;
-				DebugOut(L"danh 1 lan \n");
 				return;
 			}				
 		}

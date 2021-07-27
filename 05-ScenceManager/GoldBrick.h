@@ -16,6 +16,7 @@
 #define QUESTION_BRICK_MODEL_COIN			1
 #define QUESTION_BRICK_MODEL_POWER_UP		2
 #define QUESTION_BRICK_MODEL_ITEM			3
+#define QUESTION_BRICK_MODEL_MANY_COIN		4
 class GoldBrick : public CGameObject
 {
 	DWORD timeTransform;

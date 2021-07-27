@@ -266,9 +266,10 @@ void WorldMap::Load()
 		if (objects[i]->GetType() == PORTAL) {
 			CPortal* portal = dynamic_cast<CPortal*>(objects[i]);
 			if (portal->GetSceneId() == backup->scene && backup->scene != 0)
-				if (player->GetLevel() == MARIO_LEVEL_SMALL)
-					player->SetPosition(objects[i]->x, objects[i]->y);
-				else player->SetPosition(objects[i]->x, objects[i]->y-7.f);
+				if (backup->level == MARIO_LEVEL_SMALL)
+					player->SetPosition(objects[i]->x, objects[i]->y);					
+				else 
+					player->SetPosition(objects[i]->x, objects[i]->y - 7.f);
 		}			
 	DebugOut(L"[INFO] Done loading scene resources %s\n", sceneFilePath);
 }
@@ -356,7 +357,10 @@ void WorldMapKeyHandler::OnKeyDown(int KeyCode)
 			}
 			break;
 		case DIK_R:
-			player->SetPosition(32, 48);//restart position
+			//restart position
+			if (player->level == MARIO_LEVEL_SMALL)
+				player->SetPosition(32, 48);
+			else player->SetPosition(32, 41);
 			player->vx = player->vy = 0;
 			player->SetMove(false, false, true, false);
 			break;

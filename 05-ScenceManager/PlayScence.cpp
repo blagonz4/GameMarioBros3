@@ -681,7 +681,6 @@ void CPlayScenceKeyHandler::OnKeyUp(int KeyCode) {
 	}
 }
 
-
 void CPlayScene::QuestionBrickDropItem(float model, float x, float y) {
 
 	switch ((int)model) {
@@ -705,7 +704,6 @@ void CPlayScene::QuestionBrickDropItem(float model, float x, float y) {
 void CPlayScene::ShowEffectPoint(CGameObject* obj, float model) {
 	EffectPoint* effectPoint = new EffectPoint(obj->x, obj->y, model);
 	TurnIntoUnit(effectPoint);
-	//objects.push_back(effectPoint);
 }
 
 void CPlayScene::AnnounceSceneEnd(int boxState) {
