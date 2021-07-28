@@ -312,7 +312,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					}
 					else e->obj->isFinish = true;				
 				}
-				else { y = y0; }
+				else { x = x0 + dx; y = y0; }
 			}
 			else if (e->obj->GetType() == MUSHROOM_1_UP || e->obj->GetType() == MUSHROOM_POWER) {
 				x += dx;
@@ -321,6 +321,15 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			else if (e->obj->GetType() == COIN) {
 				x = x0 + dx;
 				//this->vx = -this->vx;
+			}
+			else if (e->obj->GetType() == BOOMERANG) {
+				CBoomerang* boomerang = dynamic_cast<CBoomerang*>(e->obj);
+				if (boomerang->isAppear == true) {
+					y = y0;
+				}
+			}
+			else if (e->obj->GetType() == POOP) {
+				y = y0;
 			}
 		}
 	}

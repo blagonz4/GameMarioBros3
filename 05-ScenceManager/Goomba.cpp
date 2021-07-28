@@ -53,6 +53,12 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			SetState(GOOMBA_STATE_RED_JUMPING);
 		}	
 	}
+	else if (model == GOOMBA_MODEL_WING && Health == 1) {
+		TurnAround();
+		SetState(GOOMBA_STATE_WALKING);
+	}
+
+	//GOOMBA PARA
 	if (model == GOOMBA_MODEL_WING_BROWN && Health == 2) {
 
 		TurnAround();
@@ -89,6 +95,11 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				timeDropDelay = 0;
 			}
 		}
+	}
+	else if (model == GOOMBA_MODEL_WING_BROWN && Health == 1) {
+		TurnAround();
+		vy = GOOMBA_FLYING_SPEED;
+		ay = GOOMBA_GRAVITY;
 	}
 
 	vector<LPCOLLISIONEVENT> coEvents;

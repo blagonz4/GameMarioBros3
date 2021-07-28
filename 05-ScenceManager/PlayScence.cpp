@@ -536,6 +536,7 @@ void CPlayScene::Unload()
 	if (grid != nullptr)
 		grid->ClearAll();
 
+	isHavePSwitch = false;
 	isEndScene_1 = false;
 	game->SetCamPos(0, 100); //Set cam tu map 1_3 qua map phu 
 	objects.clear();
@@ -596,15 +597,15 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 			break;
 		case DIK_7:
 			if (game->GetInstance()->GetScene() == MAP1_1)
-				mario->SetPosition(1414, 50);
+				mario->SetPosition(2258, 30);
 			if (game->GetInstance()->GetScene() == MAP1_3)
-				mario->SetPosition(500, 10);
+				mario->SetPosition(1600, 300);
 			break;
 		case DIK_8:
 			if (game->GetInstance()->GetScene() == MAP1_1)
-			mario->SetPosition(2258, 30);
+				mario->SetPosition(1414, 50);
 			if (game->GetInstance()->GetScene() == MAP1_3)
-				mario->SetPosition(1600, 300);
+				mario->SetPosition(500, 10);
 			break;
 		case DIK_9:
 			if (game->GetInstance()->GetScene() == MAP1_1)

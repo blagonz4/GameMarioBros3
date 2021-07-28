@@ -27,11 +27,11 @@ void Camera::Update(DWORD dt) {
 		if (__cy > mh - sh && !mario->isFlying)
 			isTurnOn = false;
 
-		if (isTurnOn && py > CAMERA_ON_CLOUD) {
+		if (isTurnOn && py > CAMERA_ON_CLOUD && game->GetScene() == MAP1_1) {
 			if (__cy >= CAMERA_COORDINATE_Y - CAMERA_ON_CLOUD_FIX)
 				__cy-= CAMERA_ON_CLOUD_SPEED;
 		}		
-		else if (py < CAMERA_ON_CLOUD)  __cy = 0;
+		else if (py < CAMERA_ON_CLOUD && game->GetScene() == MAP1_1)  __cy = 0;
 		else __cy = CAMERA_COORDINATE_Y;
 
 		if (__cy <= 0)

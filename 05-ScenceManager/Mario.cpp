@@ -234,7 +234,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			{
 				CPlayScene* scene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
 				LPCOLLISIONEVENT e = coEventsResult[i];
-
 				if (e->ny != 0) {
 					isOnGround = true;
 					isJumping = false;
@@ -296,6 +295,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 							}
 							else
 							{
+								goomba->Health--;
 								goomba->SetState(GOOMBA_STATE_DIE);
 							}
 							this->vy = -MARIO_JUMP_DEFLECT_SPEED;
@@ -316,9 +316,8 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						}
 						else {
 							x = x0 + dx;
-							y = y0;
-							goomba->x += goomba->dx;
 						}
+						y = y0;
 					}
 				}
 				else if (e->obj->GetType() == KOOPAS)
@@ -369,9 +368,8 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						}
 						else {
 							x = x0 + dx;
-							y = y0;
-							koopa->x += koopa->dx;
 						}
+						y = y0;
 					}
 				}
 				else if (e->obj->GetType() == COLORBLOCK)
@@ -415,7 +413,13 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						}
 						else BeingAttacked();
 					}
-					else { x = x0 + dx; y = y0 + dy; }
+					else
+					{
+						x = x0 + dx;
+						if (e->ny < 0) {
+							y = y0 + dy;
+						}							
+					}
 				}
 				else if (e->obj->GetType() == QUESTIONBRICK) {
 					GetBoundingBox(mLeft, mTop, mRight, mBottom);
@@ -476,6 +480,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 								if (gb->Health != 0) {
 									gb->Health--;
 									PlusScore(100);
+									PlusCoinCollect(1);
 									EffectCoin* effectCoin = new EffectCoin(gb->x, gb->y - 10);
 									scene->TurnIntoUnit(effectCoin);
 									gb->vy = -QUESTION_BRICK_SPEED_UP;
@@ -500,7 +505,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					if (e->ny < 0) //nhay tu tren xuong
 					{
 						if (mb->GetModel() == MUSIC_BRICK_MODEL_HIDDEN) {
-							if (mb->isHidden) { x += dx; y += dy; }
+							if (mb->isHidden && ceil(mBottom) != oTop) { y = y0 + dy; }
 							else {
 								mb->y += MUSIC_BRICK_POS_BOUND;
 								mb->vy = -MUSIC_BRICK_GRAVITY;
@@ -648,11 +653,18 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					}
 				}
 				else if (e->obj->GetType() == BOOMERANG) {
-					if (untouchable == 0)
-					{
-						BeingAttacked();
+					CBoomerang* boomerang = dynamic_cast<CBoomerang*>(e->obj);
+					if (boomerang->isAppear == true) {
+						if (untouchable == 0)
+							BeingAttacked();
+						y = y0;
 					}
-					else { y = y0; }
+					else {
+						x = x0 + dx;
+						if (e->ny != 0)
+							y = y0 + dy;
+						else y = y0;
+					}
 				}
 				else if (e->obj->GetType() == POOP) {
 					Poop *poop = dynamic_cast<Poop *>(e->obj);

@@ -71,8 +71,8 @@ void CBoomerang::SetState(int state)
 }
 void CBoomerang::Render()
 {
-	if (!isAppear)
-		return;
+	/*if (!isAppear)
+		return;*/
 	int ani = BOOMERANG_ANI;
 	animation_set->at(0)->Render(x - BOOMERANG_DIFF, y - BOOMERANG_DIFF);
 	//RenderBoundingBox();
