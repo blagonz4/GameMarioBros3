@@ -29,12 +29,14 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	float mLeft, mTop, mRight, mBottom;
 	float oLeft, oTop, oRight, oBottom;
 	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
-	if (mario != NULL && mario->level == MARIO_LEVEL_RACOON && mario->isTurningTail) {
-		mario->GetBoundingBox(mLeft, mTop, mRight, mBottom);
-		GetBoundingBox(oLeft, oTop, oRight, oBottom);
-		if (CheckAABB(mLeft, mTop + TAIL_SIZE, mRight, mBottom)) {
-			this->vy = -KOOPAS_DEFLECT_SPEED*4;
-			SetState(KOOPAS_STATE_UP_SIDE_DOWN);			
+	if (mario != NULL) {
+		if (mario->level == MARIO_LEVEL_RACOON && mario->isTurningTail) {
+			mario->GetBoundingBox(mLeft, mTop, mRight, mBottom);
+			GetBoundingBox(oLeft, oTop, oRight, oBottom);
+			if (CheckAABB(mLeft, mTop + TAIL_SIZE, mRight, mBottom)) {
+				this->vy = -KOOPAS_DEFLECT_SPEED * 4;
+				SetState(KOOPAS_STATE_UP_SIDE_DOWN);
+			}
 		}
 	}
 
@@ -333,7 +335,9 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			}
 		}
 	}
-
+	if (vx > 0 && x >= 2500) {
+		isFinish = true;
+	}
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
 }
 

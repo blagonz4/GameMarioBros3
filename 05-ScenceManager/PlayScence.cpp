@@ -597,13 +597,13 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 			break;
 		case DIK_7:
 			if (game->GetInstance()->GetScene() == MAP1_1)
-				mario->SetPosition(2258, 30);
+				mario->SetPosition(1414, 50);
 			if (game->GetInstance()->GetScene() == MAP1_3)
 				mario->SetPosition(1600, 300);
 			break;
 		case DIK_8:
 			if (game->GetInstance()->GetScene() == MAP1_1)
-				mario->SetPosition(1414, 50);
+				mario->SetPosition(2258, 30);
 			if (game->GetInstance()->GetScene() == MAP1_3)
 				mario->SetPosition(500, 10);
 			break;

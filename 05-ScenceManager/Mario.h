@@ -13,7 +13,7 @@
 #define MARIO_JUMP_SPEED_MAX				0.27f
 #define MARIO_FLY_SPEED						0.13f
 #define MARIO_JUMP_SPEED_PEEK				0.005f
-#define MARIO_JUMP_DEFLECT_SPEED			0.5f
+#define MARIO_JUMP_DEFLECT_SPEED			0.6f
 #define MARIO_GRAVITY						0.002f
 #define MARIO_DIE_DEFLECT_SPEED				0.8f
 #define MARIO_ACCELERATION_JUMP				0.0005f
@@ -40,7 +40,7 @@
 #define MARIO_DEFAULT_LIFE					3
 #define PLAYER_SPEED						0.1f
 #define MARIO_DEFLECT_MUSIC_BRICK			0.8f
-#define MARIO_CHANGE_SCENE_SPEED			1.4f
+#define MARIO_CHANGE_SCENE_SPEED			1.2f
 //----------------------Mario------------------------
 #define MARIO_STATE_IDLE					0
 #define MARIO_STATE_WALK_RIGHT				1000

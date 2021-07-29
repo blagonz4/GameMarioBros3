@@ -250,7 +250,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						vy = 0;
 						lastStandingY = y;
 						if (e->obj->GetType() == PIPE) {
-							isReadyToPipe = true;
+							y = y0;
 						}	
 					}
 					if (e->ny > 0)
@@ -511,7 +511,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 								mb->vy = -MUSIC_BRICK_GRAVITY;
 								if (mb->y >= mb->maxY) {
 									if (game->IsKeyDown(DIK_S)) {
-										this->vy = -MARIO_CHANGE_SCENE_SPEED*dt; //nhay qua map phu
+										this->vy = -MARIO_CHANGE_SCENE_SPEED *dt; //nhay qua map phu
 									}
 									else this->vy = -MARIO_DEFLECT_MUSIC_BRICK;
 								}									
@@ -552,13 +552,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						if (ceil(mBottom) != oTop)
 						{
 							vx = 0;
-							if (isRunning)
-								StopRunning();
-							if (x < game->GetCamX())
-							{
-								SetState(MARIO_STATE_DIE);
-								return;
-							}
 						}
 					}
 				}
@@ -657,12 +650,13 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					if (boomerang->isAppear == true) {
 						if (untouchable == 0)
 							BeingAttacked();
+						else if (e->ny > 0) y += dy;
 						y = y0;
 					}
 					else {
-						x = x0 + dx;
+						x += dx;
 						if (e->ny != 0)
-							y = y0 + dy;
+							y += dy;
 						else y = y0;
 					}
 				}

@@ -77,9 +77,8 @@ void FireBall::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			}
 			else if (e->obj->GetType() == GOOMBA) {
 				if (defineVy == FIRE_GRAVITY) {
-					this->isFinish = true;
-					e->obj->nx = this->nx;
-					e->obj->SetState(GOOMBA_STATE_DIE);
+					CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
+					goomba->SetState(GOOMBA_STATE_DIE);
 					this->isFinish = true;
 				}
 				else {
@@ -102,15 +101,21 @@ void FireBall::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					x += dx; y += dy;
 				}
 			}
-			else if (e->obj->GetType() == PIPE ||
-					e->obj->GetType() == GOLDBRICK ||
-					e->obj->GetType() == QUESTIONBRICK||
-					e->obj->GetType() == MUSICBRICK) {
-				if (defineVy != FIRE_GRAVITY) {
-					x += dx; y += dy;
-				}
-				else if (e->nx != 0) 
-					this->isFinish = true;
+			else if (e->obj->GetType() == BOOMERANG) {
+				x += dx; y += dy;
+			}
+			else if (e->obj->GetType() == PIPE || e->obj->GetType() == GOLDBRICK || e->obj->GetType() == QUESTIONBRICK|| e->obj->GetType() == MUSICBRICK) {
+					if (e->obj->GetType() == MUSICBRICK) {
+						MusicBrick* mb = dynamic_cast<MusicBrick*>(e->obj);
+						if (mb->isFinish) {
+							x += dx; y += dy;
+						}
+					}	
+					else if (defineVy != FIRE_GRAVITY) {
+						x += dx; y += dy;
+					}
+					else if (e->nx != 0) 
+						this->isFinish = true;
 			}			
 			else if (e->obj->GetType() == PLATFORM || e->obj->GetType() == COLORBLOCK) {
 				if (defineVy != FIRE_GRAVITY) {

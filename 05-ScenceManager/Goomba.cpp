@@ -192,7 +192,11 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			}
 		}
 	}
-
+	if (vx < 0 && x <= 10) {
+		x = 10;
+		nx = 1;
+		vx = -vx;
+	}
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
 }
 
@@ -270,7 +274,7 @@ void CGoomba::GetBoundingBox(float &left, float &top, float &right, float &botto
 	top = y;
 	right = x + GOOMBA_BBOX_WIDTH;
 
-	if (model > GOOMBA_MODEL_NORMAL && Health == 2){
+	if (model > GOOMBA_MODEL_NORMAL && Health == 2) {
 		right = x + GOOMBA_WING_BBOX_WIDTH;
 		if (state == GOOMBA_STATE_RED_HIGHJUMPING || state == GOOMBA_STATE_RED_JUMPING || isFlying)
 			bottom = y + GOOMBA_WING_BBOX_WALK_HEIGHT;
