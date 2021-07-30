@@ -16,6 +16,7 @@ class Poop : public CGameObject
 public:
 	float limitRight;
 	float limitLeft;
+	float movingX, movingY;
 	bool isAttach = false;//dinh mario
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);

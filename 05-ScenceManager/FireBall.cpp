@@ -78,6 +78,7 @@ void FireBall::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			else if (e->obj->GetType() == GOOMBA) {
 				if (defineVy == FIRE_GRAVITY) {
 					CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
+					goomba->Health--;
 					goomba->SetState(GOOMBA_STATE_DIE);
 					this->isFinish = true;
 				}

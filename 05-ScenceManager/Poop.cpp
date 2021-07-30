@@ -30,21 +30,26 @@ void Poop::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	x += dx;
 	y += dy;
 
-	if (x <= limitLeft)
-	{
-		vy = LEAF_GRAVITY * dt;
-		vx = LEAF_SPEED_X * dt;
+	if (!isAttach) {
+		if (x <= limitLeft)
+		{
+			vy = LEAF_GRAVITY * dt;
+			vx = LEAF_SPEED_X * dt;
+		}
+		if (x >= limitRight)
+		{
+			vy = LEAF_GRAVITY * dt;
+			vx = -LEAF_SPEED_X * dt;
+		}
+		else vy = LEAF_GRAVITY / 2 * dt;
 	}
-	if (x >= limitRight)
-	{
-		vy = LEAF_GRAVITY * dt;
-		vx = -LEAF_SPEED_X * dt;
-	}
-	else vy = LEAF_GRAVITY/2 * dt;
 
 	if (isAttach) {
 		this->x = mario->x;
-		this->y = mario->y + 12;
+		if (mario->level > MARIO_LEVEL_SMALL)
+			this->y = mario->y + 12;
+		else this->y = mario->y+5;
+
 		mario->limitJumpVelocity = LIMIT_JUMP_VELOCITY;
 		mario->limitRunSpeed = LIMIT_RUN_SPEED;
 		timeDisappear += dt;

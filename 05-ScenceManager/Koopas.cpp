@@ -335,7 +335,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			}
 		}
 	}
-	if (vx > 0 && x >= 2500) {
+	if (vx > 0 && x >= 2550) {
 		isFinish = true;
 	}
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];

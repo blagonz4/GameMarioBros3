@@ -4,7 +4,7 @@
 #include "Mario.h"
 //#include "PlayScence.h"
 //-----------------------------Koopas----------------------------
-#define KOOPAS_DEFEND_TIME			5000
+#define KOOPAS_DEFEND_TIME			6000
 #define KOOPAS_DEFEND_HITBOX		16
 #define KOOPAS_WALK_HITBOX_WIDTH	16
 #define KOOPAS_WALK_HITBOX_HEIGHT	27
