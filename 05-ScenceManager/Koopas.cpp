@@ -333,11 +333,12 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			else if (e->obj->GetType() == POOP) {
 				y = y0;
 			}
+			else if (e->obj->GetType() == PORTAL) {
+			x += dx; y = y0;
+			}
 		}
 	}
-	if (vx > 0 && x >= 2550) {
-		isFinish = true;
-	}
+
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
 }
 
